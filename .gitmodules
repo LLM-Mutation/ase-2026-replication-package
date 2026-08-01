@@ -1,3 +1,6 @@
 [submodule "BugsInPy"]
 	path = BugsInPy
 	url = git@github.com:soarsmu/BugsInPy.git
+[submodule "multiplex"]
+	path = multiplex
+	url = git@github.com:LLM-Mutation/multiplex.git
