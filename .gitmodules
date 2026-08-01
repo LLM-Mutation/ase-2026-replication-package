@@ -1,0 +1,3 @@
+[submodule "BugsInPy"]
+	path = BugsInPy
+	url = git@github.com:soarsmu/BugsInPy.git
