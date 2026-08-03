@@ -1,6 +1,3 @@
 [submodule "multiplex"]
 	path = multiplex
 	url = git@github.com:LLM-Mutation/multiplex.git
-[submodule "black"]
-	path = black
-	url = git@github.com:psf/black.git
