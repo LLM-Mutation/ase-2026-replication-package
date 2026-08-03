@@ -1,3 +1,6 @@
 [submodule "multiplex"]
 	path = multiplex
 	url = git@github.com:LLM-Mutation/multiplex.git
+[submodule "PySnooper"]
+	path = PySnooper
+	url = https://github.com/cool-RR/PySnooper.git
