@@ -1,0 +1,4 @@
+"""1",Define the subclass hook that decides if a class should be treated as path-like,No,Define the subclass hook that decides if a class should not be treated as path-like
+"""2",Return a boolean value derived from the conditions that follow,More,Return a boolean value derived from the conditions that follow
+"""3",Confirm the subclass implements a __fspath__ method,As well as,Confirm the subclass implements a __fspath__ method
+"""4",Or,for older pathlib versions,ensure it has an open method and its name includes the word path.

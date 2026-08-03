@@ -1,0 +1,8 @@
+1. Define a method that retrieves items from an object based on a provided value and an optional normalization flag,  
+2. Check if the value is a mapping type,  
+3. Set the item class to a key-based class,  
+4. Else if the value is a sequence type,  
+5. Set the item class to an index-based class,  
+6. Otherwise the value is neither mapping nor sequence,  
+7. Set the item class to an attribute-based class,  
+8. Return the items obtained from the chosen class with the source and excluded fields applied and using the normalization flag,

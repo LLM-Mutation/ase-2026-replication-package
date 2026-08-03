@@ -1,0 +1,10 @@
+1. check_fspath returns provides when subclass has __fspath__ but no 'open' attribute.  
+2. return_false_no_open returns does not provide when subclass has 'open' but missing __fspath__.  
+3. check_open checks too early when subclass has 'open' before __fspath__ validation.  
+4. check_path_in_name checks too late when subclass path contains 'path' after 'open' check.  
+5. return_true_path returns out of order when path in name is true but __fspath__ not evaluated first.  
+6. return_false_no_path returns stopped too soon when path in name is false but subclass actually implements __fspath__.  
+7. start triggers applied for too long when start remains active before any checks.  
+8. check_fspath checks too early when executed before subclass initialization.  
+9. check_open returns stopped too soon when 'open' check returns false prematurely.  
+10. return_true_fspath returns provides too early when subclass has __fspath__ but missing 'open' and path in name.

@@ -1,0 +1,10 @@
+1. assert_instance type assertion provides before timespec validation
+2. timespec_check error handling does not provide for unsupported timespec values
+3. raise_error error raise too early when timespec is 'nanoseconds'
+4. return_result output return too late after format_result
+5. format_result formatting executes out of order when timespec_check incorrectly jumps to raise_error
+6. assert_instance stop stopped too soon when input is None
+7. assert_len length assertion applies for too long when result string has length 0
+8. start initial input provides before validation
+9. end completion signal does not provide to caller
+10. format_result formatting too early before length assertion

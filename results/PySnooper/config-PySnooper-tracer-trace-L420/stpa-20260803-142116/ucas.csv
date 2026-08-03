@@ -1,0 +1,10 @@
+1. frame check provides too early when event type unknown  
+2. depth increment does not provide when call event missing  
+3. indent compute too early when thread info not available  
+4. color set out of order when indent not yet computed  
+5. timestamp write too late when line source missing  
+6. line source write stops too soon when thread info not captured  
+7. var_repr write does not provide when local variables inaccessible  
+8. var_loop calculation out of order when misplaced_def unresolved  
+9. write_exception applied for too long when normal line already written  
+10. cleanup stops too soon before return value written

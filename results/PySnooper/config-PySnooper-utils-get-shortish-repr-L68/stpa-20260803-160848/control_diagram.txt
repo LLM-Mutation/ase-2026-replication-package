@@ -1,0 +1,26 @@
+digraph G {
+    node [shape=box, style=filled, color=lightgrey];
+    start [label="Start"];
+    get_repr [label="Call get_repr_function(item, custom_repr)"];
+    try_block [label="Try: r = repr_function(item)"];
+    except_block [label="Exception: r = 'REPR FAILED'"];
+    replace_block [label="r = r.replace('\\r','').replace('\\n','')"];
+    normalize_cond [label="normalize == True?", shape=diamond, style=filled, color=white];
+    normalize_block [label="r = normalize_repr(r)"];
+    max_length_cond [label="max_length is set?", shape=diamond, style=filled, color=white];
+    truncate_block [label="r = truncate(r, max_length)"];
+    return_block [label="return r"];
+
+    start -> get_repr;
+    get_repr -> try_block;
+    try_block -> except_block [label="Exception"];
+    try_block -> replace_block [label="Success"];
+    except_block -> replace_block;
+    replace_block -> normalize_cond;
+    normalize_cond -> normalize_block [label="Yes"];
+    normalize_cond -> max_length_cond [label="No"];
+    normalize_block -> max_length_cond;
+    max_length_cond -> truncate_block [label="Yes"];
+    max_length_cond -> return_block [label="No"];
+    truncate_block -> return_block;
+}

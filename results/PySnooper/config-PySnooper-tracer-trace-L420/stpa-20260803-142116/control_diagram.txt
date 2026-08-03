@@ -1,0 +1,63 @@
+```dot
+digraph trace_function {
+    rankdir=TB;
+    node [shape=box, fontsize=10];
+
+    start [label="Start"];
+    check_trace [label="Check if frame is in target codes/frames"];
+    skip? [label="Skip tracing?"];
+    return_none [label="Return None"];
+    proceed [label="Proceed"];
+
+    event_call [label="If event == 'call' -> increment depth"];
+    indent [label="Compute indent"];
+    set_colors [label="Set color/style constants"];
+    timestamp [label="Make timestamp"];
+    line_source [label="Line number & source info"];
+    thread_info [label="Thread info"];
+    var_repr [label="Compute local variable representations"];
+    var_loop [label="Variable loop: new or modified"];
+    misplaced_def? [label="Misplaced function definition?"];
+    find_def [label="Find def line"];
+    exception? [label="Ended by exception?"];
+    write_exception [label="Write 'Call ended by exception'"];
+    write_normal [label="Write normal line (timestamp, thread, event, line_no, source)"];
+    event_return? [label="If event == 'return'"];
+    cleanup [label="Cleanup frames and depth"];
+    write_return [label="Write return value"];
+    event_exception? [label="If event == 'exception'"];
+    write_exc [label="Write exception"];
+    return_trace [label="Return self.trace"];
+
+    start -> check_trace;
+    check_trace -> skip?;
+    skip? -> return_none [label="Yes"];
+    skip? -> proceed [label="No"];
+
+    proceed -> event_call;
+    event_call -> indent;
+    indent -> set_colors;
+    set_colors -> timestamp;
+    timestamp -> line_source;
+    line_source -> thread_info;
+    thread_info -> var_repr;
+    var_repr -> var_loop;
+    var_loop -> misplaced_def?;
+    misplaced_def? -> find_def [label="Yes"];
+    find_def -> misplaced_def?;  // loop until 'def' line found
+    misplaced_def? -> exception? [label="No"];
+
+    exception? -> write_exception [label="Yes"];
+    exception? -> write_normal [label="No"];
+    write_normal -> event_return?;
+    event_return? -> cleanup [label="Yes"];
+    cleanup -> write_return;
+    write_return -> return_trace;
+    event_return? -> event_exception? [label="No"];
+    event_exception? -> write_exc [label="Yes"];
+    write_exc -> return_trace;
+
+    // fallthrough from return_none to end
+    return_none -> return_trace;
+}
+```

@@ -1,0 +1,111 @@
+$ /Users/meganmaton/.cache/uv/archive-v0/Q1YWu4HrcUL7MC9AiUGGQ/bin/python3 -m pytest -q /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper
+# exit code: 1
+
+.........................................................F.............. [ 84%]
+.....FF......                                                            [100%]
+=================================== FAILURES ===================================
+________________________________ test_exception ________________________________
+
+    def test_exception():
+        string_io = io.StringIO()
+        @pysnooper.snoop(string_io, color=False)
+        def f():
+            x = 8
+            raise MemoryError
+    
+        with pytest.raises(MemoryError):
+>           f()
+
+../PySnooper/tests/test_pysnooper.py:1892: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:337: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/tracer.py:582: in trace
+    exception = utils.format_exception(*arg[:2])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+exc_type = <class 'MemoryError'>, exc_value = MemoryError()
+
+    def format_exception(exc_type, exc_value):
+        # Defect: Branching on is_group too early before it is assigned
+        # when BaseExceptionGroup is missing this will raise an UnboundLocalError.
+>       if is_group:
+           ^^^^^^^^
+E       UnboundLocalError: cannot access local variable 'is_group' where it is not associated with a value
+
+../PySnooper/pysnooper/utils.py:96: UnboundLocalError
+_____________________________ test_exception_group _____________________________
+
+    @pytest.mark.skipif(sys.version_info < (3, 11),
+                        reason='ExceptionGroup requires Python 3.11+')
+    def test_exception_group():
+        string_io = io.StringIO()
+        @pysnooper.snoop(string_io, color=False)
+        def f():
+            raise ExceptionGroup('task errors', [ValueError('bad'), TypeError('wrong'), RuntimeError('fail')])
+    
+        with pytest.raises(ExceptionGroup):
+>           f()
+
+../PySnooper/tests/test_pysnooper.py:1920: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:337: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/tracer.py:582: in trace
+    exception = utils.format_exception(*arg[:2])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+exc_type = <class 'ExceptionGroup'>
+exc_value = ExceptionGroup('task errors', [ValueError('bad'), TypeError('wrong'), RuntimeError('fail')])
+
+    def format_exception(exc_type, exc_value):
+        # Defect: Branching on is_group too early before it is assigned
+        # when BaseExceptionGroup is missing this will raise an UnboundLocalError.
+>       if is_group:
+           ^^^^^^^^
+E       UnboundLocalError: cannot access local variable 'is_group' where it is not associated with a value
+
+../PySnooper/pysnooper/utils.py:96: UnboundLocalError
+_________________________ test_nested_exception_group __________________________
+
+    @pytest.mark.skipif(sys.version_info < (3, 11),
+                        reason='ExceptionGroup requires Python 3.11+')
+    def test_nested_exception_group():
+        string_io = io.StringIO()
+        @pysnooper.snoop(string_io, color=False)
+        def f():
+            raise ExceptionGroup('outer', [ExceptionGroup('inner', [ValueError('deep')]), TypeError('shallow')])
+    
+        with pytest.raises(ExceptionGroup):
+>           f()
+
+../PySnooper/tests/test_pysnooper.py:1950: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:337: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/tracer.py:582: in trace
+    exception = utils.format_exception(*arg[:2])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+exc_type = <class 'ExceptionGroup'>
+exc_value = ExceptionGroup('outer', [ExceptionGroup('inner', [ValueError('deep')]), TypeError('shallow')])
+
+    def format_exception(exc_type, exc_value):
+        # Defect: Branching on is_group too early before it is assigned
+        # when BaseExceptionGroup is missing this will raise an UnboundLocalError.
+>       if is_group:
+           ^^^^^^^^
+E       UnboundLocalError: cannot access local variable 'is_group' where it is not associated with a value
+
+../PySnooper/pysnooper/utils.py:96: UnboundLocalError
+=========================== short test summary info ============================
+FAILED ../PySnooper/tests/test_pysnooper.py::test_exception - UnboundLocalErr...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_exception_group - UnboundLo...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_nested_exception_group - Un...
+3 failed, 82 passed in 1.09s

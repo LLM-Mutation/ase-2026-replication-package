@@ -1,0 +1,10 @@
+1. Cache result cached provides when cache lookup occurs before source retrieval.  
+2. Source decoding attempted does not provide when source lines are not split yet.  
+3. Loader.get_source attempted too early when module name is not verified.  
+4. Cache result stored too late when source has already been returned to caller.  
+5. Result tuple created out of order when cache result is stored before source lines are decoded.  
+6. Source line splitting stopped too soon when line count is prematurely capped.  
+7. Encoding detection performed applied for too long when first two lines are processed repeatedly.  
+8. Result tuple returned does not provide when cache miss leads directly to return without validation.  
+9. Return result issued too early when result tuple is returned before final encoding applied.  
+10. Cache update stopped too soon when cache is invalidated prematurely due to concurrent modifications.

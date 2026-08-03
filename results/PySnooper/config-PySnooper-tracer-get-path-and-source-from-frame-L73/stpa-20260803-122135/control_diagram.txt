@@ -1,0 +1,74 @@
+```dot
+digraph G {
+  node [shape=box, fontsize=10, fontname="Helvetica"];
+  
+  // Start and initial setup
+  n0  [label="Start"];
+  n1  [label="Retrieve globals and compute keys"];
+  n2  [label="Try cache lookup"];
+  n3  [label="Cache hit?"];
+  n4  [label="Return cached result"];
+  n5  [label="Get __loader__"];
+  n6  [label="source = None"];
+  
+  // Loader source retrieval
+  n7  [label="Has loader.get_source?"];
+  n8  [label="Try loader.get_source(module_name)"];
+  n9  [label="source is not None?"];
+  n10 [label="Split source into lines"];
+  
+  // Check if source is still None
+  n11 [label="source is None?"];
+  
+  // Pattern matching for special file names
+  n12 [label="Match ipykernel_filename_pattern?"];
+  n13 [label="Try linecache to get source"];
+  n14 [label="Match ipython_filename_pattern?"];
+  n15 [label="Try IPython history to get source"];
+  n16 [label="Match ansible_filename_pattern?"];
+  n17 [label="Try zipfile to get source"];
+  n18 [label="Else open file and read"];
+  
+  // Handle missing source
+  n19 [label="If not source?"];
+  n20 [label="Set source = UnavailableSource()"];
+  
+  // Byte source handling
+  n21 [label="If source[0] is bytes?"];
+  n22 [label="Detect encoding from first two lines"];
+  n23 [label="Decode source lines"];
+  
+  // Finalization
+  n24 [label="Create result tuple"];
+  n25 [label="Cache result"];
+  n26 [label="Return result"];
+  
+  // Edges
+  n0 -> n1 -> n2 -> n3;
+  n3 -> n4 [label="yes"];
+  n3 -> n5 [label="no"];
+  n5 -> n6 -> n7;
+  n7 -> n8 [label="yes"];
+  n7 -> n11 [label="no"];
+  n8 -> n9;
+  n9 -> n10 [label="yes"];
+  n9 -> n11 [label="no"];
+  n10 -> n21;
+  n11 -> n12 [label="yes"];
+  n11 -> n21 [label="no"];
+  n12 -> n13 [label="yes"];
+  n12 -> n14 [label="no"];
+  n13 -> n21;
+  n14 -> n15 [label="yes"];
+  n14 -> n16 [label="no"];
+  n15 -> n21;
+  n16 -> n17 [label="yes"];
+  n16 -> n18 [label="no"];
+  n17 -> n21;
+  n18 -> n21;
+  n21 -> n22 [label="yes"];
+  n21 -> n24 [label="no"];
+  n22 -> n23 -> n24;
+  n24 -> n25 -> n26;
+}
+```

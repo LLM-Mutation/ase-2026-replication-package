@@ -1,0 +1,25 @@
+```dot
+digraph _items_control_flow {
+  rankdir=LR;
+  node [shape=box];
+
+  start [label="Start"];
+  check_mapping [label="Is main_value instance of Mapping?"];
+  set_keys [label="Set cls = Keys"];
+  check_sequence [label="Is main_value instance of Sequence?"];
+  set_indices [label="Set cls = Indices"];
+  set_attrs [label="Set cls = Attrs"];
+  call_method [label="Return cls(self.source, self.exclude)._items(main_value, normalize)"];
+  end [label="End"];
+
+  start -> check_mapping;
+  check_mapping -> set_keys [label="Yes"];
+  check_mapping -> check_sequence [label="No"];
+  set_keys -> call_method;
+  check_sequence -> set_indices [label="Yes"];
+  check_sequence -> set_attrs [label="No"];
+  set_indices -> call_method;
+  set_attrs -> call_method;
+  call_method -> end;
+}
+```

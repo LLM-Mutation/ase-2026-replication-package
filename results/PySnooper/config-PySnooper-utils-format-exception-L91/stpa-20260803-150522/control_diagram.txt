@@ -1,0 +1,29 @@
+digraph format_exception {
+    rankdir=TB;
+    node [shape=box, fontname="Helvetica"];
+
+    entry [label="Entry"];
+    try_block [label="try:\n    is_group = isinstance(exc_value, BaseExceptionGroup)"];
+    except_block [label="except NameError:\n    is_group = False"];
+    if_check [label="if is_group"];
+    true_branch [label="True Branch"];
+    sub_types_node [label="sub_types = ', '.join(type(e).__name__ for e in exc_value.exceptions)"];
+    message_node [label="message = exc_value.args[0] if exc_value.args else ''"];
+    return_true_node [label="return u\"{}: '{}' ({} sub-exceptions: {})\".format(...)" ];
+    false_branch [label="False Branch"];
+    return_false_node [label="return u'\\n'.join(traceback.format_exception_only(exc_type, exc_value)).strip()"];
+    exit [label="Exit"];
+
+    entry -> try_block;
+    try_block -> if_check;
+    try_block -> except_block [style=dotted, label="NameError"];
+    except_block -> if_check;
+    if_check -> true_branch [label="True"];
+    true_branch -> sub_types_node;
+    sub_types_node -> message_node;
+    message_node -> return_true_node;
+    return_true_node -> exit;
+    if_check -> false_branch [label="False"];
+    false_branch -> return_false_node;
+    return_false_node -> exit;
+}

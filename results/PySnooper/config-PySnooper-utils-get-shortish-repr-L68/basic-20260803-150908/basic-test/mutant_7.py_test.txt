@@ -1,0 +1,844 @@
+$ /Users/meganmaton/.cache/uv/archive-v0/Q1YWu4HrcUL7MC9AiUGGQ/bin/python3 -m pytest -q /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper
+# exit code: 1
+
+................FFFFFFFF....FF....FF....................F............... [ 84%]
+.............                                                            [100%]
+=================================== FAILURES ===================================
+_______________________________ test_watch[True] _______________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_watch(normalize):
+        class Foo(object):
+            def __init__(self):
+                self.x = 2
+    
+            def square(self):
+                self.x **= 2
+    
+        @pysnooper.snoop(watch=(
+                'foo.x',
+                'io.__name__',
+                'len(foo.__dict__["x"] * "abc")',
+        ), normalize=normalize, color=False)
+        def my_function():
+            foo = Foo()
+            for i in range(2):
+                foo.square()
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:359: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:337: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/tests/test_pysnooper.py:347: in my_function
+    @pysnooper.snoop(watch=(
+../PySnooper/pysnooper/tracer.py:509: in trace
+    get_local_reprs(frame,
+../PySnooper/pysnooper/tracer.py:61: in get_local_reprs
+    result.update(sorted(variable.items(frame, normalize)))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/variables.py:35: in items
+    return self._items(main_value, normalize)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/variables.py:55: in _items
+    result = [(self.source, utils.get_shortish_repr(main_value, normalize=normalize))]
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = 'io', custom_repr = (), max_length = None, normalize = True
+
+    def get_shortish_repr(item, custom_repr=(), max_length=None, normalize=False):
+        repr_function = get_repr_function(item, custom_repr)
+        try:
+            r = repr_function(item)
+        except Exception:
+            r = 'REPR FAILED'
+        r = r.replace('\r', '').replace('\n', '')
+        if normalize:
+            r = normalize_repr(r)
+        # Bug: max_length=0 should truncate to empty string, but condition skips truncation
+>       if max_length > 0:
+           ^^^^^^^^^^^^^^
+E       TypeError: '>' not supported between instances of 'NoneType' and 'int'
+
+../PySnooper/pysnooper/utils.py:78: TypeError
+______________________________ test_watch[False] _______________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_watch(normalize):
+        class Foo(object):
+            def __init__(self):
+                self.x = 2
+    
+            def square(self):
+                self.x **= 2
+    
+        @pysnooper.snoop(watch=(
+                'foo.x',
+                'io.__name__',
+                'len(foo.__dict__["x"] * "abc")',
+        ), normalize=normalize, color=False)
+        def my_function():
+            foo = Foo()
+            for i in range(2):
+                foo.square()
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:359: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:337: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/tests/test_pysnooper.py:347: in my_function
+    @pysnooper.snoop(watch=(
+../PySnooper/pysnooper/tracer.py:509: in trace
+    get_local_reprs(frame,
+../PySnooper/pysnooper/tracer.py:61: in get_local_reprs
+    result.update(sorted(variable.items(frame, normalize)))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/variables.py:35: in items
+    return self._items(main_value, normalize)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/variables.py:55: in _items
+    result = [(self.source, utils.get_shortish_repr(main_value, normalize=normalize))]
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = 'io', custom_repr = (), max_length = None, normalize = False
+
+    def get_shortish_repr(item, custom_repr=(), max_length=None, normalize=False):
+        repr_function = get_repr_function(item, custom_repr)
+        try:
+            r = repr_function(item)
+        except Exception:
+            r = 'REPR FAILED'
+        r = r.replace('\r', '').replace('\n', '')
+        if normalize:
+            r = normalize_repr(r)
+        # Bug: max_length=0 should truncate to empty string, but condition skips truncation
+>       if max_length > 0:
+           ^^^^^^^^^^^^^^
+E       TypeError: '>' not supported between instances of 'NoneType' and 'int'
+
+../PySnooper/pysnooper/utils.py:78: TypeError
+___________________________ test_watch_explode[True] ___________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_watch_explode(normalize):
+        class Foo:
+            def __init__(self, x, y):
+                self.x = x
+                self.y = y
+    
+        @pysnooper.snoop(watch_explode=('_d', '_point', 'lst + []'), normalize=normalize,
+                         color=False)
+        def my_function():
+            _d = {'a': 1, 'b': 2, 'c': 'ignore'}
+            _point = Foo(x=3, y=4)
+            lst = [7, 8, 9]
+            lst.append(10)
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:409: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:337: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/tests/test_pysnooper.py:403: in my_function
+    _point = Foo(x=3, y=4)
+             ^^^
+../PySnooper/pysnooper/tracer.py:509: in trace
+    get_local_reprs(frame,
+../PySnooper/pysnooper/tracer.py:61: in get_local_reprs
+    result.update(sorted(variable.items(frame, normalize)))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/variables.py:35: in items
+    return self._items(main_value, normalize)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/variables.py:133: in _items
+    return cls(self.source, self.exclude)._items(main_value, normalize)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/variables.py:55: in _items
+    result = [(self.source, utils.get_shortish_repr(main_value, normalize=normalize))]
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = {'a': 1, 'b': 2, 'c': 'ignore'}, custom_repr = (), max_length = None
+normalize = True
+
+    def get_shortish_repr(item, custom_repr=(), max_length=None, normalize=False):
+        repr_function = get_repr_function(item, custom_repr)
+        try:
+            r = repr_function(item)
+        except Exception:
+            r = 'REPR FAILED'
+        r = r.replace('\r', '').replace('\n', '')
+        if normalize:
+            r = normalize_repr(r)
+        # Bug: max_length=0 should truncate to empty string, but condition skips truncation
+>       if max_length > 0:
+           ^^^^^^^^^^^^^^
+E       TypeError: '>' not supported between instances of 'NoneType' and 'int'
+
+../PySnooper/pysnooper/utils.py:78: TypeError
+__________________________ test_watch_explode[False] ___________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_watch_explode(normalize):
+        class Foo:
+            def __init__(self, x, y):
+                self.x = x
+                self.y = y
+    
+        @pysnooper.snoop(watch_explode=('_d', '_point', 'lst + []'), normalize=normalize,
+                         color=False)
+        def my_function():
+            _d = {'a': 1, 'b': 2, 'c': 'ignore'}
+            _point = Foo(x=3, y=4)
+            lst = [7, 8, 9]
+            lst.append(10)
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:409: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:337: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/tests/test_pysnooper.py:403: in my_function
+    _point = Foo(x=3, y=4)
+             ^^^
+../PySnooper/pysnooper/tracer.py:509: in trace
+    get_local_reprs(frame,
+../PySnooper/pysnooper/tracer.py:61: in get_local_reprs
+    result.update(sorted(variable.items(frame, normalize)))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/variables.py:35: in items
+    return self._items(main_value, normalize)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/variables.py:133: in _items
+    return cls(self.source, self.exclude)._items(main_value, normalize)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/variables.py:55: in _items
+    result = [(self.source, utils.get_shortish_repr(main_value, normalize=normalize))]
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = {'a': 1, 'b': 2, 'c': 'ignore'}, custom_repr = (), max_length = None
+normalize = False
+
+    def get_shortish_repr(item, custom_repr=(), max_length=None, normalize=False):
+        repr_function = get_repr_function(item, custom_repr)
+        try:
+            r = repr_function(item)
+        except Exception:
+            r = 'REPR FAILED'
+        r = r.replace('\r', '').replace('\n', '')
+        if normalize:
+            r = normalize_repr(r)
+        # Bug: max_length=0 should truncate to empty string, but condition skips truncation
+>       if max_length > 0:
+           ^^^^^^^^^^^^^^
+E       TypeError: '>' not supported between instances of 'NoneType' and 'int'
+
+../PySnooper/pysnooper/utils.py:78: TypeError
+_________________________ test_variables_classes[True] _________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_variables_classes(normalize):
+        class WithSlots(object):
+            __slots__ = ('x', 'y')
+    
+            def __init__(self):
+                self.x = 3
+                self.y = 4
+    
+        @pysnooper.snoop(watch=(
+                pysnooper.Keys('_d', exclude='c'),
+                pysnooper.Attrs('_d'),  # doesn't have attributes
+                pysnooper.Attrs('_s'),
+                pysnooper.Indices('_lst')[-3:],
+        ), normalize=normalize, color=False)
+        def my_function():
+            _d = {'a': 1, 'b': 2, 'c': 'ignore'}
+            _s = WithSlots()
+            _lst = list(range(1000))
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:467: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:337: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/tests/test_pysnooper.py:462: in my_function
+    _s = WithSlots()
+         ^^^^^^^^^
+../PySnooper/pysnooper/tracer.py:509: in trace
+    get_local_reprs(frame,
+../PySnooper/pysnooper/tracer.py:61: in get_local_reprs
+    result.update(sorted(variable.items(frame, normalize)))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/variables.py:35: in items
+    return self._items(main_value, normalize)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/variables.py:55: in _items
+    result = [(self.source, utils.get_shortish_repr(main_value, normalize=normalize))]
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = {'a': 1, 'b': 2, 'c': 'ignore'}, custom_repr = (), max_length = None
+normalize = True
+
+    def get_shortish_repr(item, custom_repr=(), max_length=None, normalize=False):
+        repr_function = get_repr_function(item, custom_repr)
+        try:
+            r = repr_function(item)
+        except Exception:
+            r = 'REPR FAILED'
+        r = r.replace('\r', '').replace('\n', '')
+        if normalize:
+            r = normalize_repr(r)
+        # Bug: max_length=0 should truncate to empty string, but condition skips truncation
+>       if max_length > 0:
+           ^^^^^^^^^^^^^^
+E       TypeError: '>' not supported between instances of 'NoneType' and 'int'
+
+../PySnooper/pysnooper/utils.py:78: TypeError
+________________________ test_variables_classes[False] _________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_variables_classes(normalize):
+        class WithSlots(object):
+            __slots__ = ('x', 'y')
+    
+            def __init__(self):
+                self.x = 3
+                self.y = 4
+    
+        @pysnooper.snoop(watch=(
+                pysnooper.Keys('_d', exclude='c'),
+                pysnooper.Attrs('_d'),  # doesn't have attributes
+                pysnooper.Attrs('_s'),
+                pysnooper.Indices('_lst')[-3:],
+        ), normalize=normalize, color=False)
+        def my_function():
+            _d = {'a': 1, 'b': 2, 'c': 'ignore'}
+            _s = WithSlots()
+            _lst = list(range(1000))
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:467: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:337: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/tests/test_pysnooper.py:462: in my_function
+    _s = WithSlots()
+         ^^^^^^^^^
+../PySnooper/pysnooper/tracer.py:509: in trace
+    get_local_reprs(frame,
+../PySnooper/pysnooper/tracer.py:61: in get_local_reprs
+    result.update(sorted(variable.items(frame, normalize)))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/variables.py:35: in items
+    return self._items(main_value, normalize)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/variables.py:55: in _items
+    result = [(self.source, utils.get_shortish_repr(main_value, normalize=normalize))]
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = {'a': 1, 'b': 2, 'c': 'ignore'}, custom_repr = (), max_length = None
+normalize = False
+
+    def get_shortish_repr(item, custom_repr=(), max_length=None, normalize=False):
+        repr_function = get_repr_function(item, custom_repr)
+        try:
+            r = repr_function(item)
+        except Exception:
+            r = 'REPR FAILED'
+        r = r.replace('\r', '').replace('\n', '')
+        if normalize:
+            r = normalize_repr(r)
+        # Bug: max_length=0 should truncate to empty string, but condition skips truncation
+>       if max_length > 0:
+           ^^^^^^^^^^^^^^
+E       TypeError: '>' not supported between instances of 'NoneType' and 'int'
+
+../PySnooper/pysnooper/utils.py:78: TypeError
+_______________________ test_single_watch_no_comma[True] _______________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_single_watch_no_comma(normalize):
+        class Foo(object):
+            def __init__(self):
+                self.x = 2
+    
+            def square(self):
+                self.x **= 2
+    
+        @pysnooper.snoop(watch='foo', normalize=normalize, color=False)
+        def my_function():
+            foo = Foo()
+            for i in range(2):
+                foo.square()
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:514: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:337: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/tests/test_pysnooper.py:509: in my_function
+    for i in range(2):
+             ^^^^^
+../PySnooper/pysnooper/tracer.py:509: in trace
+    get_local_reprs(frame,
+../PySnooper/pysnooper/tracer.py:61: in get_local_reprs
+    result.update(sorted(variable.items(frame, normalize)))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/variables.py:35: in items
+    return self._items(main_value, normalize)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/variables.py:55: in _items
+    result = [(self.source, utils.get_shortish_repr(main_value, normalize=normalize))]
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <tests.test_pysnooper.test_single_watch_no_comma.<locals>.Foo object at 0x10b03c830>
+custom_repr = (), max_length = None, normalize = True
+
+    def get_shortish_repr(item, custom_repr=(), max_length=None, normalize=False):
+        repr_function = get_repr_function(item, custom_repr)
+        try:
+            r = repr_function(item)
+        except Exception:
+            r = 'REPR FAILED'
+        r = r.replace('\r', '').replace('\n', '')
+        if normalize:
+            r = normalize_repr(r)
+        # Bug: max_length=0 should truncate to empty string, but condition skips truncation
+>       if max_length > 0:
+           ^^^^^^^^^^^^^^
+E       TypeError: '>' not supported between instances of 'NoneType' and 'int'
+
+../PySnooper/pysnooper/utils.py:78: TypeError
+______________________ test_single_watch_no_comma[False] _______________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_single_watch_no_comma(normalize):
+        class Foo(object):
+            def __init__(self):
+                self.x = 2
+    
+            def square(self):
+                self.x **= 2
+    
+        @pysnooper.snoop(watch='foo', normalize=normalize, color=False)
+        def my_function():
+            foo = Foo()
+            for i in range(2):
+                foo.square()
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:514: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:337: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/tests/test_pysnooper.py:509: in my_function
+    for i in range(2):
+             ^^^^^
+../PySnooper/pysnooper/tracer.py:509: in trace
+    get_local_reprs(frame,
+../PySnooper/pysnooper/tracer.py:61: in get_local_reprs
+    result.update(sorted(variable.items(frame, normalize)))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/variables.py:35: in items
+    return self._items(main_value, normalize)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/variables.py:55: in _items
+    result = [(self.source, utils.get_shortish_repr(main_value, normalize=normalize))]
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <tests.test_pysnooper.test_single_watch_no_comma.<locals>.Foo object at 0x10b03c440>
+custom_repr = (), max_length = None, normalize = False
+
+    def get_shortish_repr(item, custom_repr=(), max_length=None, normalize=False):
+        repr_function = get_repr_function(item, custom_repr)
+        try:
+            r = repr_function(item)
+        except Exception:
+            r = 'REPR FAILED'
+        r = r.replace('\r', '').replace('\n', '')
+        if normalize:
+            r = normalize_repr(r)
+        # Bug: max_length=0 should truncate to empty string, but condition skips truncation
+>       if max_length > 0:
+           ^^^^^^^^^^^^^^
+E       TypeError: '>' not supported between instances of 'NoneType' and 'int'
+
+../PySnooper/pysnooper/utils.py:78: TypeError
+__________ test_long_variable_with_infinite_max_variable_length[True] __________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_long_variable_with_infinite_max_variable_length(normalize):
+        @pysnooper.snoop(max_variable_length=None, normalize=normalize, color=False)
+        def my_function():
+            foo = list(range(1000))
+            return foo
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:607: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:337: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/tests/test_pysnooper.py:603: in my_function
+    return foo
+           ^^^
+../PySnooper/pysnooper/tracer.py:509: in trace
+    get_local_reprs(frame,
+../PySnooper/pysnooper/tracer.py:54: in get_local_reprs
+    result_items = [(key, utils.get_shortish_repr(value, custom_repr,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = [0, 1, 2, 3, 4, 5, ...], custom_repr = (), max_length = None
+normalize = True
+
+    def get_shortish_repr(item, custom_repr=(), max_length=None, normalize=False):
+        repr_function = get_repr_function(item, custom_repr)
+        try:
+            r = repr_function(item)
+        except Exception:
+            r = 'REPR FAILED'
+        r = r.replace('\r', '').replace('\n', '')
+        if normalize:
+            r = normalize_repr(r)
+        # Bug: max_length=0 should truncate to empty string, but condition skips truncation
+>       if max_length > 0:
+           ^^^^^^^^^^^^^^
+E       TypeError: '>' not supported between instances of 'NoneType' and 'int'
+
+../PySnooper/pysnooper/utils.py:78: TypeError
+_________ test_long_variable_with_infinite_max_variable_length[False] __________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_long_variable_with_infinite_max_variable_length(normalize):
+        @pysnooper.snoop(max_variable_length=None, normalize=normalize, color=False)
+        def my_function():
+            foo = list(range(1000))
+            return foo
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:607: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:337: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/tests/test_pysnooper.py:603: in my_function
+    return foo
+           ^^^
+../PySnooper/pysnooper/tracer.py:509: in trace
+    get_local_reprs(frame,
+../PySnooper/pysnooper/tracer.py:54: in get_local_reprs
+    result_items = [(key, utils.get_shortish_repr(value, custom_repr,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = [0, 1, 2, 3, 4, 5, ...], custom_repr = (), max_length = None
+normalize = False
+
+    def get_shortish_repr(item, custom_repr=(), max_length=None, normalize=False):
+        repr_function = get_repr_function(item, custom_repr)
+        try:
+            r = repr_function(item)
+        except Exception:
+            r = 'REPR FAILED'
+        r = r.replace('\r', '').replace('\n', '')
+        if normalize:
+            r = normalize_repr(r)
+        # Bug: max_length=0 should truncate to empty string, but condition skips truncation
+>       if max_length > 0:
+           ^^^^^^^^^^^^^^
+E       TypeError: '>' not supported between instances of 'NoneType' and 'int'
+
+../PySnooper/pysnooper/utils.py:78: TypeError
+_________________________ test_method_and_prefix[True] _________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_method_and_prefix(normalize):
+        class Baz(object):
+            def __init__(self):
+                self.x = 2
+    
+            @pysnooper.snoop(watch=('self.x',), prefix='ZZZ', normalize=normalize,
+                             color=False)
+            def square(self):
+                foo = 7
+                self.x **= 2
+                return self
+    
+        baz = Baz()
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = baz.square()
+                     ^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:738: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:337: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/tests/test_pysnooper.py:727: in square
+    @pysnooper.snoop(watch=('self.x',), prefix='ZZZ', normalize=normalize,
+../PySnooper/pysnooper/tracer.py:509: in trace
+    get_local_reprs(frame,
+../PySnooper/pysnooper/tracer.py:61: in get_local_reprs
+    result.update(sorted(variable.items(frame, normalize)))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/variables.py:35: in items
+    return self._items(main_value, normalize)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/variables.py:55: in _items
+    result = [(self.source, utils.get_shortish_repr(main_value, normalize=normalize))]
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = 2, custom_repr = (), max_length = None, normalize = True
+
+    def get_shortish_repr(item, custom_repr=(), max_length=None, normalize=False):
+        repr_function = get_repr_function(item, custom_repr)
+        try:
+            r = repr_function(item)
+        except Exception:
+            r = 'REPR FAILED'
+        r = r.replace('\r', '').replace('\n', '')
+        if normalize:
+            r = normalize_repr(r)
+        # Bug: max_length=0 should truncate to empty string, but condition skips truncation
+>       if max_length > 0:
+           ^^^^^^^^^^^^^^
+E       TypeError: '>' not supported between instances of 'NoneType' and 'int'
+
+../PySnooper/pysnooper/utils.py:78: TypeError
+________________________ test_method_and_prefix[False] _________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_method_and_prefix(normalize):
+        class Baz(object):
+            def __init__(self):
+                self.x = 2
+    
+            @pysnooper.snoop(watch=('self.x',), prefix='ZZZ', normalize=normalize,
+                             color=False)
+            def square(self):
+                foo = 7
+                self.x **= 2
+                return self
+    
+        baz = Baz()
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = baz.square()
+                     ^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:738: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:337: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/tests/test_pysnooper.py:727: in square
+    @pysnooper.snoop(watch=('self.x',), prefix='ZZZ', normalize=normalize,
+../PySnooper/pysnooper/tracer.py:509: in trace
+    get_local_reprs(frame,
+../PySnooper/pysnooper/tracer.py:61: in get_local_reprs
+    result.update(sorted(variable.items(frame, normalize)))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/variables.py:35: in items
+    return self._items(main_value, normalize)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/variables.py:55: in _items
+    result = [(self.source, utils.get_shortish_repr(main_value, normalize=normalize))]
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = 2, custom_repr = (), max_length = None, normalize = False
+
+    def get_shortish_repr(item, custom_repr=(), max_length=None, normalize=False):
+        repr_function = get_repr_function(item, custom_repr)
+        try:
+            r = repr_function(item)
+        except Exception:
+            r = 'REPR FAILED'
+        r = r.replace('\r', '').replace('\n', '')
+        if normalize:
+            r = normalize_repr(r)
+        # Bug: max_length=0 should truncate to empty string, but condition skips truncation
+>       if max_length > 0:
+           ^^^^^^^^^^^^^^
+E       TypeError: '>' not supported between instances of 'NoneType' and 'int'
+
+../PySnooper/pysnooper/utils.py:78: TypeError
+_______________________________ test_indentation _______________________________
+
+    def test_indentation():
+        from .samples import indentation, recursion
+>       assert_sample_output(indentation)
+
+../PySnooper/tests/test_pysnooper.py:1335: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+module = <module 'tests.samples.indentation' from '/Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/samples/indentation.py'>
+
+    def assert_sample_output(module):
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+            module.main()
+    
+        placeholder_time = '00:00:00.000000'
+        time_pattern = '[0-9:.]{15}'
+    
+        def normalise(out):
+            out = re.sub(time_pattern, placeholder_time, out).strip()
+            out = re.sub(
+                r'^( *)Source path:\.\.\. .*$',
+                r'\1Source path:... Whatever',
+                out,
+                flags=re.MULTILINE
+            )
+            return out
+    
+    
+        output = output_capturer.string_io.getvalue()
+    
+        try:
+>           assert (
+                    normalise(output) ==
+                    normalise(module.expected_output)
+            )
+E           AssertionError: assert 'Source path:...:00:00.000000' == 'Source path:...:00:00.000000'
+E             
+E               Source path:... Whatever
+E             - 00:00:00.000000 call         5 def main():
+E             - 00:00:00.000000 line         6     f2()
+E             -     00:00:00.000000 call         9 def f2():
+E             -     00:00:00.000000 line        10     f3()
+E             -         Source path:... Whatever...
+E             
+E             ...Full output truncated (33 lines hidden), use '-vv' to show
+
+../PySnooper/tests/utils.py:424: AssertionError
+----------------------------- Captured stdout call -----------------------------
+
+
+Actual Output:
+
+                                                Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/samples/indentation.py
+                                                15:09:05.224401 call         5 def main():
+                                                15:09:05.224453 line         6     f2()
+                                                    15:09:05.224462 call         9 def f2():
+                                                    15:09:05.224470 line        10     f3()
+                                                        Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/samples/indentation.py
+                                                        15:09:05.224483 call        18 def f4():
+                                                        15:09:05.224492 line        19     f5()
+                                                            15:09:05.224499 call        22 def f5():
+                                                            15:09:05.224504 line        23     pass
+                                                            15:09:05.224510 return      23     pass
+                                                            Return value:.. None
+                                                        15:09:05.224520 return      19     f5()
+                                                        Return value:.. None
+                                                        Elapsed time: 00:00:00.000053
+                                                    15:09:05.224543 return      10     f3()
+                                                    Return value:.. None
+                                                15:09:05.224553 return       6     f2()
+                                                Return value:.. None
+                                                Elapsed time: 00:00:00.000248
+
+=============================== warnings summary ===============================
+tests/test_pysnooper.py: 12 warnings
+  /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/mini_toolbox/contextlib.py:97: DeprecationWarning: the (type, exc, tb) signature of throw() is deprecated, use the single-arg signature instead.
+    self.gen.throw(type, value, traceback)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../PySnooper/tests/test_pysnooper.py::test_watch[True] - TypeError: '>...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_watch[False] - TypeError: '...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_watch_explode[True] - TypeE...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_watch_explode[False] - Type...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_variables_classes[True] - T...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_variables_classes[False] - ...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_single_watch_no_comma[True]
+FAILED ../PySnooper/tests/test_pysnooper.py::test_single_watch_no_comma[False]
+FAILED ../PySnooper/tests/test_pysnooper.py::test_long_variable_with_infinite_max_variable_length[True]
+FAILED ../PySnooper/tests/test_pysnooper.py::test_long_variable_with_infinite_max_variable_length[False]
+FAILED ../PySnooper/tests/test_pysnooper.py::test_method_and_prefix[True] - T...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_method_and_prefix[False] - ...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_indentation - AssertionErro...
+13 failed, 72 passed, 12 warnings in 1.36s

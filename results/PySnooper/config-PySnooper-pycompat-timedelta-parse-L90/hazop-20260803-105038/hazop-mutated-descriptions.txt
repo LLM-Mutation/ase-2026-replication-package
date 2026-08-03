@@ -1,0 +1,8 @@
+"""1""","""Defines a function named timedelta_parse that takes a single string argument","""","""NO"""
+"""2""","""Replaces any period characters in the string with colons and splits the result into parts using the colon as a separator","""","""REVERSE"""
+"""3""","""Converts each split part to an integer with the int constructor","""","""MORE"""
+"""4""","""Binds the resulting integers to the variables hours minutes seconds and microseconds","""","""LESS"""
+"""5""","""Uses the map function to apply the conversion to each part","""","""AS WELL AS"""
+"""6""","""Creates a timedelta instance from the datetime_module using the four integer values","""","""OTHER THAN"""
+"""7""","""Supplies the hours value to the hours parameter of the timedelta constructor","""","""PART OF"""
+"""8""","""Returns the constructed timedelta object","""","""NO"""

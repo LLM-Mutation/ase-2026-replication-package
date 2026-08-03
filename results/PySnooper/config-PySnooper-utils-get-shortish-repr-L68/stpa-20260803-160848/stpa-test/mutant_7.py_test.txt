@@ -1,0 +1,199 @@
+$ /Users/meganmaton/.cache/uv/archive-v0/Q1YWu4HrcUL7MC9AiUGGQ/bin/python3 -m pytest -q /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper
+# exit code: 1
+
+..............................FF........................F............... [ 84%]
+.............                                                            [100%]
+=================================== FAILURES ===================================
+__________________________ test_repr_exception[True] ___________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_repr_exception(normalize):
+        class Bad(object):
+            def __repr__(self):
+                1 / 0
+    
+        @pysnooper.snoop(normalize=normalize, color=False)
+        def my_function():
+            bad = Bad()
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:639: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:337: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/tests/test_pysnooper.py:635: in my_function
+    bad = Bad()
+    ^^^
+../PySnooper/pysnooper/tracer.py:509: in trace
+    get_local_reprs(frame,
+../PySnooper/pysnooper/tracer.py:54: in get_local_reprs
+    result_items = [(key, utils.get_shortish_repr(value, custom_repr,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <[ZeroDivisionError('division by zero') raised in repr()] Bad object at 0x1084dbe00>
+custom_repr = (), max_length = 100, normalize = True
+
+    def get_shortish_repr(item, custom_repr=(), max_length=None, normalize=False):
+        """Return a shortened representation of *item*.
+    
+        Defect: The except block suppresses the exception but fails to set `r`,
+        leaving it undefined and causing an UnboundLocalError if the repr function fails.
+        """
+        repr_function = get_repr_function(item, custom_repr)
+        try:
+            r = repr_function(item)
+        except Exception:
+            # Intentionally not setting `r` when an exception occurs
+            pass
+>       r = r.replace('\r', '').replace('\n', '')
+            ^
+E       UnboundLocalError: cannot access local variable 'r' where it is not associated with a value
+
+../PySnooper/pysnooper/utils.py:80: UnboundLocalError
+__________________________ test_repr_exception[False] __________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_repr_exception(normalize):
+        class Bad(object):
+            def __repr__(self):
+                1 / 0
+    
+        @pysnooper.snoop(normalize=normalize, color=False)
+        def my_function():
+            bad = Bad()
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:639: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:337: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/tests/test_pysnooper.py:635: in my_function
+    bad = Bad()
+    ^^^
+../PySnooper/pysnooper/tracer.py:509: in trace
+    get_local_reprs(frame,
+../PySnooper/pysnooper/tracer.py:54: in get_local_reprs
+    result_items = [(key, utils.get_shortish_repr(value, custom_repr,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <[ZeroDivisionError('division by zero') raised in repr()] Bad object at 0x1086bc6e0>
+custom_repr = (), max_length = 100, normalize = False
+
+    def get_shortish_repr(item, custom_repr=(), max_length=None, normalize=False):
+        """Return a shortened representation of *item*.
+    
+        Defect: The except block suppresses the exception but fails to set `r`,
+        leaving it undefined and causing an UnboundLocalError if the repr function fails.
+        """
+        repr_function = get_repr_function(item, custom_repr)
+        try:
+            r = repr_function(item)
+        except Exception:
+            # Intentionally not setting `r` when an exception occurs
+            pass
+>       r = r.replace('\r', '').replace('\n', '')
+            ^
+E       UnboundLocalError: cannot access local variable 'r' where it is not associated with a value
+
+../PySnooper/pysnooper/utils.py:80: UnboundLocalError
+_______________________________ test_indentation _______________________________
+
+    def test_indentation():
+        from .samples import indentation, recursion
+>       assert_sample_output(indentation)
+
+../PySnooper/tests/test_pysnooper.py:1335: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+module = <module 'tests.samples.indentation' from '/Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/samples/indentation.py'>
+
+    def assert_sample_output(module):
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+            module.main()
+    
+        placeholder_time = '00:00:00.000000'
+        time_pattern = '[0-9:.]{15}'
+    
+        def normalise(out):
+            out = re.sub(time_pattern, placeholder_time, out).strip()
+            out = re.sub(
+                r'^( *)Source path:\.\.\. .*$',
+                r'\1Source path:... Whatever',
+                out,
+                flags=re.MULTILINE
+            )
+            return out
+    
+    
+        output = output_capturer.string_io.getvalue()
+    
+        try:
+>           assert (
+                    normalise(output) ==
+                    normalise(module.expected_output)
+            )
+E           AssertionError: assert 'Source path:...:00:00.000000' == 'Source path:...:00:00.000000'
+E             
+E               Source path:... Whatever
+E             - 00:00:00.000000 call         5 def main():
+E             +         00:00:00.000000 call         5 def main():
+E             ? ++++++++
+E             - 00:00:00.000000 line         6     f2()
+E             -     00:00:00.000000 call         9 def f2():...
+E             
+E             ...Full output truncated (41 lines hidden), use '-vv' to show
+
+../PySnooper/tests/utils.py:424: AssertionError
+----------------------------- Captured stdout call -----------------------------
+
+
+Actual Output:
+
+        Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/samples/indentation.py
+        16:08:45.306207 call         5 def main():
+        16:08:45.306262 line         6     f2()
+            16:08:45.306272 call         9 def f2():
+            16:08:45.306279 line        10     f3()
+                Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/samples/indentation.py
+                16:08:45.306293 call        18 def f4():
+                16:08:45.306303 line        19     f5()
+                    16:08:45.306309 call        22 def f5():
+                    16:08:45.306316 line        23     pass
+                    16:08:45.306321 return      23     pass
+                    Return value:.. None
+                16:08:45.306332 return      19     f5()
+                Return value:.. None
+                Elapsed time: 00:00:00.000055
+            16:08:45.306356 return      10     f3()
+            Return value:.. None
+        16:08:45.306366 return       6     f2()
+        Return value:.. None
+        Elapsed time: 00:00:00.000256
+
+=============================== warnings summary ===============================
+tests/test_pysnooper.py::test_repr_exception[True]
+tests/test_pysnooper.py::test_repr_exception[False]
+  /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/mini_toolbox/contextlib.py:97: DeprecationWarning: the (type, exc, tb) signature of throw() is deprecated, use the single-arg signature instead.
+    self.gen.throw(type, value, traceback)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../PySnooper/tests/test_pysnooper.py::test_repr_exception[True] - Unbo...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_repr_exception[False] - Unb...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_indentation - AssertionErro...
+3 failed, 82 passed, 2 warnings in 1.05s

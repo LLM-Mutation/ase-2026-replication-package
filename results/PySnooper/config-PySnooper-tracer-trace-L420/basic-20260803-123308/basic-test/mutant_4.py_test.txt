@@ -1,0 +1,680 @@
+$ /Users/meganmaton/.cache/uv/archive-v0/Q1YWu4HrcUL7MC9AiUGGQ/bin/python3 -m pytest -q /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper
+# exit code: 1
+
+................................FF...............FF.....F............... [ 84%]
+.............                                                            [100%]
+=================================== FAILURES ===================================
+_______________________________ test_depth[True] _______________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_depth(normalize):
+        string_io = io.StringIO()
+    
+        def f4(x4):
+            result4 = x4 * 2
+            return result4
+    
+        def f3(x3):
+            result3 = f4(x3)
+            return result3
+    
+        def f2(x2):
+            result2 = f3(x2)
+            return result2
+    
+        @pysnooper.snoop(string_io, depth=3, normalize=normalize, color=False)
+        def f1(x1):
+            result1 = f2(x1)
+            return result1
+    
+        result = f1(10)
+        assert result == 20
+        output = string_io.getvalue()
+>       assert_output(
+            output,
+            (
+                SourcePathEntry(),
+                VariableEntry(),
+                VariableEntry(),
+                CallEntry('def f1(x1):'),
+                LineEntry(),
+    
+                VariableEntry(),
+                VariableEntry(),
+                CallEntry('def f2(x2):'),
+                LineEntry(),
+    
+                VariableEntry(),
+                VariableEntry(),
+                CallEntry('def f3(x3):'),
+                LineEntry(),
+    
+                VariableEntry(),
+                LineEntry(),
+                ReturnEntry(),
+                ReturnValueEntry('20'),
+    
+                VariableEntry(),
+                LineEntry(),
+                ReturnEntry(),
+                ReturnValueEntry('20'),
+    
+                VariableEntry(),
+                LineEntry(),
+                ReturnEntry(),
+                ReturnValueEntry('20'),
+                ElapsedTimeEntry(),
+            ),
+            normalize=normalize,
+        )
+
+../PySnooper/tests/test_pysnooper.py:682: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+output = 'Source path:... test_pysnooper.py\nStarting var:.. x1 = 10\nStarting var:.. f2 = <function test_depth.<locals>.f2>\n ...rn result1\n                return     677         return result1\nReturn value:.. 20\nElapsed time: 00:00:00.000333\n'
+expected_entries = (SourcePathEntry(prefix=''), VariableEntry(prefix=''), VariableEntry(prefix=''), CallEntry(source='def f1(x1):', prefix=''), LineEntry(prefix=''), VariableEntry(prefix=''), ...)
+prefix = None, normalize = True
+
+    def assert_output(output, expected_entries, prefix=None, normalize=False):
+        lines = tuple(filter(None, output.split('\n')))
+        if expected_entries and not lines:
+            raise OutputFailure("Output is empty")
+    
+        if prefix is not None:
+            for line in lines:
+                if not line.startswith(prefix):
+                    raise OutputFailure(line)
+    
+        if normalize:
+            verify_normalize(lines, prefix)
+    
+        # Filter only entries compatible with the current Python
+        filtered_expected_entries = []
+        for expected_entry in expected_entries:
+            if isinstance(expected_entry, _BaseEntry):
+                if expected_entry.is_compatible_with_current_python_version():
+                    filtered_expected_entries.append(expected_entry)
+            else:
+                filtered_expected_entries.append(expected_entry)
+    
+        expected_entries_count = len(filtered_expected_entries)
+        any_mismatch = False
+        result = ''
+        template = u'\n{line!s:%s}   {expected_entry}  {arrow}' % max(map(len, lines))
+        for expected_entry, line in zip_longest(filtered_expected_entries, lines, fillvalue=""):
+            mismatch = not (expected_entry and expected_entry.check(line))
+            any_mismatch |= mismatch
+            arrow = '<===' * mismatch
+            result += template.format(**locals())
+    
+        if len(lines) != expected_entries_count:
+            result += '\nOutput has {} lines, while we expect {} lines.'.format(
+                    len(lines), len(expected_entries))
+    
+        if any_mismatch:
+>           raise OutputFailure(result)
+E           tests.utils.OutputFailure: 
+E           Source path:... test_pysnooper.py                                     SourcePathEntry(prefix='')  
+E           Starting var:.. x1 = 10                                               VariableEntry(prefix='')  
+E           Starting var:.. f2 = <function test_depth.<locals>.f2>                VariableEntry(prefix='')  
+E                           call       675     def f1(x1):                        CallEntry(source='def f1(x1):', prefix='')  
+E                           line       676         result1 = f2(x1)               LineEntry(prefix='')  
+E               Starting var:.. x2 = 10                                           VariableEntry(prefix='')  
+E               Starting var:.. f3 = <function test_depth.<locals>.f3>            VariableEntry(prefix='')  
+E                               call       670     def f2(x2):                    CallEntry(source='def f2(x2):', prefix='')  
+E                               line       671         result2 = f3(x2)           LineEntry(prefix='')  
+E                   Starting var:.. x3 = 10                                       VariableEntry(prefix='')  
+E                   Starting var:.. f4 = <function test_depth.<locals>.f4>        VariableEntry(prefix='')  
+E                                   call       666     def f3(x3):                CallEntry(source='def f3(x3):', prefix='')  
+E                                   line       667         result3 = f4(x3)       LineEntry(prefix='')  
+E                       Starting var:.. x4 = 10                                   VariableEntry(prefix='')  
+E                                       call       662     def f4(x4):            LineEntry(prefix='')  <===
+E                                       line       663         result4 = x4 * 2   ReturnEntry(prefix='')  <===
+E                       New var:....... result4 = 20                              ReturnValueEntry(value='20', prefix='')  <===
+E                                       line       664         return result4     VariableEntry(prefix='')  <===
+E                                       return     664         return result4     LineEntry(prefix='')  <===
+E                       Return value:.. 20                                        ReturnEntry(prefix='')  <===
+E                   New var:....... result3 = 20                                  ReturnValueEntry(value='20', prefix='')  <===
+E                                   line       668         return result3         VariableEntry(prefix='')  <===
+E                                   return     668         return result3         LineEntry(prefix='')  <===
+E                   Return value:.. 20                                            ReturnEntry(prefix='')  <===
+E               New var:....... result2 = 20                                      ReturnValueEntry(value='20', prefix='')  <===
+E                               line       672         return result2             ElapsedTimeEntry(tolerance=0.2, prefix='')  <===
+E                               return     672         return result2               <===
+E               Return value:.. 20                                                  <===
+E           New var:....... result1 = 20                                            <===
+E                           line       677         return result1                   <===
+E                           return     677         return result1                   <===
+E           Return value:.. 20                                                      <===
+E           Elapsed time: 00:00:00.000333                                           <===
+E           Output has 33 lines, while we expect 26 lines.
+
+../PySnooper/tests/utils.py:399: OutputFailure
+______________________________ test_depth[False] _______________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_depth(normalize):
+        string_io = io.StringIO()
+    
+        def f4(x4):
+            result4 = x4 * 2
+            return result4
+    
+        def f3(x3):
+            result3 = f4(x3)
+            return result3
+    
+        def f2(x2):
+            result2 = f3(x2)
+            return result2
+    
+        @pysnooper.snoop(string_io, depth=3, normalize=normalize, color=False)
+        def f1(x1):
+            result1 = f2(x1)
+            return result1
+    
+        result = f1(10)
+        assert result == 20
+        output = string_io.getvalue()
+>       assert_output(
+            output,
+            (
+                SourcePathEntry(),
+                VariableEntry(),
+                VariableEntry(),
+                CallEntry('def f1(x1):'),
+                LineEntry(),
+    
+                VariableEntry(),
+                VariableEntry(),
+                CallEntry('def f2(x2):'),
+                LineEntry(),
+    
+                VariableEntry(),
+                VariableEntry(),
+                CallEntry('def f3(x3):'),
+                LineEntry(),
+    
+                VariableEntry(),
+                LineEntry(),
+                ReturnEntry(),
+                ReturnValueEntry('20'),
+    
+                VariableEntry(),
+                LineEntry(),
+                ReturnEntry(),
+                ReturnValueEntry('20'),
+    
+                VariableEntry(),
+                LineEntry(),
+                ReturnEntry(),
+                ReturnValueEntry('20'),
+                ElapsedTimeEntry(),
+            ),
+            normalize=normalize,
+        )
+
+../PySnooper/tests/test_pysnooper.py:682: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+output = 'Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/test_pysnooper.py\nS...rn result1\n12:33:00.946017 return     677         return result1\nReturn value:.. 20\nElapsed time: 00:00:00.000318\n'
+expected_entries = (SourcePathEntry(prefix=''), VariableEntry(prefix=''), VariableEntry(prefix=''), CallEntry(source='def f1(x1):', prefix=''), LineEntry(prefix=''), VariableEntry(prefix=''), ...)
+prefix = None, normalize = False
+
+    def assert_output(output, expected_entries, prefix=None, normalize=False):
+        lines = tuple(filter(None, output.split('\n')))
+        if expected_entries and not lines:
+            raise OutputFailure("Output is empty")
+    
+        if prefix is not None:
+            for line in lines:
+                if not line.startswith(prefix):
+                    raise OutputFailure(line)
+    
+        if normalize:
+            verify_normalize(lines, prefix)
+    
+        # Filter only entries compatible with the current Python
+        filtered_expected_entries = []
+        for expected_entry in expected_entries:
+            if isinstance(expected_entry, _BaseEntry):
+                if expected_entry.is_compatible_with_current_python_version():
+                    filtered_expected_entries.append(expected_entry)
+            else:
+                filtered_expected_entries.append(expected_entry)
+    
+        expected_entries_count = len(filtered_expected_entries)
+        any_mismatch = False
+        result = ''
+        template = u'\n{line!s:%s}   {expected_entry}  {arrow}' % max(map(len, lines))
+        for expected_entry, line in zip_longest(filtered_expected_entries, lines, fillvalue=""):
+            mismatch = not (expected_entry and expected_entry.check(line))
+            any_mismatch |= mismatch
+            arrow = '<===' * mismatch
+            result += template.format(**locals())
+    
+        if len(lines) != expected_entries_count:
+            result += '\nOutput has {} lines, while we expect {} lines.'.format(
+                    len(lines), len(expected_entries))
+    
+        if any_mismatch:
+>           raise OutputFailure(result)
+E           tests.utils.OutputFailure: 
+E           Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/test_pysnooper.py   SourcePathEntry(prefix='')  
+E           Starting var:.. x1 = 10                                                                                              VariableEntry(prefix='')  
+E           Starting var:.. f2 = <function test_depth.<locals>.f2 at 0x10852aca0>                                                VariableEntry(prefix='')  
+E           12:33:00.945809 call       675     def f1(x1):                                                                       CallEntry(source='def f1(x1):', prefix='')  
+E           12:33:00.945840 line       676         result1 = f2(x1)                                                              LineEntry(prefix='')  
+E               Starting var:.. x2 = 10                                                                                          VariableEntry(prefix='')  
+E               Starting var:.. f3 = <function test_depth.<locals>.f3 at 0x10852be20>                                            VariableEntry(prefix='')  
+E               12:33:00.945852 call       670     def f2(x2):                                                                   CallEntry(source='def f2(x2):', prefix='')  
+E               12:33:00.945869 line       671         result2 = f3(x2)                                                          LineEntry(prefix='')  
+E                   Starting var:.. x3 = 10                                                                                      VariableEntry(prefix='')  
+E                   Starting var:.. f4 = <function test_depth.<locals>.f4 at 0x10852b1a0>                                        VariableEntry(prefix='')  
+E                   12:33:00.945882 call       666     def f3(x3):                                                               CallEntry(source='def f3(x3):', prefix='')  
+E                   12:33:00.945896 line       667         result3 = f4(x3)                                                      LineEntry(prefix='')  
+E                       Starting var:.. x4 = 10                                                                                  VariableEntry(prefix='')  
+E                       12:33:00.945905 call       662     def f4(x4):                                                           LineEntry(prefix='')  <===
+E                       12:33:00.945917 line       663         result4 = x4 * 2                                                  ReturnEntry(prefix='')  <===
+E                       New var:....... result4 = 20                                                                             ReturnValueEntry(value='20', prefix='')  <===
+E                       12:33:00.945924 line       664         return result4                                                    VariableEntry(prefix='')  <===
+E                       12:33:00.945936 return     664         return result4                                                    LineEntry(prefix='')  <===
+E                       Return value:.. 20                                                                                       ReturnEntry(prefix='')  <===
+E                   New var:....... result3 = 20                                                                                 ReturnValueEntry(value='20', prefix='')  <===
+E                   12:33:00.945949 line       668         return result3                                                        VariableEntry(prefix='')  <===
+E                   12:33:00.945963 return     668         return result3                                                        LineEntry(prefix='')  <===
+E                   Return value:.. 20                                                                                           ReturnEntry(prefix='')  <===
+E               New var:....... result2 = 20                                                                                     ReturnValueEntry(value='20', prefix='')  <===
+E               12:33:00.945976 line       672         return result2                                                            ElapsedTimeEntry(tolerance=0.2, prefix='')  <===
+E               12:33:00.945987 return     672         return result2                                                              <===
+E               Return value:.. 20                                                                                                 <===
+E           New var:....... result1 = 20                                                                                           <===
+E           12:33:00.946000 line       677         return result1                                                                  <===
+E           12:33:00.946017 return     677         return result1                                                                  <===
+E           Return value:.. 20                                                                                                     <===
+E           Elapsed time: 00:00:00.000318                                                                                          <===
+E           Output has 33 lines, while we expect 26 lines.
+
+../PySnooper/tests/utils.py:399: OutputFailure
+_________________________ test_with_block_depth[True] __________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_with_block_depth(normalize):
+        string_io = io.StringIO()
+    
+        def f4(x4):
+            result4 = x4 * 2
+            return result4
+    
+        def f3(x3):
+            result3 = f4(x3)
+            return result3
+    
+        def f2(x2):
+            result2 = f3(x2)
+            return result2
+    
+        def f1(x1):
+            str(3)
+            with pysnooper.snoop(string_io, depth=3, normalize=normalize, color=False):
+                result1 = f2(x1)
+            return result1
+    
+        result = f1(10)
+        assert result == 20
+        output = string_io.getvalue()
+>       assert_output(
+            output,
+            (
+                SourcePathEntry(),
+                VariableEntry(),
+                VariableEntry(),
+                VariableEntry(),
+                VariableEntry(),
+                LineEntry('result1 = f2(x1)'),
+    
+                VariableEntry(),
+                VariableEntry(),
+                CallEntry('def f2(x2):'),
+                LineEntry(),
+    
+                VariableEntry(),
+                VariableEntry(),
+                CallEntry('def f3(x3):'),
+                LineEntry(),
+    
+                VariableEntry(),
+                LineEntry(),
+                ReturnEntry(),
+                ReturnValueEntry('20'),
+    
+                VariableEntry(),
+                LineEntry(),
+                ReturnEntry(),
+                ReturnValueEntry('20'),
+                VariableEntry(min_python_version=(3, 10)),
+                LineEntry(source_regex="with pysnooper.snoop.*", min_python_version=(3, 10)),
+                ElapsedTimeEntry(),
+            ),
+            normalize=normalize,
+        )
+
+../PySnooper/tests/test_pysnooper.py:1164: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+output = 'Source path:... test_pysnooper.py\nNew var:....... x1 = 10\nNew var:....... f2 = <function test_with_block_depth.<loc...7         with pysnooper.snoop(string_io, depth=3, normalize=normalize, color=False):\nElapsed time: 00:00:00.000254\n'
+expected_entries = (SourcePathEntry(prefix=''), VariableEntry(prefix=''), VariableEntry(prefix=''), VariableEntry(prefix=''), VariableEntry(prefix=''), LineEntry(source='result1 = f2(x1)', prefix=''), ...)
+prefix = None, normalize = True
+
+    def assert_output(output, expected_entries, prefix=None, normalize=False):
+        lines = tuple(filter(None, output.split('\n')))
+        if expected_entries and not lines:
+            raise OutputFailure("Output is empty")
+    
+        if prefix is not None:
+            for line in lines:
+                if not line.startswith(prefix):
+                    raise OutputFailure(line)
+    
+        if normalize:
+            verify_normalize(lines, prefix)
+    
+        # Filter only entries compatible with the current Python
+        filtered_expected_entries = []
+        for expected_entry in expected_entries:
+            if isinstance(expected_entry, _BaseEntry):
+                if expected_entry.is_compatible_with_current_python_version():
+                    filtered_expected_entries.append(expected_entry)
+            else:
+                filtered_expected_entries.append(expected_entry)
+    
+        expected_entries_count = len(filtered_expected_entries)
+        any_mismatch = False
+        result = ''
+        template = u'\n{line!s:%s}   {expected_entry}  {arrow}' % max(map(len, lines))
+        for expected_entry, line in zip_longest(filtered_expected_entries, lines, fillvalue=""):
+            mismatch = not (expected_entry and expected_entry.check(line))
+            any_mismatch |= mismatch
+            arrow = '<===' * mismatch
+            result += template.format(**locals())
+    
+        if len(lines) != expected_entries_count:
+            result += '\nOutput has {} lines, while we expect {} lines.'.format(
+                    len(lines), len(expected_entries))
+    
+        if any_mismatch:
+>           raise OutputFailure(result)
+E           tests.utils.OutputFailure: 
+E           Source path:... test_pysnooper.py                                                                                    SourcePathEntry(prefix='')  
+E           New var:....... x1 = 10                                                                                              VariableEntry(prefix='')  
+E           New var:....... f2 = <function test_with_block_depth.<locals>.f2>                                                    VariableEntry(prefix='')  
+E           New var:....... normalize = True                                                                                     VariableEntry(prefix='')  
+E           New var:....... string_io = <_io.StringIO object>                                                                    VariableEntry(prefix='')  
+E                           line      1158             result1 = f2(x1)                                                          LineEntry(source='result1 = f2(x1)', prefix='')  
+E           Starting var:.. x2 = 10                                                                                              VariableEntry(prefix='')  
+E           Starting var:.. f3 = <function test_with_block_depth.<locals>.f3>                                                    VariableEntry(prefix='')  
+E                           call      1151     def f2(x2):                                                                       CallEntry(source='def f2(x2):', prefix='')  
+E                           line      1152         result2 = f3(x2)                                                              LineEntry(prefix='')  
+E               Starting var:.. x3 = 10                                                                                          VariableEntry(prefix='')  
+E               Starting var:.. f4 = <function test_with_block_depth.<locals>.f4>                                                VariableEntry(prefix='')  
+E                               call      1147     def f3(x3):                                                                   CallEntry(source='def f3(x3):', prefix='')  
+E                               line      1148         result3 = f4(x3)                                                          LineEntry(prefix='')  
+E                   Starting var:.. x4 = 10                                                                                      VariableEntry(prefix='')  
+E                                   call      1143     def f4(x4):                                                               LineEntry(prefix='')  <===
+E                                   line      1144         result4 = x4 * 2                                                      ReturnEntry(prefix='')  <===
+E                   New var:....... result4 = 20                                                                                 ReturnValueEntry(value='20', prefix='')  <===
+E                                   line      1145         return result4                                                        VariableEntry(prefix='')  <===
+E                                   return    1145         return result4                                                        LineEntry(prefix='')  <===
+E                   Return value:.. 20                                                                                           ReturnEntry(prefix='')  <===
+E               New var:....... result3 = 20                                                                                     ReturnValueEntry(value='20', prefix='')  <===
+E                               line      1149         return result3                                                            VariableEntry(prefix='', min_python_version=(3, 10))  <===
+E                               return    1149         return result3                                                            LineEntry(source_regex=re.compile('with pysnooper.snoop.*'), prefix='', min_python_version=(3, 10))  <===
+E               Return value:.. 20                                                                                               ElapsedTimeEntry(tolerance=0.2, prefix='')  <===
+E           New var:....... result2 = 20                                                                                           <===
+E                           line      1153         return result2                                                                  <===
+E                           return    1153         return result2                                                                  <===
+E           Return value:.. 20                                                                                                     <===
+E           New var:....... result1 = 20                                                                                           <===
+E                           line      1157         with pysnooper.snoop(string_io, depth=3, normalize=normalize, color=False):     <===
+E           Elapsed time: 00:00:00.000254                                                                                          <===
+E           Output has 32 lines, while we expect 25 lines.
+
+../PySnooper/tests/utils.py:399: OutputFailure
+_________________________ test_with_block_depth[False] _________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_with_block_depth(normalize):
+        string_io = io.StringIO()
+    
+        def f4(x4):
+            result4 = x4 * 2
+            return result4
+    
+        def f3(x3):
+            result3 = f4(x3)
+            return result3
+    
+        def f2(x2):
+            result2 = f3(x2)
+            return result2
+    
+        def f1(x1):
+            str(3)
+            with pysnooper.snoop(string_io, depth=3, normalize=normalize, color=False):
+                result1 = f2(x1)
+            return result1
+    
+        result = f1(10)
+        assert result == 20
+        output = string_io.getvalue()
+>       assert_output(
+            output,
+            (
+                SourcePathEntry(),
+                VariableEntry(),
+                VariableEntry(),
+                VariableEntry(),
+                VariableEntry(),
+                LineEntry('result1 = f2(x1)'),
+    
+                VariableEntry(),
+                VariableEntry(),
+                CallEntry('def f2(x2):'),
+                LineEntry(),
+    
+                VariableEntry(),
+                VariableEntry(),
+                CallEntry('def f3(x3):'),
+                LineEntry(),
+    
+                VariableEntry(),
+                LineEntry(),
+                ReturnEntry(),
+                ReturnValueEntry('20'),
+    
+                VariableEntry(),
+                LineEntry(),
+                ReturnEntry(),
+                ReturnValueEntry('20'),
+                VariableEntry(min_python_version=(3, 10)),
+                LineEntry(source_regex="with pysnooper.snoop.*", min_python_version=(3, 10)),
+                ElapsedTimeEntry(),
+            ),
+            normalize=normalize,
+        )
+
+../PySnooper/tests/test_pysnooper.py:1164: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+output = 'Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/test_pysnooper.py\nN...7         with pysnooper.snoop(string_io, depth=3, normalize=normalize, color=False):\nElapsed time: 00:00:00.000278\n'
+expected_entries = (SourcePathEntry(prefix=''), VariableEntry(prefix=''), VariableEntry(prefix=''), VariableEntry(prefix=''), VariableEntry(prefix=''), LineEntry(source='result1 = f2(x1)', prefix=''), ...)
+prefix = None, normalize = False
+
+    def assert_output(output, expected_entries, prefix=None, normalize=False):
+        lines = tuple(filter(None, output.split('\n')))
+        if expected_entries and not lines:
+            raise OutputFailure("Output is empty")
+    
+        if prefix is not None:
+            for line in lines:
+                if not line.startswith(prefix):
+                    raise OutputFailure(line)
+    
+        if normalize:
+            verify_normalize(lines, prefix)
+    
+        # Filter only entries compatible with the current Python
+        filtered_expected_entries = []
+        for expected_entry in expected_entries:
+            if isinstance(expected_entry, _BaseEntry):
+                if expected_entry.is_compatible_with_current_python_version():
+                    filtered_expected_entries.append(expected_entry)
+            else:
+                filtered_expected_entries.append(expected_entry)
+    
+        expected_entries_count = len(filtered_expected_entries)
+        any_mismatch = False
+        result = ''
+        template = u'\n{line!s:%s}   {expected_entry}  {arrow}' % max(map(len, lines))
+        for expected_entry, line in zip_longest(filtered_expected_entries, lines, fillvalue=""):
+            mismatch = not (expected_entry and expected_entry.check(line))
+            any_mismatch |= mismatch
+            arrow = '<===' * mismatch
+            result += template.format(**locals())
+    
+        if len(lines) != expected_entries_count:
+            result += '\nOutput has {} lines, while we expect {} lines.'.format(
+                    len(lines), len(expected_entries))
+    
+        if any_mismatch:
+>           raise OutputFailure(result)
+E           tests.utils.OutputFailure: 
+E           Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/test_pysnooper.py   SourcePathEntry(prefix='')  
+E           New var:....... x1 = 10                                                                                              VariableEntry(prefix='')  
+E           New var:....... f2 = <function test_with_block_depth.<locals>.f2 at 0x1085d32e0>                                     VariableEntry(prefix='')  
+E           New var:....... normalize = False                                                                                    VariableEntry(prefix='')  
+E           New var:....... string_io = <_io.StringIO object at 0x108512440>                                                     VariableEntry(prefix='')  
+E           12:33:00.996274 line      1158             result1 = f2(x1)                                                          LineEntry(source='result1 = f2(x1)', prefix='')  
+E           Starting var:.. x2 = 10                                                                                              VariableEntry(prefix='')  
+E           Starting var:.. f3 = <function test_with_block_depth.<locals>.f3 at 0x1085d3600>                                     VariableEntry(prefix='')  
+E           12:33:00.996318 call      1151     def f2(x2):                                                                       CallEntry(source='def f2(x2):', prefix='')  
+E           12:33:00.996336 line      1152         result2 = f3(x2)                                                              LineEntry(prefix='')  
+E               Starting var:.. x3 = 10                                                                                          VariableEntry(prefix='')  
+E               Starting var:.. f4 = <function test_with_block_depth.<locals>.f4 at 0x1085d3a60>                                 VariableEntry(prefix='')  
+E               12:33:00.996345 call      1147     def f3(x3):                                                                   CallEntry(source='def f3(x3):', prefix='')  
+E               12:33:00.996358 line      1148         result3 = f4(x3)                                                          LineEntry(prefix='')  
+E                   Starting var:.. x4 = 10                                                                                      VariableEntry(prefix='')  
+E                   12:33:00.996367 call      1143     def f4(x4):                                                               LineEntry(prefix='')  <===
+E                   12:33:00.996380 line      1144         result4 = x4 * 2                                                      ReturnEntry(prefix='')  <===
+E                   New var:....... result4 = 20                                                                                 ReturnValueEntry(value='20', prefix='')  <===
+E                   12:33:00.996387 line      1145         return result4                                                        VariableEntry(prefix='')  <===
+E                   12:33:00.996397 return    1145         return result4                                                        LineEntry(prefix='')  <===
+E                   Return value:.. 20                                                                                           ReturnEntry(prefix='')  <===
+E               New var:....... result3 = 20                                                                                     ReturnValueEntry(value='20', prefix='')  <===
+E               12:33:00.996410 line      1149         return result3                                                            VariableEntry(prefix='', min_python_version=(3, 10))  <===
+E               12:33:00.996421 return    1149         return result3                                                            LineEntry(source_regex=re.compile('with pysnooper.snoop.*'), prefix='', min_python_version=(3, 10))  <===
+E               Return value:.. 20                                                                                               ElapsedTimeEntry(tolerance=0.2, prefix='')  <===
+E           New var:....... result2 = 20                                                                                           <===
+E           12:33:00.996433 line      1153         return result2                                                                  <===
+E           12:33:00.996443 return    1153         return result2                                                                  <===
+E           Return value:.. 20                                                                                                     <===
+E           New var:....... result1 = 20                                                                                           <===
+E           12:33:00.996454 line      1157         with pysnooper.snoop(string_io, depth=3, normalize=normalize, color=False):     <===
+E           Elapsed time: 00:00:00.000278                                                                                          <===
+E           Output has 32 lines, while we expect 25 lines.
+
+../PySnooper/tests/utils.py:399: OutputFailure
+_______________________________ test_indentation _______________________________
+
+    def test_indentation():
+        from .samples import indentation, recursion
+>       assert_sample_output(indentation)
+
+../PySnooper/tests/test_pysnooper.py:1335: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+module = <module 'tests.samples.indentation' from '/Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/samples/indentation.py'>
+
+    def assert_sample_output(module):
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+            module.main()
+    
+        placeholder_time = '00:00:00.000000'
+        time_pattern = '[0-9:.]{15}'
+    
+        def normalise(out):
+            out = re.sub(time_pattern, placeholder_time, out).strip()
+            out = re.sub(
+                r'^( *)Source path:\.\.\. .*$',
+                r'\1Source path:... Whatever',
+                out,
+                flags=re.MULTILINE
+            )
+            return out
+    
+    
+        output = output_capturer.string_io.getvalue()
+    
+        try:
+>           assert (
+                    normalise(output) ==
+                    normalise(module.expected_output)
+            )
+E           AssertionError: assert 'Source path:...:00:00.000000' == 'Source path:...:00:00.000000'
+E             
+E             Skipping 195 identical leading characters in diff, use -v to show
+E               )
+E             +         00:00:00.000000 call        13 def f3():
+E             +         00:00:00.000000 line        14     f4()
+E             -         Source path:... Whatever
+E             +             Source path:... Whatever...
+E             
+E             ...Full output truncated (31 lines hidden), use '-vv' to show
+
+../PySnooper/tests/utils.py:424: AssertionError
+----------------------------- Captured stdout call -----------------------------
+
+
+Actual Output:
+
+Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/samples/indentation.py
+12:33:01.017063 call         5 def main():
+12:33:01.017122 line         6     f2()
+    12:33:01.017132 call         9 def f2():
+    12:33:01.017139 line        10     f3()
+        12:33:01.017146 call        13 def f3():
+        12:33:01.017153 line        14     f4()
+            Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/samples/indentation.py
+            12:33:01.017165 call        18 def f4():
+            12:33:01.017174 line        19     f5()
+                12:33:01.017181 call        22 def f5():
+                12:33:01.017187 line        23     pass
+                12:33:01.017192 return      23     pass
+                Return value:.. None
+            12:33:01.017202 return      19     f5()
+            Return value:.. None
+            Elapsed time: 00:00:00.000053
+        12:33:01.017226 return      14     f4()
+        Return value:.. None
+    12:33:01.017235 return      10     f3()
+    Return value:.. None
+12:33:01.017244 return       6     f2()
+Return value:.. None
+Elapsed time: 00:00:00.000278
+
+=========================== short test summary info ============================
+FAILED ../PySnooper/tests/test_pysnooper.py::test_depth[True] - tests.utils.O...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_depth[False] - tests.utils....
+FAILED ../PySnooper/tests/test_pysnooper.py::test_with_block_depth[True] - te...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_with_block_depth[False] - t...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_indentation - AssertionErro...
+5 failed, 80 passed in 1.08s

@@ -1,0 +1,3651 @@
+$ /Users/meganmaton/.cache/uv/archive-v0/Q1YWu4HrcUL7MC9AiUGGQ/bin/python3 -m pytest -q /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper
+# exit code: 1
+
+F....F.F..FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF..FFFFFFFF.FFFFFFF.FFFFFFFF [ 84%]
+FFFFFFFFFFF..                                                            [100%]
+=================================== FAILURES ===================================
+_________________________________ test_chinese _________________________________
+
+    def test_chinese():
+        with mini_toolbox.create_temp_folder(prefix='pysnooper') as folder:
+            path = folder / 'foo.log'
+            @pysnooper.snoop(path, color=False)
+            def foo():
+                a = 1
+                x = '失败'
+                return 7
+    
+>           foo()
+
+../PySnooper/tests/test_chinese.py:35: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b0ef110>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+______________ test_unstarted_generator_close_is_not_an_exception ______________
+
+    def test_unstarted_generator_close_is_not_an_exception():
+        string_io = io.StringIO()
+    
+        def gen(n):
+            for i in range(n):
+                yield i
+    
+        @pysnooper.snoop(string_io, depth=2, color=False)
+        def main():
+            g = gen(5)
+            g.close()
+            return 42
+    
+>       assert main() == 42
+               ^^^^^^
+
+../PySnooper/tests/test_ended_by_exception.py:59: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b0efed0>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+_____________________________ test_multiple_files ______________________________
+
+    def test_multiple_files():
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = foo.foo_function()
+                     ^^^^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_multiple_files/test_multiple_files.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b26b0e0>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+________________________________ test_string_io ________________________________
+
+    def test_string_io():
+        string_io = io.StringIO()
+    
+        @pysnooper.snoop(string_io, color=False)
+        def my_function(foo):
+            x = 7
+            y = 8
+            return y + x
+    
+>       result = my_function('baba')
+                 ^^^^^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:35: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2eec10>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+______________________________ test_relative_time ______________________________
+
+    def test_relative_time():
+        snoop = pysnooper.snoop(relative_time=True, color=False)
+    
+        def foo(x):
+            if x == 0:
+                bar1(x)
+                qux()
+                return
+    
+            with snoop:
+                # There should be line entries for these three lines,
+                # no line entries for anything else in this function,
+                # but calls to all bar functions should be traced
+                foo(x - 1)
+                bar2(x)
+                qux()
+            int(4)
+            bar3(9)
+            return x
+    
+        @snoop
+        def bar1(_x):
+            qux()
+    
+        @snoop
+        def bar2(_x):
+            qux()
+    
+        @snoop
+        def bar3(_x):
+            qux()
+    
+        def qux():
+            time.sleep(0.1)
+            return 9  # not traced, mustn't show up
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = foo(2)
+                     ^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:94: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/tests/test_pysnooper.py:65: in foo
+    with snoop:
+         ^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2eed50>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+>           calling_frame.f_trace = self.trace
+                                    ^^^^^^^^^^
+E           AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:373: AttributeError
+_______________________________ test_thread_info _______________________________
+
+    def test_thread_info():
+    
+        @pysnooper.snoop(thread_info=True, color=False)
+        def my_function(foo):
+            x = 7
+            y = 8
+            return y + x
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function('baba')
+                     ^^^^^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:198: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2ef4d0>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+____________________________ test_multi_thread_info ____________________________
+
+    def test_multi_thread_info():
+    
+        @pysnooper.snoop(thread_info=True, color=False)
+        def my_function(foo):
+            x = 7
+            y = 8
+            return y + x
+    
+        def parse_call_content(line):
+            return line.split('{event:9} '.format(event='call'))[-1]
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           my_function('baba')
+
+../PySnooper/tests/test_pysnooper.py:232: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2ef750>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+_____________________________ test_callable[True] ______________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_callable(normalize):
+        string_io = io.StringIO()
+    
+        def write(msg):
+            string_io.write(msg)
+    
+        @pysnooper.snoop(write, normalize=normalize, color=False)
+        def my_function(foo):
+            x = 7
+            y = 8
+            return y + x
+    
+>       result = my_function('baba')
+                 ^^^^^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:316: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2ef9d0>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+_____________________________ test_callable[False] _____________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_callable(normalize):
+        string_io = io.StringIO()
+    
+        def write(msg):
+            string_io.write(msg)
+    
+        @pysnooper.snoop(write, normalize=normalize, color=False)
+        def my_function(foo):
+            x = 7
+            y = 8
+            return y + x
+    
+>       result = my_function('baba')
+                 ^^^^^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:316: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2ef750>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+_______________________________ test_watch[True] _______________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_watch(normalize):
+        class Foo(object):
+            def __init__(self):
+                self.x = 2
+    
+            def square(self):
+                self.x **= 2
+    
+        @pysnooper.snoop(watch=(
+                'foo.x',
+                'io.__name__',
+                'len(foo.__dict__["x"] * "abc")',
+        ), normalize=normalize, color=False)
+        def my_function():
+            foo = Foo()
+            for i in range(2):
+                foo.square()
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:359: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2eed50>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+______________________________ test_watch[False] _______________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_watch(normalize):
+        class Foo(object):
+            def __init__(self):
+                self.x = 2
+    
+            def square(self):
+                self.x **= 2
+    
+        @pysnooper.snoop(watch=(
+                'foo.x',
+                'io.__name__',
+                'len(foo.__dict__["x"] * "abc")',
+        ), normalize=normalize, color=False)
+        def my_function():
+            foo = Foo()
+            for i in range(2):
+                foo.square()
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:359: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2eec10>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+___________________________ test_watch_explode[True] ___________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_watch_explode(normalize):
+        class Foo:
+            def __init__(self, x, y):
+                self.x = x
+                self.y = y
+    
+        @pysnooper.snoop(watch_explode=('_d', '_point', 'lst + []'), normalize=normalize,
+                         color=False)
+        def my_function():
+            _d = {'a': 1, 'b': 2, 'c': 'ignore'}
+            _point = Foo(x=3, y=4)
+            lst = [7, 8, 9]
+            lst.append(10)
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:409: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2efb10>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+__________________________ test_watch_explode[False] ___________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_watch_explode(normalize):
+        class Foo:
+            def __init__(self, x, y):
+                self.x = x
+                self.y = y
+    
+        @pysnooper.snoop(watch_explode=('_d', '_point', 'lst + []'), normalize=normalize,
+                         color=False)
+        def my_function():
+            _d = {'a': 1, 'b': 2, 'c': 'ignore'}
+            _point = Foo(x=3, y=4)
+            lst = [7, 8, 9]
+            lst.append(10)
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:409: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b474050>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+_________________________ test_variables_classes[True] _________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_variables_classes(normalize):
+        class WithSlots(object):
+            __slots__ = ('x', 'y')
+    
+            def __init__(self):
+                self.x = 3
+                self.y = 4
+    
+        @pysnooper.snoop(watch=(
+                pysnooper.Keys('_d', exclude='c'),
+                pysnooper.Attrs('_d'),  # doesn't have attributes
+                pysnooper.Attrs('_s'),
+                pysnooper.Indices('_lst')[-3:],
+        ), normalize=normalize, color=False)
+        def my_function():
+            _d = {'a': 1, 'b': 2, 'c': 'ignore'}
+            _s = WithSlots()
+            _lst = list(range(1000))
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:467: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b474410>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+________________________ test_variables_classes[False] _________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_variables_classes(normalize):
+        class WithSlots(object):
+            __slots__ = ('x', 'y')
+    
+            def __init__(self):
+                self.x = 3
+                self.y = 4
+    
+        @pysnooper.snoop(watch=(
+                pysnooper.Keys('_d', exclude='c'),
+                pysnooper.Attrs('_d'),  # doesn't have attributes
+                pysnooper.Attrs('_s'),
+                pysnooper.Indices('_lst')[-3:],
+        ), normalize=normalize, color=False)
+        def my_function():
+            _d = {'a': 1, 'b': 2, 'c': 'ignore'}
+            _s = WithSlots()
+            _lst = list(range(1000))
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:467: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2eec10>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+_______________________ test_single_watch_no_comma[True] _______________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_single_watch_no_comma(normalize):
+        class Foo(object):
+            def __init__(self):
+                self.x = 2
+    
+            def square(self):
+                self.x **= 2
+    
+        @pysnooper.snoop(watch='foo', normalize=normalize, color=False)
+        def my_function():
+            foo = Foo()
+            for i in range(2):
+                foo.square()
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:514: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2eee90>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+______________________ test_single_watch_no_comma[False] _______________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_single_watch_no_comma(normalize):
+        class Foo(object):
+            def __init__(self):
+                self.x = 2
+    
+            def square(self):
+                self.x **= 2
+    
+        @pysnooper.snoop(watch='foo', normalize=normalize, color=False)
+        def my_function():
+            foo = Foo()
+            for i in range(2):
+                foo.square()
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:514: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2ef750>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+___________________________ test_long_variable[True] ___________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_long_variable(normalize):
+        @pysnooper.snoop(normalize=normalize, color=False)
+        def my_function():
+            foo = list(range(1000))
+            return foo
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:549: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b474550>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+__________________________ test_long_variable[False] ___________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_long_variable(normalize):
+        @pysnooper.snoop(normalize=normalize, color=False)
+        def my_function():
+            foo = list(range(1000))
+            return foo
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:549: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b4747d0>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+___________ test_long_variable_with_custom_max_variable_length[True] ___________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_long_variable_with_custom_max_variable_length(normalize):
+        @pysnooper.snoop(max_variable_length=200, normalize=normalize, color=False)
+        def my_function():
+            foo = list(range(1000))
+            return foo
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:578: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b474a50>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+__________ test_long_variable_with_custom_max_variable_length[False] ___________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_long_variable_with_custom_max_variable_length(normalize):
+        @pysnooper.snoop(max_variable_length=200, normalize=normalize, color=False)
+        def my_function():
+            foo = list(range(1000))
+            return foo
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:578: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2eee90>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+__________ test_long_variable_with_infinite_max_variable_length[True] __________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_long_variable_with_infinite_max_variable_length(normalize):
+        @pysnooper.snoop(max_variable_length=None, normalize=normalize, color=False)
+        def my_function():
+            foo = list(range(1000))
+            return foo
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:607: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2efc50>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+_________ test_long_variable_with_infinite_max_variable_length[False] __________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_long_variable_with_infinite_max_variable_length(normalize):
+        @pysnooper.snoop(max_variable_length=None, normalize=normalize, color=False)
+        def my_function():
+            foo = list(range(1000))
+            return foo
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:607: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b4747d0>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+__________________________ test_repr_exception[True] ___________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_repr_exception(normalize):
+        class Bad(object):
+            def __repr__(self):
+                1 / 0
+    
+        @pysnooper.snoop(normalize=normalize, color=False)
+        def my_function():
+            bad = Bad()
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:639: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b474b90>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+__________________________ test_repr_exception[False] __________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_repr_exception(normalize):
+        class Bad(object):
+            def __repr__(self):
+                1 / 0
+    
+        @pysnooper.snoop(normalize=normalize, color=False)
+        def my_function():
+            bad = Bad()
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:639: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b474e10>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+_______________________________ test_depth[True] _______________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_depth(normalize):
+        string_io = io.StringIO()
+    
+        def f4(x4):
+            result4 = x4 * 2
+            return result4
+    
+        def f3(x3):
+            result3 = f4(x3)
+            return result3
+    
+        def f2(x2):
+            result2 = f3(x2)
+            return result2
+    
+        @pysnooper.snoop(string_io, depth=3, normalize=normalize, color=False)
+        def f1(x1):
+            result1 = f2(x1)
+            return result1
+    
+>       result = f1(10)
+                 ^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:679: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b475090>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+______________________________ test_depth[False] _______________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_depth(normalize):
+        string_io = io.StringIO()
+    
+        def f4(x4):
+            result4 = x4 * 2
+            return result4
+    
+        def f3(x3):
+            result3 = f4(x3)
+            return result3
+    
+        def f2(x2):
+            result2 = f3(x2)
+            return result2
+    
+        @pysnooper.snoop(string_io, depth=3, normalize=normalize, color=False)
+        def f1(x1):
+            result1 = f2(x1)
+            return result1
+    
+>       result = f1(10)
+                 ^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:679: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2efc50>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+_________________________ test_method_and_prefix[True] _________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_method_and_prefix(normalize):
+        class Baz(object):
+            def __init__(self):
+                self.x = 2
+    
+            @pysnooper.snoop(watch=('self.x',), prefix='ZZZ', normalize=normalize,
+                             color=False)
+            def square(self):
+                foo = 7
+                self.x **= 2
+                return self
+    
+        baz = Baz()
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = baz.square()
+                     ^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:738: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2eee90>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+________________________ test_method_and_prefix[False] _________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_method_and_prefix(normalize):
+        class Baz(object):
+            def __init__(self):
+                self.x = 2
+    
+            @pysnooper.snoop(watch=('self.x',), prefix='ZZZ', normalize=normalize,
+                             color=False)
+            def square(self):
+                foo = 7
+                self.x **= 2
+                return self
+    
+        baz = Baz()
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = baz.square()
+                     ^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:738: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b474b90>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+____________________________ test_file_output[True] ____________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_file_output(normalize):
+        with mini_toolbox.create_temp_folder(prefix='pysnooper') as folder:
+            path = folder / 'foo.log'
+    
+            @pysnooper.snoop(path, normalize=normalize, color=False)
+            def my_function(_foo):
+                x = 7
+                y = 8
+                return y + x
+    
+>           result = my_function('baba')
+                     ^^^^^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:774: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b4751d0>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+___________________________ test_file_output[False] ____________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_file_output(normalize):
+        with mini_toolbox.create_temp_folder(prefix='pysnooper') as folder:
+            path = folder / 'foo.log'
+    
+            @pysnooper.snoop(path, normalize=normalize, color=False)
+            def my_function(_foo):
+                x = 7
+                y = 8
+                return y + x
+    
+>           result = my_function('baba')
+                     ^^^^^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:774: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b475590>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+_____________________ test_confusing_decorator_lines[True] _____________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_confusing_decorator_lines(normalize):
+        string_io = io.StringIO()
+    
+        def empty_decorator(function):
+            return function
+    
+        @empty_decorator
+        @pysnooper.snoop(string_io, normalize=normalize,
+                         depth=2, color=False)
+        @empty_decorator
+        @empty_decorator
+        def my_function(foo):
+            x = lambda bar: 7
+            y = 8
+            return y + x(foo)
+    
+>       result = my_function('baba')
+                 ^^^^^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:814: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b475950>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+____________________ test_confusing_decorator_lines[False] _____________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_confusing_decorator_lines(normalize):
+        string_io = io.StringIO()
+    
+        def empty_decorator(function):
+            return function
+    
+        @empty_decorator
+        @pysnooper.snoop(string_io, normalize=normalize,
+                         depth=2, color=False)
+        @empty_decorator
+        @empty_decorator
+        def my_function(foo):
+            x = lambda bar: 7
+            y = 8
+            return y + x(foo)
+    
+>       result = my_function('baba')
+                 ^^^^^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:814: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2eee90>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+______________________________ test_lambda[True] _______________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_lambda(normalize):
+        string_io = io.StringIO()
+        my_function = pysnooper.snoop(string_io, normalize=normalize, color=False)(lambda x: x ** 2)
+>       result = my_function(7)
+                 ^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:847: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b475590>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+______________________________ test_lambda[False] ______________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_lambda(normalize):
+        string_io = io.StringIO()
+        my_function = pysnooper.snoop(string_io, normalize=normalize, color=False)(lambda x: x ** 2)
+>       result = my_function(7)
+                 ^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:847: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b4751d0>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+___________________________ test_unavailable_source ____________________________
+
+    def test_unavailable_source():
+        with mini_toolbox.create_temp_folder(prefix='pysnooper') as folder, \
+                                        mini_toolbox.TempSysPathAdder(str(folder)):
+            module_name = 'iaerojajsijf'
+            python_file_path = folder / ('%s.py' % (module_name,))
+            content = textwrap.dedent(u'''
+                import pysnooper
+                @pysnooper.snoop(color=False)
+                def f(x):
+                    return x
+            ''')
+            with python_file_path.open('w') as python_file:
+                python_file.write(content)
+            module = __import__(module_name)
+            python_file_path.unlink()
+            with mini_toolbox.OutputCapturer(stdout=False,
+                                             stderr=True) as output_capturer:
+>               result = getattr(module, 'f')(7)
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:882: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b474b90>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+_________________________ test_no_overwrite_by_default _________________________
+
+    def test_no_overwrite_by_default():
+        with mini_toolbox.create_temp_folder(prefix='pysnooper') as folder:
+            path = folder / 'foo.log'
+            with path.open('w') as output_file:
+                output_file.write(u'lala')
+            @pysnooper.snoop(str(path), color=False)
+            def my_function(foo):
+                x = 7
+                y = 8
+                return y + x
+>           result = my_function('baba')
+                     ^^^^^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:909: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b475d10>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+________________________________ test_overwrite ________________________________
+
+    def test_overwrite():
+        with mini_toolbox.create_temp_folder(prefix='pysnooper') as folder:
+            path = folder / 'foo.log'
+            with path.open('w') as output_file:
+                output_file.write(u'lala')
+            @pysnooper.snoop(str(path), overwrite=True, color=False)
+            def my_function(foo):
+                x = 7
+                y = 8
+                return y + x
+>           result = my_function('baba')
+                     ^^^^^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:943: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b475f90>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+____________________________ test_with_block[True] _____________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_with_block(normalize):
+        # Testing that a single Tracer can handle many mixed uses
+        snoop = pysnooper.snoop(normalize=normalize, color=False)
+    
+        def foo(x):
+            if x == 0:
+                bar1(x)
+                qux()
+                return
+    
+            with snoop:
+                # There should be line entries for these three lines,
+                # no line entries for anything else in this function,
+                # but calls to all bar functions should be traced
+                foo(x - 1)
+                bar2(x)
+                qux()
+            int(4)
+            bar3(9)
+            return x
+    
+        @snoop
+        def bar1(_x):
+            qux()
+    
+        @snoop
+        def bar2(_x):
+            qux()
+    
+        @snoop
+        def bar3(_x):
+            qux()
+    
+        def qux():
+            return 9  # not traced, mustn't show up
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = foo(2)
+                     ^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:1044: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/tests/test_pysnooper.py:1016: in foo
+    with snoop:
+         ^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b475d10>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+>           calling_frame.f_trace = self.trace
+                                    ^^^^^^^^^^
+E           AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:373: AttributeError
+____________________________ test_with_block[False] ____________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_with_block(normalize):
+        # Testing that a single Tracer can handle many mixed uses
+        snoop = pysnooper.snoop(normalize=normalize, color=False)
+    
+        def foo(x):
+            if x == 0:
+                bar1(x)
+                qux()
+                return
+    
+            with snoop:
+                # There should be line entries for these three lines,
+                # no line entries for anything else in this function,
+                # but calls to all bar functions should be traced
+                foo(x - 1)
+                bar2(x)
+                qux()
+            int(4)
+            bar3(9)
+            return x
+    
+        @snoop
+        def bar1(_x):
+            qux()
+    
+        @snoop
+        def bar2(_x):
+            qux()
+    
+        @snoop
+        def bar3(_x):
+            qux()
+    
+        def qux():
+            return 9  # not traced, mustn't show up
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = foo(2)
+                     ^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:1044: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/tests/test_pysnooper.py:1016: in foo
+    with snoop:
+         ^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b4756d0>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+>           calling_frame.f_trace = self.trace
+                                    ^^^^^^^^^^
+E           AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:373: AttributeError
+_________________________ test_with_block_depth[True] __________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_with_block_depth(normalize):
+        string_io = io.StringIO()
+    
+        def f4(x4):
+            result4 = x4 * 2
+            return result4
+    
+        def f3(x3):
+            result3 = f4(x3)
+            return result3
+    
+        def f2(x2):
+            result2 = f3(x2)
+            return result2
+    
+        def f1(x1):
+            str(3)
+            with pysnooper.snoop(string_io, depth=3, normalize=normalize, color=False):
+                result1 = f2(x1)
+            return result1
+    
+>       result = f1(10)
+                 ^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:1161: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/tests/test_pysnooper.py:1157: in f1
+    with pysnooper.snoop(string_io, depth=3, normalize=normalize, color=False):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b476210>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+>           calling_frame.f_trace = self.trace
+                                    ^^^^^^^^^^
+E           AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:373: AttributeError
+_________________________ test_with_block_depth[False] _________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_with_block_depth(normalize):
+        string_io = io.StringIO()
+    
+        def f4(x4):
+            result4 = x4 * 2
+            return result4
+    
+        def f3(x3):
+            result3 = f4(x3)
+            return result3
+    
+        def f2(x2):
+            result2 = f3(x2)
+            return result2
+    
+        def f1(x1):
+            str(3)
+            with pysnooper.snoop(string_io, depth=3, normalize=normalize, color=False):
+                result1 = f2(x1)
+            return result1
+    
+>       result = f1(10)
+                 ^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:1161: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/tests/test_pysnooper.py:1157: in f1
+    with pysnooper.snoop(string_io, depth=3, normalize=normalize, color=False):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2efc50>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+>           calling_frame.f_trace = self.trace
+                                    ^^^^^^^^^^
+E           AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:373: AttributeError
+_____________________________ test_cellvars[True] ______________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_cellvars(normalize):
+        string_io = io.StringIO()
+    
+        def f2(a):
+            def f3(a):
+                x = 0
+                x += 1
+                def f4(a):
+                    y = x
+                    return 42
+                return f4(a)
+            return f3(a)
+    
+        def f1(a):
+            with pysnooper.snoop(string_io, depth=4, normalize=normalize, color=False):
+                result1 = f2(a)
+            return result1
+    
+>       result = f1(42)
+                 ^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:1220: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/tests/test_pysnooper.py:1216: in f1
+    with pysnooper.snoop(string_io, depth=4, normalize=normalize, color=False):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b4760d0>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+>           calling_frame.f_trace = self.trace
+                                    ^^^^^^^^^^
+E           AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:373: AttributeError
+_____________________________ test_cellvars[False] _____________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_cellvars(normalize):
+        string_io = io.StringIO()
+    
+        def f2(a):
+            def f3(a):
+                x = 0
+                x += 1
+                def f4(a):
+                    y = x
+                    return 42
+                return f4(a)
+            return f3(a)
+    
+        def f1(a):
+            with pysnooper.snoop(string_io, depth=4, normalize=normalize, color=False):
+                result1 = f2(a)
+            return result1
+    
+>       result = f1(42)
+                 ^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:1220: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/tests/test_pysnooper.py:1216: in f1
+    with pysnooper.snoop(string_io, depth=4, normalize=normalize, color=False):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b475590>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+>           calling_frame.f_trace = self.trace
+                                    ^^^^^^^^^^
+E           AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:373: AttributeError
+_____________________________ test_var_order[True] _____________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_var_order(normalize):
+        string_io = io.StringIO()
+    
+        def f(one, two, three, four):
+            five = None
+            six = None
+            seven = None
+    
+            five, six, seven = 5, 6, 7
+    
+>       with pysnooper.snoop(string_io, depth=2, normalize=normalize, color=False):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:1281: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2efc50>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+>           calling_frame.f_trace = self.trace
+                                    ^^^^^^^^^^
+E           AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:373: AttributeError
+____________________________ test_var_order[False] _____________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_var_order(normalize):
+        string_io = io.StringIO()
+    
+        def f(one, two, three, four):
+            five = None
+            six = None
+            seven = None
+    
+            five, six, seven = 5, 6, 7
+    
+>       with pysnooper.snoop(string_io, depth=2, normalize=normalize, color=False):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:1281: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b4760d0>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+>           calling_frame.f_trace = self.trace
+                                    ^^^^^^^^^^
+E           AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:373: AttributeError
+_______________________________ test_indentation _______________________________
+
+    def test_indentation():
+        from .samples import indentation, recursion
+>       assert_sample_output(indentation)
+
+../PySnooper/tests/test_pysnooper.py:1335: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/tests/mini_toolbox/contextlib.py:97: in __exit__
+    self.gen.throw(type, value, traceback)
+../PySnooper/tests/mini_toolbox/__init__.py:15: in BlankContextManager
+    yield
+../PySnooper/tests/utils.py:405: in assert_sample_output
+    module.main()
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b476210>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+________________________________ test_exception ________________________________
+
+    def test_exception():
+        string_io = io.StringIO()
+        @pysnooper.snoop(string_io, color=False)
+        def f():
+            x = 8
+            raise MemoryError
+    
+        with pytest.raises(MemoryError):
+>           f()
+
+../PySnooper/tests/test_pysnooper.py:1892: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b476350>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+________________________________ test_generator ________________________________
+
+    def test_generator():
+        string_io = io.StringIO()
+        original_tracer = sys.gettrace()
+        original_tracer_active = lambda: (sys.gettrace() is original_tracer)
+    
+    
+        @pysnooper.snoop(string_io, color=False)
+        def f(x1):
+            assert not original_tracer_active()
+            x2 = (yield x1)
+            assert not original_tracer_active()
+            x3 = 'foo'
+            assert not original_tracer_active()
+            x4 = (yield 2)
+            assert not original_tracer_active()
+            return
+    
+    
+        assert original_tracer_active()
+        generator = f(0)
+        assert original_tracer_active()
+>       first_item = next(generator)
+                     ^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:1365: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:344: in generator_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b4765d0>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+____________________________ test_custom_repr[True] ____________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_custom_repr(normalize):
+        string_io = io.StringIO()
+    
+        def large(l):
+            return isinstance(l, list) and len(l) > 5
+    
+        def print_list_size(l):
+            return 'list(size={})'.format(len(l))
+    
+        def print_dict(d):
+            return 'dict(keys={})'.format(sorted(list(d.keys())))
+    
+        def evil_condition(x):
+            return large(x) or isinstance(x, dict)
+    
+        @pysnooper.snoop(string_io, custom_repr=(
+            (large, print_list_size),
+            (dict, print_dict),
+            (evil_condition, lambda x: 'I am evil')),
+                normalize=normalize, color=False)
+        def sum_to_x(x):
+            l = list(range(x))
+            a = {'1': 1, '2': 2}
+            return sum(l)
+    
+>       result = sum_to_x(10000)
+                 ^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:1453: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b0ef110>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+___________________________ test_custom_repr[False] ____________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_custom_repr(normalize):
+        string_io = io.StringIO()
+    
+        def large(l):
+            return isinstance(l, list) and len(l) > 5
+    
+        def print_list_size(l):
+            return 'list(size={})'.format(len(l))
+    
+        def print_dict(d):
+            return 'dict(keys={})'.format(sorted(list(d.keys())))
+    
+        def evil_condition(x):
+            return large(x) or isinstance(x, dict)
+    
+        @pysnooper.snoop(string_io, custom_repr=(
+            (large, print_list_size),
+            (dict, print_dict),
+            (evil_condition, lambda x: 'I am evil')),
+                normalize=normalize, color=False)
+        def sum_to_x(x):
+            l = list(range(x))
+            a = {'1': 1, '2': 2}
+            return sum(l)
+    
+>       result = sum_to_x(10000)
+                 ^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:1453: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b0ef250>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+________________________ test_custom_repr_single[True] _________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_custom_repr_single(normalize):
+        string_io = io.StringIO()
+    
+        @pysnooper.snoop(string_io, custom_repr=(list, lambda l: 'foofoo!'),
+                         normalize=normalize, color=False)
+        def sum_to_x(x):
+            l = list(range(x))
+            return 7
+    
+>       result = sum_to_x(10000)
+                 ^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:1485: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2ef4d0>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+________________________ test_custom_repr_single[False] ________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_custom_repr_single(normalize):
+        string_io = io.StringIO()
+    
+        @pysnooper.snoop(string_io, custom_repr=(list, lambda l: 'foofoo!'),
+                         normalize=normalize, color=False)
+        def sum_to_x(x):
+            l = list(range(x))
+            return 7
+    
+>       result = sum_to_x(10000)
+                 ^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:1485: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2ef9d0>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+_______________________________ test_class[True] _______________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_class(normalize):
+        string_io = io.StringIO()
+    
+        @pysnooper.snoop(string_io, normalize=normalize, color=False)
+        class MyClass(object):
+            def __init__(self):
+                self.x = 7
+    
+            def my_method(self, foo):
+                y = 8
+                return y + self.x
+    
+>       instance = MyClass()
+                   ^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:1537: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2efc50>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+______________________________ test_class[False] _______________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_class(normalize):
+        string_io = io.StringIO()
+    
+        @pysnooper.snoop(string_io, normalize=normalize, color=False)
+        class MyClass(object):
+            def __init__(self):
+                self.x = 7
+    
+            def my_method(self, foo):
+                y = 8
+                return y + self.x
+    
+>       instance = MyClass()
+                   ^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:1537: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b475590>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+____________________ test_class_with_decorated_method[True] ____________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_class_with_decorated_method(normalize):
+        string_io = io.StringIO()
+    
+        def decorator(function):
+            def wrapper(*args, **kwargs):
+                result = function(*args, **kwargs)
+                return result
+            return wrapper
+    
+        @pysnooper.snoop(string_io, normalize=normalize, color=False)
+        class MyClass(object):
+            def __init__(self):
+                self.x = 7
+    
+            @decorator
+            def my_method(self, foo):
+                y = 8
+                return y + self.x
+    
+>       instance = MyClass()
+                   ^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:1585: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2efc50>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+___________________ test_class_with_decorated_method[False] ____________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_class_with_decorated_method(normalize):
+        string_io = io.StringIO()
+    
+        def decorator(function):
+            def wrapper(*args, **kwargs):
+                result = function(*args, **kwargs)
+                return result
+            return wrapper
+    
+        @pysnooper.snoop(string_io, normalize=normalize, color=False)
+        class MyClass(object):
+            def __init__(self):
+                self.x = 7
+    
+            @decorator
+            def my_method(self, foo):
+                y = 8
+                return y + self.x
+    
+>       instance = MyClass()
+                   ^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:1585: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2ef9d0>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+______ test_class_with_decorated_method_and_snoop_applied_to_method[True] ______
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_class_with_decorated_method_and_snoop_applied_to_method(normalize):
+        string_io = io.StringIO()
+    
+        def decorator(function):
+            def wrapper(*args, **kwargs):
+                result = function(*args, **kwargs)
+                return result
+            return wrapper
+    
+        @pysnooper.snoop(string_io, normalize=normalize, color=False)
+        class MyClass(object):
+            def __init__(self):
+                self.x = 7
+    
+            @decorator
+            @pysnooper.snoop(string_io, normalize=normalize, color=False)
+            def my_method(self, foo):
+                y = 8
+                return y + self.x
+    
+>       instance = MyClass()
+                   ^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:1635: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2ef4d0>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+_____ test_class_with_decorated_method_and_snoop_applied_to_method[False] ______
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_class_with_decorated_method_and_snoop_applied_to_method(normalize):
+        string_io = io.StringIO()
+    
+        def decorator(function):
+            def wrapper(*args, **kwargs):
+                result = function(*args, **kwargs)
+                return result
+            return wrapper
+    
+        @pysnooper.snoop(string_io, normalize=normalize, color=False)
+        class MyClass(object):
+            def __init__(self):
+                self.x = 7
+    
+            @decorator
+            @pysnooper.snoop(string_io, normalize=normalize, color=False)
+            def my_method(self, foo):
+                y = 8
+                return y + self.x
+    
+>       instance = MyClass()
+                   ^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:1635: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b0ef110>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+________________________ test_class_with_property[True] ________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_class_with_property(normalize):
+        string_io = io.StringIO()
+    
+        @pysnooper.snoop(string_io, normalize=normalize, color=False)
+        class MyClass(object):
+            def __init__(self):
+                self._x = 0
+    
+            def plain_method(self):
+                pass
+    
+            @property
+            def x(self):
+                self.plain_method()
+                return self._x
+    
+            @x.setter
+            def x(self, value):
+                self.plain_method()
+                self._x = value
+    
+            @x.deleter
+            def x(self):
+                self.plain_method()
+                del self._x
+    
+>       instance = MyClass()
+                   ^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:1701: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b475950>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+_______________________ test_class_with_property[False] ________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_class_with_property(normalize):
+        string_io = io.StringIO()
+    
+        @pysnooper.snoop(string_io, normalize=normalize, color=False)
+        class MyClass(object):
+            def __init__(self):
+                self._x = 0
+    
+            def plain_method(self):
+                pass
+    
+            @property
+            def x(self):
+                self.plain_method()
+                return self._x
+    
+            @x.setter
+            def x(self, value):
+                self.plain_method()
+                self._x = value
+    
+            @x.deleter
+            def x(self):
+                self.plain_method()
+                del self._x
+    
+>       instance = MyClass()
+                   ^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:1701: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b475090>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+_____ test_snooping_on_class_does_not_cause_base_class_to_be_snooped[True] _____
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_snooping_on_class_does_not_cause_base_class_to_be_snooped(normalize):
+        string_io = io.StringIO()
+    
+        class UnsnoopedBaseClass(object):
+            def __init__(self):
+                self.method_on_base_class_was_called = False
+    
+            def method_on_base_class(self):
+                self.method_on_base_class_was_called = True
+    
+        @pysnooper.snoop(string_io, normalize=normalize, color=False)
+        class MyClass(UnsnoopedBaseClass):
+            def method_on_child_class(self):
+                self.method_on_base_class()
+    
+        instance = MyClass()
+    
+        assert not instance.method_on_base_class_was_called
+>       instance.method_on_child_class()
+
+../PySnooper/tests/test_pysnooper.py:1774: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b0ef110>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+____ test_snooping_on_class_does_not_cause_base_class_to_be_snooped[False] _____
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_snooping_on_class_does_not_cause_base_class_to_be_snooped(normalize):
+        string_io = io.StringIO()
+    
+        class UnsnoopedBaseClass(object):
+            def __init__(self):
+                self.method_on_base_class_was_called = False
+    
+            def method_on_base_class(self):
+                self.method_on_base_class_was_called = True
+    
+        @pysnooper.snoop(string_io, normalize=normalize, color=False)
+        class MyClass(UnsnoopedBaseClass):
+            def method_on_child_class(self):
+                self.method_on_base_class()
+    
+        instance = MyClass()
+    
+        assert not instance.method_on_base_class_was_called
+>       instance.method_on_child_class()
+
+../PySnooper/tests/test_pysnooper.py:1774: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2ef4d0>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+________________________________ test_normalize ________________________________
+
+    def test_normalize():
+        string_io = io.StringIO()
+    
+        class A:
+            def __init__(self, a):
+                self.a = a
+    
+        @pysnooper.snoop(string_io, normalize=True, color=False)
+        def add():
+            a = A(19)
+            b = A(22)
+            res = a.a + b.a
+            return res
+    
+>       add()
+
+../PySnooper/tests/test_pysnooper.py:1807: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2efc50>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+____________________________ test_normalize_prefix _____________________________
+
+    def test_normalize_prefix():
+        string_io = io.StringIO()
+        _prefix = 'ZZZZ'
+    
+        class A:
+            def __init__(self, a):
+                self.a = a
+    
+        @pysnooper.snoop(string_io, normalize=True, prefix=_prefix, color=False)
+        def add():
+            a = A(19)
+            b = A(22)
+            res = a.a + b.a
+            return res
+    
+>       add()
+
+../PySnooper/tests/test_pysnooper.py:1844: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b475f90>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+__________________________ test_normalize_thread_info __________________________
+
+    def test_normalize_thread_info():
+        string_io = io.StringIO()
+    
+        class A:
+            def __init__(self, a):
+                self.a = a
+    
+        @pysnooper.snoop(string_io, normalize=True, thread_info=True, color=False)
+        def add():
+            a = A(19)
+            b = A(22)
+            res = a.a + b.a
+            return res
+    
+        with pytest.raises(NotImplementedError):
+>           add()
+
+../PySnooper/tests/test_pysnooper.py:1881: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b474a50>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+_____________________________ test_exception_group _____________________________
+
+    @pytest.mark.skipif(sys.version_info < (3, 11),
+                        reason='ExceptionGroup requires Python 3.11+')
+    def test_exception_group():
+        string_io = io.StringIO()
+        @pysnooper.snoop(string_io, color=False)
+        def f():
+            raise ExceptionGroup('task errors', [ValueError('bad'), TypeError('wrong'), RuntimeError('fail')])
+    
+        with pytest.raises(ExceptionGroup):
+>           f()
+
+../PySnooper/tests/test_pysnooper.py:1920: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b474410>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+_________________________ test_nested_exception_group __________________________
+
+    @pytest.mark.skipif(sys.version_info < (3, 11),
+                        reason='ExceptionGroup requires Python 3.11+')
+    def test_nested_exception_group():
+        string_io = io.StringIO()
+        @pysnooper.snoop(string_io, color=False)
+        def f():
+            raise ExceptionGroup('outer', [ExceptionGroup('inner', [ValueError('deep')]), TypeError('shallow')])
+    
+        with pytest.raises(ExceptionGroup):
+>           f()
+
+../PySnooper/tests/test_pysnooper.py:1950: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2efc50>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+___________________________ test_exception_on_entry ____________________________
+
+    def test_exception_on_entry():
+        @pysnooper.snoop(color=False)
+        def f(x):
+            pass
+    
+        with pytest.raises(TypeError):
+>           f()
+
+../PySnooper/tests/test_pysnooper.py:1976: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b2ef4d0>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+______________________________ test_valid_zipfile ______________________________
+
+    def test_valid_zipfile():
+        with mini_toolbox.create_temp_folder(prefix='pysnooper') as folder, \
+                                        mini_toolbox.TempSysPathAdder(str(folder)):
+            module_name = 'my_valid_zip_module'
+            zip_name = 'valid.zip'
+            zip_base_path = mini_toolbox.pathlib.Path('ansible/modules')
+            python_file_path = folder / zip_name / zip_base_path / ('%s.py' % (module_name))
+            os.makedirs(str(folder / zip_name / zip_base_path))
+            try:
+                sys.path.insert(0, str(folder / zip_name / zip_base_path))
+                content = textwrap.dedent(u'''
+                    import pysnooper
+                    @pysnooper.snoop(color=False)
+                    def f(x):
+                        return x
+                ''')
+    
+                python_file_path.write_text(content)
+    
+                module = __import__(module_name)
+    
+                with zipfile.ZipFile(str(folder / 'foo_bar.zip'), 'w') as myZipFile:
+                    myZipFile.write(str(folder / zip_name / zip_base_path / ('%s.py' % (module_name))), \
+                                    '%s/%s.py' % (zip_base_path, module_name,), \
+                                    zipfile.ZIP_DEFLATED)
+    
+                python_file_path.unlink()
+                folder.joinpath(zip_name).rename(folder.joinpath('%s.delete' % (zip_name)))
+                folder.joinpath('foo_bar.zip').rename(folder.joinpath(zip_name))
+    
+                with mini_toolbox.OutputCapturer(stdout=False,
+                                                 stderr=True) as output_capturer:
+>                   result = getattr(module, 'f')(7)
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:2011: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b0ef110>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+_____________________________ test_invalid_zipfile _____________________________
+
+    def test_invalid_zipfile():
+        with mini_toolbox.create_temp_folder(prefix='pysnooper') as folder, \
+                                        mini_toolbox.TempSysPathAdder(str(folder)):
+            module_name = 'my_invalid_zip_module'
+            zip_name = 'invalid.zip'
+            zip_base_path = mini_toolbox.pathlib.Path('invalid/modules/path')
+            python_file_path = folder / zip_name / zip_base_path / ('%s.py' % (module_name))
+            os.makedirs(str(folder / zip_name / zip_base_path))
+            try:
+                sys.path.insert(0, str(folder / zip_name / zip_base_path))
+                content = textwrap.dedent(u'''
+                    import pysnooper
+                    @pysnooper.snoop(color=False)
+                    def f(x):
+                        return x
+                ''')
+                python_file_path.write_text(content)
+    
+                module = __import__(module_name)
+    
+                with zipfile.ZipFile(str(folder / 'foo_bar.zip'), 'w') as myZipFile:
+                    myZipFile.write(str(folder / zip_name / zip_base_path / ('%s.py' % (module_name))), \
+                                    str(zip_base_path / ('%s.py' % (module_name,))), \
+                                    zipfile.ZIP_DEFLATED)
+    
+                python_file_path.unlink()
+                folder.joinpath(zip_name).rename(folder.joinpath('%s.delete' % (zip_name)))
+                folder.joinpath('foo_bar.zip').rename(folder.joinpath(zip_name))
+    
+                with mini_toolbox.OutputCapturer(stdout=False,
+                                             stderr=True) as output_capturer:
+>                   result = getattr(module, 'f')(7)
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:2062: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b4742d0>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+__________________________ test_valid_damaged_zipfile __________________________
+
+    def test_valid_damaged_zipfile():
+        with mini_toolbox.create_temp_folder(prefix='pysnooper') as folder, \
+                                        mini_toolbox.TempSysPathAdder(str(folder)):
+            module_name = 'my_damaged_module'
+            zip_name = 'damaged.zip'
+            zip_base_path = mini_toolbox.pathlib.Path('ansible/modules')
+            python_file_path = folder / zip_name / zip_base_path / ('%s.py' % (module_name))
+            os.makedirs(str(folder / zip_name / zip_base_path))
+            try:
+                sys.path.insert(0, str(folder / zip_name / zip_base_path))
+                content = textwrap.dedent(u'''
+                    import pysnooper
+                    @pysnooper.snoop(color=False)
+                    def f(x):
+                        return x
+                ''')
+                python_file_path.write_text(content)
+    
+                module = __import__(module_name)
+    
+                python_file_path.unlink()
+                folder.joinpath(zip_name).rename(folder.joinpath('%s.delete' % (zip_name)))
+    
+                folder.joinpath(zip_name).write_text(u'I am not a zip file')
+    
+                with mini_toolbox.OutputCapturer(stdout=False,
+                                             stderr=True) as output_capturer:
+>                   result = getattr(module, 'f')(7)
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:2109: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:336: in simple_wrapper
+    with self:
+         ^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x10b476710>
+
+    def __enter__(self):
+        if DISABLED:
+            return
+        thread_global.__dict__.setdefault('depth', -1)
+        calling_frame = inspect.currentframe().f_back
+        if not self._is_internal_frame(calling_frame):
+            calling_frame.f_trace = self.trace
+            self.target_frames.add(calling_frame)
+    
+        stack = self.thread_local.__dict__.setdefault(
+            'original_trace_functions', []
+        )
+        stack.append(sys.gettrace())
+        self.start_times[calling_frame] = datetime_module.datetime.now()
+>       sys.settrace(self.trace)
+                     ^^^^^^^^^^
+E       AttributeError: 'Tracer' object has no attribute 'trace'
+
+../PySnooper/pysnooper/tracer.py:381: AttributeError
+=============================== warnings summary ===============================
+tests/test_chinese.py: 1 warning
+tests/test_multiple_files/test_multiple_files.py: 1 warning
+tests/test_pysnooper.py: 36 warnings
+  /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/mini_toolbox/contextlib.py:97: DeprecationWarning: the (type, exc, tb) signature of throw() is deprecated, use the single-arg signature instead.
+    self.gen.throw(type, value, traceback)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../PySnooper/tests/test_chinese.py::test_chinese - AttributeError: 'Tr...
+FAILED ../PySnooper/tests/test_ended_by_exception.py::test_unstarted_generator_close_is_not_an_exception
+FAILED ../PySnooper/tests/test_multiple_files/test_multiple_files.py::test_multiple_files
+FAILED ../PySnooper/tests/test_pysnooper.py::test_string_io - AttributeError:...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_relative_time - AttributeEr...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_thread_info - AttributeErro...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_multi_thread_info - Attribu...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_callable[True] - AttributeE...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_callable[False] - Attribute...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_watch[True] - AttributeErro...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_watch[False] - AttributeErr...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_watch_explode[True] - Attri...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_watch_explode[False] - Attr...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_variables_classes[True] - A...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_variables_classes[False] - ...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_single_watch_no_comma[True]
+FAILED ../PySnooper/tests/test_pysnooper.py::test_single_watch_no_comma[False]
+FAILED ../PySnooper/tests/test_pysnooper.py::test_long_variable[True] - Attri...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_long_variable[False] - Attr...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_long_variable_with_custom_max_variable_length[True]
+FAILED ../PySnooper/tests/test_pysnooper.py::test_long_variable_with_custom_max_variable_length[False]
+FAILED ../PySnooper/tests/test_pysnooper.py::test_long_variable_with_infinite_max_variable_length[True]
+FAILED ../PySnooper/tests/test_pysnooper.py::test_long_variable_with_infinite_max_variable_length[False]
+FAILED ../PySnooper/tests/test_pysnooper.py::test_repr_exception[True] - Attr...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_repr_exception[False] - Att...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_depth[True] - AttributeErro...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_depth[False] - AttributeErr...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_method_and_prefix[True] - A...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_method_and_prefix[False] - ...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_file_output[True] - Attribu...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_file_output[False] - Attrib...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_confusing_decorator_lines[True]
+FAILED ../PySnooper/tests/test_pysnooper.py::test_confusing_decorator_lines[False]
+FAILED ../PySnooper/tests/test_pysnooper.py::test_lambda[True] - AttributeErr...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_lambda[False] - AttributeEr...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_unavailable_source - Attrib...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_no_overwrite_by_default - A...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_overwrite - AttributeError:...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_with_block[True] - Attribut...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_with_block[False] - Attribu...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_with_block_depth[True] - At...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_with_block_depth[False] - A...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_cellvars[True] - AttributeE...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_cellvars[False] - Attribute...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_var_order[True] - Attribute...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_var_order[False] - Attribut...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_indentation - AttributeErro...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_exception - AttributeError:...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_generator - AttributeError:...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_custom_repr[True] - Attribu...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_custom_repr[False] - Attrib...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_custom_repr_single[True] - ...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_custom_repr_single[False]
+FAILED ../PySnooper/tests/test_pysnooper.py::test_class[True] - AttributeErro...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_class[False] - AttributeErr...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_class_with_decorated_method[True]
+FAILED ../PySnooper/tests/test_pysnooper.py::test_class_with_decorated_method[False]
+FAILED ../PySnooper/tests/test_pysnooper.py::test_class_with_decorated_method_and_snoop_applied_to_method[True]
+FAILED ../PySnooper/tests/test_pysnooper.py::test_class_with_decorated_method_and_snoop_applied_to_method[False]
+FAILED ../PySnooper/tests/test_pysnooper.py::test_class_with_property[True]
+FAILED ../PySnooper/tests/test_pysnooper.py::test_class_with_property[False]
+FAILED ../PySnooper/tests/test_pysnooper.py::test_snooping_on_class_does_not_cause_base_class_to_be_snooped[True]
+FAILED ../PySnooper/tests/test_pysnooper.py::test_snooping_on_class_does_not_cause_base_class_to_be_snooped[False]
+FAILED ../PySnooper/tests/test_pysnooper.py::test_normalize - AttributeError:...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_normalize_prefix - Attribut...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_normalize_thread_info - Att...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_exception_group - Attribute...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_nested_exception_group - At...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_exception_on_entry - Attrib...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_valid_zipfile - AttributeEr...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_invalid_zipfile - Attribute...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_valid_damaged_zipfile - Att...
+72 failed, 13 passed, 38 warnings in 1.27s

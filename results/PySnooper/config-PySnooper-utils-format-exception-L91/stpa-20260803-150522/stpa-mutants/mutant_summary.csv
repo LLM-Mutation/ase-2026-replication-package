@@ -1,0 +1,11 @@
+MUTANT,EQUIVALENCE,COMPETENT,SURVIVES
+mutant_0.py,False,True,True
+mutant_4.py,False,False,False
+mutant_5.py,False,False,False
+mutant_1.py,False,True,True
+mutant_6.py,False,True,True
+mutant_2.py,False,False,False
+mutant_3.py,False,False,False
+mutant_7.py,False,False,False
+mutant_8.py,False,True,True
+mutant_9.py,False,True,True

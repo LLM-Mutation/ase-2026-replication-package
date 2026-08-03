@@ -1,0 +1,335 @@
+$ /Users/meganmaton/.cache/uv/archive-v0/Q1YWu4HrcUL7MC9AiUGGQ/bin/python3 -m pytest -q /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper
+# exit code: 1
+
+..................FFFF..................................F............... [ 84%]
+.............                                                            [100%]
+=================================== FAILURES ===================================
+___________________________ test_watch_explode[True] ___________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_watch_explode(normalize):
+        class Foo:
+            def __init__(self, x, y):
+                self.x = x
+                self.y = y
+    
+        @pysnooper.snoop(watch_explode=('_d', '_point', 'lst + []'), normalize=normalize,
+                         color=False)
+        def my_function():
+            _d = {'a': 1, 'b': 2, 'c': 'ignore'}
+            _point = Foo(x=3, y=4)
+            lst = [7, 8, 9]
+            lst.append(10)
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:409: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:337: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/tests/test_pysnooper.py:403: in my_function
+    _point = Foo(x=3, y=4)
+             ^^^
+../PySnooper/pysnooper/tracer.py:509: in trace
+    get_local_reprs(frame,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+frame = <frame at 0x108f09fc0, file '/Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/test_pysnooper.py', line 403, code my_function>
+watch = [<pysnooper.variables.Exploding object at 0x1091ac2f0>, <pysnooper.variables.Exploding object at 0x1090c1a90>, <pysnooper.variables.Exploding object at 0x1090c1bd0>]
+custom_repr = (), max_length = 100, normalize = True
+
+    def get_local_reprs(frame, watch=(), custom_repr=(), max_length=None, normalize=False):
+        code = frame.f_code
+        vars_order = (code.co_varnames + code.co_cellvars + code.co_freevars +
+                      tuple(frame.f_locals.keys()))
+    
+        result_items = [(key, utils.get_shortish_repr(value, custom_repr,
+                                                      max_length, normalize))
+                        for key, value in frame.f_locals.items()]
+        result_items.sort(key=lambda key_value: vars_order.index(key_value[0]))
+        result = collections.OrderedDict(result_items)
+    
+        for variable in watch:
+>           result.update(sorted(variable.items(frame, normalize)))
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: '<' not supported between instances of 'str' and 'tuple'
+
+../PySnooper/pysnooper/tracer.py:61: TypeError
+__________________________ test_watch_explode[False] ___________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_watch_explode(normalize):
+        class Foo:
+            def __init__(self, x, y):
+                self.x = x
+                self.y = y
+    
+        @pysnooper.snoop(watch_explode=('_d', '_point', 'lst + []'), normalize=normalize,
+                         color=False)
+        def my_function():
+            _d = {'a': 1, 'b': 2, 'c': 'ignore'}
+            _point = Foo(x=3, y=4)
+            lst = [7, 8, 9]
+            lst.append(10)
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:409: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:337: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/tests/test_pysnooper.py:403: in my_function
+    _point = Foo(x=3, y=4)
+             ^^^
+../PySnooper/pysnooper/tracer.py:509: in trace
+    get_local_reprs(frame,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+frame = <frame at 0x10917de00, file '/Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/test_pysnooper.py', line 403, code my_function>
+watch = [<pysnooper.variables.Exploding object at 0x108bda9e0>, <pysnooper.variables.Exploding object at 0x1090fcd60>, <pysnooper.variables.Exploding object at 0x10915e450>]
+custom_repr = (), max_length = 100, normalize = False
+
+    def get_local_reprs(frame, watch=(), custom_repr=(), max_length=None, normalize=False):
+        code = frame.f_code
+        vars_order = (code.co_varnames + code.co_cellvars + code.co_freevars +
+                      tuple(frame.f_locals.keys()))
+    
+        result_items = [(key, utils.get_shortish_repr(value, custom_repr,
+                                                      max_length, normalize))
+                        for key, value in frame.f_locals.items()]
+        result_items.sort(key=lambda key_value: vars_order.index(key_value[0]))
+        result = collections.OrderedDict(result_items)
+    
+        for variable in watch:
+>           result.update(sorted(variable.items(frame, normalize)))
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: '<' not supported between instances of 'str' and 'tuple'
+
+../PySnooper/pysnooper/tracer.py:61: TypeError
+_________________________ test_variables_classes[True] _________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_variables_classes(normalize):
+        class WithSlots(object):
+            __slots__ = ('x', 'y')
+    
+            def __init__(self):
+                self.x = 3
+                self.y = 4
+    
+        @pysnooper.snoop(watch=(
+                pysnooper.Keys('_d', exclude='c'),
+                pysnooper.Attrs('_d'),  # doesn't have attributes
+                pysnooper.Attrs('_s'),
+                pysnooper.Indices('_lst')[-3:],
+        ), normalize=normalize, color=False)
+        def my_function():
+            _d = {'a': 1, 'b': 2, 'c': 'ignore'}
+            _s = WithSlots()
+            _lst = list(range(1000))
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:467: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:337: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/tests/test_pysnooper.py:462: in my_function
+    _s = WithSlots()
+         ^^^^^^^^^
+../PySnooper/pysnooper/tracer.py:509: in trace
+    get_local_reprs(frame,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+frame = <frame at 0x10917fbc0, file '/Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/test_pysnooper.py', line 462, code my_function>
+watch = [<pysnooper.variables.Keys object at 0x1090c1950>, <pysnooper.variables.Attrs object at 0x1091ac6e0>, <pysnooper.variables.Attrs object at 0x1090c2c10>, <pysnooper.variables.Indices object at 0x1090c2d50>]
+custom_repr = (), max_length = 100, normalize = True
+
+    def get_local_reprs(frame, watch=(), custom_repr=(), max_length=None, normalize=False):
+        code = frame.f_code
+        vars_order = (code.co_varnames + code.co_cellvars + code.co_freevars +
+                      tuple(frame.f_locals.keys()))
+    
+        result_items = [(key, utils.get_shortish_repr(value, custom_repr,
+                                                      max_length, normalize))
+                        for key, value in frame.f_locals.items()]
+        result_items.sort(key=lambda key_value: vars_order.index(key_value[0]))
+        result = collections.OrderedDict(result_items)
+    
+        for variable in watch:
+>           result.update(sorted(variable.items(frame, normalize)))
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: '<' not supported between instances of 'str' and 'tuple'
+
+../PySnooper/pysnooper/tracer.py:61: TypeError
+________________________ test_variables_classes[False] _________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_variables_classes(normalize):
+        class WithSlots(object):
+            __slots__ = ('x', 'y')
+    
+            def __init__(self):
+                self.x = 3
+                self.y = 4
+    
+        @pysnooper.snoop(watch=(
+                pysnooper.Keys('_d', exclude='c'),
+                pysnooper.Attrs('_d'),  # doesn't have attributes
+                pysnooper.Attrs('_s'),
+                pysnooper.Indices('_lst')[-3:],
+        ), normalize=normalize, color=False)
+        def my_function():
+            _d = {'a': 1, 'b': 2, 'c': 'ignore'}
+            _s = WithSlots()
+            _lst = list(range(1000))
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = my_function()
+                     ^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:467: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:337: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/tests/test_pysnooper.py:462: in my_function
+    _s = WithSlots()
+         ^^^^^^^^^
+../PySnooper/pysnooper/tracer.py:509: in trace
+    get_local_reprs(frame,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+frame = <frame at 0x109279000, file '/Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/test_pysnooper.py', line 462, code my_function>
+watch = [<pysnooper.variables.Keys object at 0x1090fd940>, <pysnooper.variables.Attrs object at 0x1090c34d0>, <pysnooper.variables.Attrs object at 0x1090fdba0>, <pysnooper.variables.Indices object at 0x1090fdcd0>]
+custom_repr = (), max_length = 100, normalize = False
+
+    def get_local_reprs(frame, watch=(), custom_repr=(), max_length=None, normalize=False):
+        code = frame.f_code
+        vars_order = (code.co_varnames + code.co_cellvars + code.co_freevars +
+                      tuple(frame.f_locals.keys()))
+    
+        result_items = [(key, utils.get_shortish_repr(value, custom_repr,
+                                                      max_length, normalize))
+                        for key, value in frame.f_locals.items()]
+        result_items.sort(key=lambda key_value: vars_order.index(key_value[0]))
+        result = collections.OrderedDict(result_items)
+    
+        for variable in watch:
+>           result.update(sorted(variable.items(frame, normalize)))
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: '<' not supported between instances of 'str' and 'tuple'
+
+../PySnooper/pysnooper/tracer.py:61: TypeError
+_______________________________ test_indentation _______________________________
+
+    def test_indentation():
+        from .samples import indentation, recursion
+>       assert_sample_output(indentation)
+
+../PySnooper/tests/test_pysnooper.py:1335: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+module = <module 'tests.samples.indentation' from '/Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/samples/indentation.py'>
+
+    def assert_sample_output(module):
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+            module.main()
+    
+        placeholder_time = '00:00:00.000000'
+        time_pattern = '[0-9:.]{15}'
+    
+        def normalise(out):
+            out = re.sub(time_pattern, placeholder_time, out).strip()
+            out = re.sub(
+                r'^( *)Source path:\.\.\. .*$',
+                r'\1Source path:... Whatever',
+                out,
+                flags=re.MULTILINE
+            )
+            return out
+    
+    
+        output = output_capturer.string_io.getvalue()
+    
+        try:
+>           assert (
+                    normalise(output) ==
+                    normalise(module.expected_output)
+            )
+E           AssertionError: assert 'Source path:...:00:00.000000' == 'Source path:...:00:00.000000'
+E             
+E               Source path:... Whatever
+E             - 00:00:00.000000 call         5 def main():
+E             +                 00:00:00.000000 call         5 def main():
+E             ? ++++++++++++++++
+E             - 00:00:00.000000 line         6     f2()
+E             -     00:00:00.000000 call         9 def f2():...
+E             
+E             ...Full output truncated (43 lines hidden), use '-vv' to show
+
+../PySnooper/tests/utils.py:424: AssertionError
+----------------------------- Captured stdout call -----------------------------
+
+
+Actual Output:
+
+                Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/samples/indentation.py
+                15:46:01.491548 call         5 def main():
+                15:46:01.491602 line         6     f2()
+                    15:46:01.491611 call         9 def f2():
+                    15:46:01.491618 line        10     f3()
+                        Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/samples/indentation.py
+                        15:46:01.491631 call        18 def f4():
+                        15:46:01.491640 line        19     f5()
+                            15:46:01.491646 call        22 def f5():
+                            15:46:01.491653 line        23     pass
+                            15:46:01.491658 return      23     pass
+                            Return value:.. None
+                        15:46:01.491669 return      19     f5()
+                        Return value:.. None
+                        Elapsed time: 00:00:00.000053
+                    15:46:01.491692 return      10     f3()
+                    Return value:.. None
+                15:46:01.491702 return       6     f2()
+                Return value:.. None
+                Elapsed time: 00:00:00.000249
+
+=============================== warnings summary ===============================
+tests/test_pysnooper.py::test_watch_explode[True]
+tests/test_pysnooper.py::test_watch_explode[False]
+tests/test_pysnooper.py::test_variables_classes[True]
+tests/test_pysnooper.py::test_variables_classes[False]
+  /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/mini_toolbox/contextlib.py:97: DeprecationWarning: the (type, exc, tb) signature of throw() is deprecated, use the single-arg signature instead.
+    self.gen.throw(type, value, traceback)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../PySnooper/tests/test_pysnooper.py::test_watch_explode[True] - TypeE...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_watch_explode[False] - Type...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_variables_classes[True] - T...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_variables_classes[False] - ...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_indentation - AssertionErro...
+5 failed, 80 passed, 4 warnings in 1.15s

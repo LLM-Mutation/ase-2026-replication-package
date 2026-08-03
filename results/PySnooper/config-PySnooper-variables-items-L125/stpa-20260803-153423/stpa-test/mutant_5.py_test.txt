@@ -1,0 +1,151 @@
+$ /Users/meganmaton/.cache/uv/archive-v0/Q1YWu4HrcUL7MC9AiUGGQ/bin/python3 -m pytest -q /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper
+# exit code: 1
+
+..................FFFF.................................................. [ 84%]
+...........F.                                                            [100%]
+=================================== FAILURES ===================================
+___________________________ test_watch_explode[True] ___________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_watch_explode(normalize):
+        class Foo:
+            def __init__(self, x, y):
+                self.x = x
+                self.y = y
+    
+>       @pysnooper.snoop(watch_explode=('_d', '_point', 'lst + []'), normalize=normalize,
+                         color=False)
+
+../PySnooper/tests/test_pysnooper.py:399: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x1086af750>, output = None
+watch = (), watch_explode = ('_d', '_point', 'lst + []'), depth = 1, prefix = ''
+overwrite = False, thread_info = False, custom_repr = ()
+max_variable_length = 100, normalize = True, relative_time = False
+color = False
+
+    def __init__(self, output=None, watch=(), watch_explode=(), depth=1,
+                 prefix='', overwrite=False, thread_info=False, custom_repr=(),
+                 max_variable_length=100, normalize=False, relative_time=False,
+                 color=sys.platform in ('linux', 'linux2', 'cygwin', 'darwin')):
+        self._write = get_write_function(output, overwrite)
+    
+        self.watch = [
+            v if isinstance(v, BaseVariable) else CommonVariable(v)
+            for v in utils.ensure_tuple(watch)
+         ] + [
+>            v if isinstance(v, BaseVariable) else Exploding(v)
+                                                   ^^^^^^^^^^^^
+             for v in utils.ensure_tuple(watch_explode)
+        ]
+E       TypeError: Can't instantiate abstract class Exploding without an implementation for abstract method '_items'
+
+../PySnooper/pysnooper/tracer.py:263: TypeError
+__________________________ test_watch_explode[False] ___________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_watch_explode(normalize):
+        class Foo:
+            def __init__(self, x, y):
+                self.x = x
+                self.y = y
+    
+>       @pysnooper.snoop(watch_explode=('_d', '_point', 'lst + []'), normalize=normalize,
+                         color=False)
+
+../PySnooper/tests/test_pysnooper.py:399: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x1088a9d10>, output = None
+watch = (), watch_explode = ('_d', '_point', 'lst + []'), depth = 1, prefix = ''
+overwrite = False, thread_info = False, custom_repr = ()
+max_variable_length = 100, normalize = False, relative_time = False
+color = False
+
+    def __init__(self, output=None, watch=(), watch_explode=(), depth=1,
+                 prefix='', overwrite=False, thread_info=False, custom_repr=(),
+                 max_variable_length=100, normalize=False, relative_time=False,
+                 color=sys.platform in ('linux', 'linux2', 'cygwin', 'darwin')):
+        self._write = get_write_function(output, overwrite)
+    
+        self.watch = [
+            v if isinstance(v, BaseVariable) else CommonVariable(v)
+            for v in utils.ensure_tuple(watch)
+         ] + [
+>            v if isinstance(v, BaseVariable) else Exploding(v)
+                                                   ^^^^^^^^^^^^
+             for v in utils.ensure_tuple(watch_explode)
+        ]
+E       TypeError: Can't instantiate abstract class Exploding without an implementation for abstract method '_items'
+
+../PySnooper/pysnooper/tracer.py:263: TypeError
+_________________________ test_variables_classes[True] _________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_variables_classes(normalize):
+        class WithSlots(object):
+            __slots__ = ('x', 'y')
+    
+            def __init__(self):
+                self.x = 3
+                self.y = 4
+    
+        @pysnooper.snoop(watch=(
+                pysnooper.Keys('_d', exclude='c'),
+>               pysnooper.Attrs('_d'),  # doesn't have attributes
+                ^^^^^^^^^^^^^^^^^^^^^
+                pysnooper.Attrs('_s'),
+                pysnooper.Indices('_lst')[-3:],
+        ), normalize=normalize, color=False)
+E       TypeError: Attrs.__init__() missing 1 required positional argument: 'exclude'
+
+../PySnooper/tests/test_pysnooper.py:456: TypeError
+________________________ test_variables_classes[False] _________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_variables_classes(normalize):
+        class WithSlots(object):
+            __slots__ = ('x', 'y')
+    
+            def __init__(self):
+                self.x = 3
+                self.y = 4
+    
+        @pysnooper.snoop(watch=(
+                pysnooper.Keys('_d', exclude='c'),
+>               pysnooper.Attrs('_d'),  # doesn't have attributes
+                ^^^^^^^^^^^^^^^^^^^^^
+                pysnooper.Attrs('_s'),
+                pysnooper.Indices('_lst')[-3:],
+        ), normalize=normalize, color=False)
+E       TypeError: Attrs.__init__() missing 1 required positional argument: 'exclude'
+
+../PySnooper/tests/test_pysnooper.py:456: TypeError
+______________________________ test_ensure_tuple _______________________________
+
+    def test_ensure_tuple():
+        x1 = ('foo', ('foo',), ['foo'], {'foo'})
+        assert set(map(ensure_tuple, x1)) == {('foo',)}
+    
+>       x2 = (pysnooper.Keys('foo'), (pysnooper.Keys('foo'),),
+              ^^^^^^^^^^^^^^^^^^^^^
+              [pysnooper.Keys('foo')], {pysnooper.Keys('foo')})
+E       TypeError: Keys.__init__() missing 1 required positional argument: 'exclude'
+
+../PySnooper/tests/test_utils/test_ensure_tuple.py:11: TypeError
+=========================== short test summary info ============================
+FAILED ../PySnooper/tests/test_pysnooper.py::test_watch_explode[True] - TypeE...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_watch_explode[False] - Type...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_variables_classes[True] - T...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_variables_classes[False] - ...
+FAILED ../PySnooper/tests/test_utils/test_ensure_tuple.py::test_ensure_tuple
+5 failed, 80 passed in 1.05s

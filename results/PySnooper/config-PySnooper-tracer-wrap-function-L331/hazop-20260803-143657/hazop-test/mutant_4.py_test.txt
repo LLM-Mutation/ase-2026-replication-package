@@ -1,0 +1,19 @@
+$ /Users/meganmaton/.cache/uv/archive-v0/Q1YWu4HrcUL7MC9AiUGGQ/bin/python3 -m pytest -q /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper
+# exit code: 2
+
+
+==================================== ERRORS ====================================
+______ ERROR collecting tests/test_multiple_files/test_multiple_files.py _______
+../PySnooper/tests/test_multiple_files/test_multiple_files.py:22: in <module>
+    from .multiple_files import foo
+../PySnooper/tests/test_multiple_files/multiple_files/foo.py:8: in <module>
+    @pysnooper.snoop(depth=2, color=False)
+     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/tracer.py:318: in __call__
+    return self._wrap_function(function_or_class)
+           ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'Tracer' object has no attribute '_wrap_function'
+=========================== short test summary info ============================
+ERROR ../PySnooper/tests/test_multiple_files/test_multiple_files.py - Attribu...
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.08s

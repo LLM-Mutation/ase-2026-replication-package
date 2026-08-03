@@ -1,0 +1,32 @@
+```dot
+digraph _items_flow {
+    node [shape=box, style=filled, fillcolor=white];
+
+    n0 [label="Start"];
+    n1 [label="Initialize\nresult = [(self.source,\n        utils.get_shortish_repr(main_value, normalize=normalize))]"];
+    n2 [label="Enter for-loop\nfor key in self._safe_keys(main_value):"];
+    n3 [label="Current key"];
+    n4 [label="Try block"];
+    n5 [label="If key in self.exclude?\n(Yes -> continue)"];
+    n6 [label="Continue to next key"];
+    n7 [label="value = self._get_value(main_value, key)"];
+    n8 [label="Except Exception\n(continue to next key)"];
+    n10 [label="Append to result\nresult.append((\n        '{}{}'.format(self.unambiguous_source, self._format_key(key)),\n        utils.get_shortish_repr(value)\n))"];
+    n11 [label="End of for-loop"];
+    n12 [label="Return result"];
+
+    n0 -> n1;
+    n1 -> n2;
+    n2 -> n3;
+    n3 -> n4;
+    n4 -> n5;
+    n5 -> n6 [label="Yes"];
+    n5 -> n7 [label="No"];
+    n7 -> n10;
+    n10 -> n2;
+    n4 -> n8 [label="Exception"];
+    n8 -> n6;
+    n2 -> n11 [label="No more keys"];
+    n11 -> n12;
+}
+```

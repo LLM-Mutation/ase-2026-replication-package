@@ -1,0 +1,21 @@
+digraph time_isoformat_flow {
+    node [shape=box];
+
+    start [label="Start\n(time, timespec)"];
+    assert_instance [label="Assert: time is datetime.time"];
+    timespec_check [label="Check timespec != 'microseconds'"];
+    raise_error [label="Raise NotImplementedError"];
+    format_result [label="Format result string"];
+    assert_len [label="Assert: len(result) == 15"];
+    return_result [label="Return result"];
+    end [label="End"];
+
+    start -> assert_instance;
+    assert_instance -> timespec_check;
+    timespec_check -> raise_error [label="True"];
+    timespec_check -> format_result [label="False"];
+    raise_error -> end;
+    format_result -> assert_len;
+    assert_len -> return_result;
+    return_result -> end;
+}

@@ -1,0 +1,6 @@
+$ /Users/meganmaton/.cache/uv/archive-v0/Q1YWu4HrcUL7MC9AiUGGQ/bin/python3 -m pytest -q /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper
+# exit code: 0
+
+........................................................................ [ 84%]
+.............                                                            [100%]
+85 passed in 0.97s

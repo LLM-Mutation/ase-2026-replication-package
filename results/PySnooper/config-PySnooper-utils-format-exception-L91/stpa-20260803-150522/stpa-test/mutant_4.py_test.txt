@@ -1,0 +1,181 @@
+$ /Users/meganmaton/.cache/uv/archive-v0/Q1YWu4HrcUL7MC9AiUGGQ/bin/python3 -m pytest -q /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper
+# exit code: 1
+
+........................................................................ [ 84%]
+.....FF......                                                            [100%]
+=================================== FAILURES ===================================
+_____________________________ test_exception_group _____________________________
+
+    @pytest.mark.skipif(sys.version_info < (3, 11),
+                        reason='ExceptionGroup requires Python 3.11+')
+    def test_exception_group():
+        string_io = io.StringIO()
+        @pysnooper.snoop(string_io, color=False)
+        def f():
+            raise ExceptionGroup('task errors', [ValueError('bad'), TypeError('wrong'), RuntimeError('fail')])
+    
+        with pytest.raises(ExceptionGroup):
+            f()
+    
+        output = string_io.getvalue()
+>       assert_output(
+            output,
+            (
+                SourcePathEntry(),
+                CallEntry(),
+                LineEntry(),
+                ExceptionEntry(),
+                ExceptionValueEntry(
+                    value_regex=r"ExceptionGroup: 'task errors' "
+                                r"\(3 sub-exceptions: ValueError, TypeError, "
+                                r"RuntimeError\)"
+                ),
+                CallEndedByExceptionEntry(),
+                ElapsedTimeEntry(),
+            )
+        )
+
+../PySnooper/tests/test_pysnooper.py:1923: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+output = '    Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/test_pysnooper.p...sub-exceptions: ValueError, TypeError, RuntimeError)\n    Call ended by exception\n    Elapsed time: 00:00:00.000115\n'
+expected_entries = (SourcePathEntry(prefix=''), CallEntry(prefix=''), LineEntry(prefix=''), ExceptionEntry(prefix=''), ExceptionValueEntr...' \\(3 sub-exceptions: ValueError, TypeError, RuntimeError\\)"), prefix=''), CallEndedByExceptionEntry(prefix=''), ...)
+prefix = None, normalize = False
+
+    def assert_output(output, expected_entries, prefix=None, normalize=False):
+        lines = tuple(filter(None, output.split('\n')))
+        if expected_entries and not lines:
+            raise OutputFailure("Output is empty")
+    
+        if prefix is not None:
+            for line in lines:
+                if not line.startswith(prefix):
+                    raise OutputFailure(line)
+    
+        if normalize:
+            verify_normalize(lines, prefix)
+    
+        # Filter only entries compatible with the current Python
+        filtered_expected_entries = []
+        for expected_entry in expected_entries:
+            if isinstance(expected_entry, _BaseEntry):
+                if expected_entry.is_compatible_with_current_python_version():
+                    filtered_expected_entries.append(expected_entry)
+            else:
+                filtered_expected_entries.append(expected_entry)
+    
+        expected_entries_count = len(filtered_expected_entries)
+        any_mismatch = False
+        result = ''
+        template = u'\n{line!s:%s}   {expected_entry}  {arrow}' % max(map(len, lines))
+        for expected_entry, line in zip_longest(filtered_expected_entries, lines, fillvalue=""):
+            mismatch = not (expected_entry and expected_entry.check(line))
+            any_mismatch |= mismatch
+            arrow = '<===' * mismatch
+            result += template.format(**locals())
+    
+        if len(lines) != expected_entries_count:
+            result += '\nOutput has {} lines, while we expect {} lines.'.format(
+                    len(lines), len(expected_entries))
+    
+        if any_mismatch:
+>           raise OutputFailure(result)
+E           tests.utils.OutputFailure: 
+E               Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/test_pysnooper.py                          SourcePathEntry(prefix='')  
+E               15:05:12.249138 call      1916     def f():                                                                                                 CallEntry(prefix='')  
+E               15:05:12.249152 line      1917         raise ExceptionGroup('task errors', [ValueError('bad'), TypeError('wrong'), RuntimeError('fail')])   LineEntry(prefix='')  
+E               15:05:12.249161 exception 1917         raise ExceptionGroup('task errors', [ValueError('bad'), TypeError('wrong'), RuntimeError('fail')])   ExceptionEntry(prefix='')  
+E               Exception:..... ExceptionGroup: '' (3 sub-exceptions: ValueError, TypeError, RuntimeError)                                                  ExceptionValueEntry(value_regex=re.compile("ExceptionGroup: 'task errors' \\(3 sub-exceptions: ValueError, TypeError, RuntimeError\\)"), prefix='')  <===
+E               Call ended by exception                                                                                                                     CallEndedByExceptionEntry(prefix='')  
+E               Elapsed time: 00:00:00.000115                                                                                                               ElapsedTimeEntry(tolerance=0.2, prefix='')
+
+../PySnooper/tests/utils.py:399: OutputFailure
+_________________________ test_nested_exception_group __________________________
+
+    @pytest.mark.skipif(sys.version_info < (3, 11),
+                        reason='ExceptionGroup requires Python 3.11+')
+    def test_nested_exception_group():
+        string_io = io.StringIO()
+        @pysnooper.snoop(string_io, color=False)
+        def f():
+            raise ExceptionGroup('outer', [ExceptionGroup('inner', [ValueError('deep')]), TypeError('shallow')])
+    
+        with pytest.raises(ExceptionGroup):
+            f()
+    
+        output = string_io.getvalue()
+>       assert_output(
+            output,
+            (
+                SourcePathEntry(),
+                CallEntry(),
+                LineEntry(),
+                ExceptionEntry(),
+                ExceptionValueEntry(
+                    value_regex=r"ExceptionGroup: 'outer' "
+                                r"\(2 sub-exceptions: ExceptionGroup, TypeError\)"
+                ),
+                CallEndedByExceptionEntry(),
+                ElapsedTimeEntry(),
+            )
+        )
+
+../PySnooper/tests/test_pysnooper.py:1953: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+output = "    Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/test_pysnooper.p...up: '' (2 sub-exceptions: ExceptionGroup, TypeError)\n    Call ended by exception\n    Elapsed time: 00:00:00.000135\n"
+expected_entries = (SourcePathEntry(prefix=''), CallEntry(prefix=''), LineEntry(prefix=''), ExceptionEntry(prefix=''), ExceptionValueEntr...up: 'outer' \\(2 sub-exceptions: ExceptionGroup, TypeError\\)"), prefix=''), CallEndedByExceptionEntry(prefix=''), ...)
+prefix = None, normalize = False
+
+    def assert_output(output, expected_entries, prefix=None, normalize=False):
+        lines = tuple(filter(None, output.split('\n')))
+        if expected_entries and not lines:
+            raise OutputFailure("Output is empty")
+    
+        if prefix is not None:
+            for line in lines:
+                if not line.startswith(prefix):
+                    raise OutputFailure(line)
+    
+        if normalize:
+            verify_normalize(lines, prefix)
+    
+        # Filter only entries compatible with the current Python
+        filtered_expected_entries = []
+        for expected_entry in expected_entries:
+            if isinstance(expected_entry, _BaseEntry):
+                if expected_entry.is_compatible_with_current_python_version():
+                    filtered_expected_entries.append(expected_entry)
+            else:
+                filtered_expected_entries.append(expected_entry)
+    
+        expected_entries_count = len(filtered_expected_entries)
+        any_mismatch = False
+        result = ''
+        template = u'\n{line!s:%s}   {expected_entry}  {arrow}' % max(map(len, lines))
+        for expected_entry, line in zip_longest(filtered_expected_entries, lines, fillvalue=""):
+            mismatch = not (expected_entry and expected_entry.check(line))
+            any_mismatch |= mismatch
+            arrow = '<===' * mismatch
+            result += template.format(**locals())
+    
+        if len(lines) != expected_entries_count:
+            result += '\nOutput has {} lines, while we expect {} lines.'.format(
+                    len(lines), len(expected_entries))
+    
+        if any_mismatch:
+>           raise OutputFailure(result)
+E           tests.utils.OutputFailure: 
+E               Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/test_pysnooper.py                            SourcePathEntry(prefix='')  
+E               15:05:12.273351 call      1946     def f():                                                                                                   CallEntry(prefix='')  
+E               15:05:12.273372 line      1947         raise ExceptionGroup('outer', [ExceptionGroup('inner', [ValueError('deep')]), TypeError('shallow')])   LineEntry(prefix='')  
+E               15:05:12.273381 exception 1947         raise ExceptionGroup('outer', [ExceptionGroup('inner', [ValueError('deep')]), TypeError('shallow')])   ExceptionEntry(prefix='')  
+E               Exception:..... ExceptionGroup: '' (2 sub-exceptions: ExceptionGroup, TypeError)                                                              ExceptionValueEntry(value_regex=re.compile("ExceptionGroup: 'outer' \\(2 sub-exceptions: ExceptionGroup, TypeError\\)"), prefix='')  <===
+E               Call ended by exception                                                                                                                       CallEndedByExceptionEntry(prefix='')  
+E               Elapsed time: 00:00:00.000135                                                                                                                 ElapsedTimeEntry(tolerance=0.2, prefix='')
+
+../PySnooper/tests/utils.py:399: OutputFailure
+=========================== short test summary info ============================
+FAILED ../PySnooper/tests/test_pysnooper.py::test_exception_group - tests.uti...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_nested_exception_group - te...
+2 failed, 83 passed in 1.05s

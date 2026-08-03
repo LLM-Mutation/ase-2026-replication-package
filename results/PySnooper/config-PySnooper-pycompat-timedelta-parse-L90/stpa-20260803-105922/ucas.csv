@@ -1,0 +1,10 @@
+1. replace replaces provides too early '.' replacement before input format validation.  
+2. split splits does not provide delimiter presence check, leading to empty parts.  
+3. map_int maps out of order mapping of parts to int when string has more than expected parts.  
+4. assign assigns stopped too soon assigning to hours, minutes, seconds, microseconds if mapping returned fewer parts.  
+5. return returns applied for too long returning incomplete timedelta before all parts validated.  
+6. start starts does not provide initial format validation of time string.  
+7. replace replaces applied for too long replacing all '.' characters including timezone offsets.  
+8. split splits too early splitting on ':' before replace due to misordered call.  
+9. map_int maps too late mapping integer conversion after other processing, causing race conditions.  
+10. return returns too late returning after garbage collection of input string.

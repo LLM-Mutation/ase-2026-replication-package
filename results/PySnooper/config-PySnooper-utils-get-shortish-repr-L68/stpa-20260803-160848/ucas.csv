@@ -1,0 +1,10 @@
+1. get_repr calls provides when get_repr_function is invoked too early
+2. try_block executes does not provide r when repr_function raises exception
+3. replace_block replaces out of order when replace executed before normalize_block
+4. normalize_block calls too early when normalize_cond is false
+5. truncate_block truncates too late when max_length is set but truncation occurs after return
+6. return_block returns stopped too soon when return executed before truncate_block
+7. normalize_cond checks applied for too long when condition evaluated too frequently
+8. except_block sets does not provide r when exception suppressed
+9. get_repr calls too early when custom_repr missing
+10. truncate_block truncates applied for too long when truncate called in loop

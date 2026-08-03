@@ -1,0 +1,21 @@
+```dot
+digraph subclasshook {
+  node [shape=box, style=rounded];
+  start [label="Start __subclasshook__(cls, subclass)"];
+  check_fspath [label="hasattr(subclass, '__fspath__')"];
+  return_true_fspath [label="Return True"];
+  check_open [label="hasattr(subclass, 'open')"];
+  return_false_no_open [label="Return False"];
+  check_path_in_name [label="'path' in subclass.__name__.lower()"];
+  return_true_path [label="Return True"];
+  return_false_no_path [label="Return False"];
+
+  start -> check_fspath;
+  check_fspath -> return_true_fspath [label="True"];
+  check_fspath -> check_open [label="False"];
+  check_open -> return_false_no_open [label="False"];
+  check_open -> check_path_in_name [label="True"];
+  check_path_in_name -> return_true_path [label="True"];
+  check_path_in_name -> return_false_no_path [label="False"];
+}
+```

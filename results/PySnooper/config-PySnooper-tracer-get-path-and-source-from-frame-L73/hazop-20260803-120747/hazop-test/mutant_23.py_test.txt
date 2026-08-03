@@ -1,0 +1,982 @@
+$ /Users/meganmaton/.cache/uv/archive-v0/Q1YWu4HrcUL7MC9AiUGGQ/bin/python3 -m pytest -q /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper
+# exit code: 1
+
+F....F.F..F...............................F.............F............... [ 84%]
+........FFF..                                                            [100%]
+=================================== FAILURES ===================================
+_________________________________ test_chinese _________________________________
+
+    def test_chinese():
+        with mini_toolbox.create_temp_folder(prefix='pysnooper') as folder:
+            path = folder / 'foo.log'
+            @pysnooper.snoop(path, color=False)
+            def foo():
+                a = 1
+                x = '失败'
+                return 7
+    
+>           foo()
+
+../PySnooper/tests/test_chinese.py:35: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:330: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/tests/test_chinese.py:29: in foo
+    @pysnooper.snoop(path, color=False)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x106cbb110>
+frame = <frame at 0x106d1efb0, file '/Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/test_chinese.py', line 29, code foo>
+event = 'call', arg = None
+
+    def trace(self, frame, event, arg):
+    
+        ### Checking whether we should trace this line: #######################
+        #                                                                     #
+        # We should trace this line either if it's in the decorated function,
+        # or the user asked to go a few levels deeper and we're within that
+        # number of levels deeper.
+    
+        if not (frame.f_code in self.target_codes or frame in self.target_frames):
+            if self.depth == 1:
+                # We did the most common and quickest check above, because the
+                # trace function runs so incredibly often, therefore it's
+                # crucial to hyper-optimize it for the common case.
+                return None
+            elif self._is_internal_frame(frame):
+                return None
+            else:
+                _frame_candidate = frame
+                for i in range(1, self.depth):
+                    _frame_candidate = _frame_candidate.f_back
+                    if _frame_candidate is None:
+                        return None
+                    elif _frame_candidate.f_code in self.target_codes or _frame_candidate in self.target_frames:
+                        break
+                else:
+                    return None
+    
+        #                                                                     #
+        ### Finished checking whether we should trace this line. ##############
+    
+        if event == 'call':
+            thread_global.depth += 1
+        indent = ' ' * 4 * thread_global.depth
+    
+        _FOREGROUND_BLUE = self._FOREGROUND_BLUE
+        _FOREGROUND_CYAN = self._FOREGROUND_CYAN
+        _FOREGROUND_GREEN = self._FOREGROUND_GREEN
+        _FOREGROUND_MAGENTA = self._FOREGROUND_MAGENTA
+        _FOREGROUND_RED = self._FOREGROUND_RED
+        _FOREGROUND_RESET = self._FOREGROUND_RESET
+        _FOREGROUND_YELLOW = self._FOREGROUND_YELLOW
+        _STYLE_BRIGHT = self._STYLE_BRIGHT
+        _STYLE_DIM = self._STYLE_DIM
+        _STYLE_NORMAL = self._STYLE_NORMAL
+        _STYLE_RESET_ALL = self._STYLE_RESET_ALL
+    
+        ### Making timestamp: #################################################
+        #                                                                     #
+        if self.normalize:
+            timestamp = ' ' * 15
+        elif self.relative_time:
+            try:
+                start_time = self.start_times[frame]
+            except KeyError:
+                start_time = self.start_times[frame] = \
+                                                 datetime_module.datetime.now()
+            duration = datetime_module.datetime.now() - start_time
+            timestamp = pycompat.timedelta_format(duration)
+        else:
+            timestamp = pycompat.time_isoformat(
+                datetime_module.datetime.now().time(),
+                timespec='microseconds'
+            )
+        #                                                                     #
+        ### Finished making timestamp. ########################################
+    
+        line_no = frame.f_lineno
+>       source_path, source = get_path_and_source_from_frame(frame)
+        ^^^^^^^^^^^^^^^^^^^
+E       ValueError: too many values to unpack (expected 2)
+
+../PySnooper/pysnooper/tracer.py:480: ValueError
+______________ test_unstarted_generator_close_is_not_an_exception ______________
+
+    def test_unstarted_generator_close_is_not_an_exception():
+        string_io = io.StringIO()
+    
+        def gen(n):
+            for i in range(n):
+                yield i
+    
+        @pysnooper.snoop(string_io, depth=2, color=False)
+        def main():
+            g = gen(5)
+            g.close()
+            return 42
+    
+>       assert main() == 42
+               ^^^^^^
+
+../PySnooper/tests/test_ended_by_exception.py:59: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:330: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/tests/test_ended_by_exception.py:53: in main
+    @pysnooper.snoop(string_io, depth=2, color=False)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x106cbbed0>
+frame = <frame at 0x106f35f00, file '/Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/test_ended_by_exception.py', line 53, code main>
+event = 'call', arg = None
+
+    def trace(self, frame, event, arg):
+    
+        ### Checking whether we should trace this line: #######################
+        #                                                                     #
+        # We should trace this line either if it's in the decorated function,
+        # or the user asked to go a few levels deeper and we're within that
+        # number of levels deeper.
+    
+        if not (frame.f_code in self.target_codes or frame in self.target_frames):
+            if self.depth == 1:
+                # We did the most common and quickest check above, because the
+                # trace function runs so incredibly often, therefore it's
+                # crucial to hyper-optimize it for the common case.
+                return None
+            elif self._is_internal_frame(frame):
+                return None
+            else:
+                _frame_candidate = frame
+                for i in range(1, self.depth):
+                    _frame_candidate = _frame_candidate.f_back
+                    if _frame_candidate is None:
+                        return None
+                    elif _frame_candidate.f_code in self.target_codes or _frame_candidate in self.target_frames:
+                        break
+                else:
+                    return None
+    
+        #                                                                     #
+        ### Finished checking whether we should trace this line. ##############
+    
+        if event == 'call':
+            thread_global.depth += 1
+        indent = ' ' * 4 * thread_global.depth
+    
+        _FOREGROUND_BLUE = self._FOREGROUND_BLUE
+        _FOREGROUND_CYAN = self._FOREGROUND_CYAN
+        _FOREGROUND_GREEN = self._FOREGROUND_GREEN
+        _FOREGROUND_MAGENTA = self._FOREGROUND_MAGENTA
+        _FOREGROUND_RED = self._FOREGROUND_RED
+        _FOREGROUND_RESET = self._FOREGROUND_RESET
+        _FOREGROUND_YELLOW = self._FOREGROUND_YELLOW
+        _STYLE_BRIGHT = self._STYLE_BRIGHT
+        _STYLE_DIM = self._STYLE_DIM
+        _STYLE_NORMAL = self._STYLE_NORMAL
+        _STYLE_RESET_ALL = self._STYLE_RESET_ALL
+    
+        ### Making timestamp: #################################################
+        #                                                                     #
+        if self.normalize:
+            timestamp = ' ' * 15
+        elif self.relative_time:
+            try:
+                start_time = self.start_times[frame]
+            except KeyError:
+                start_time = self.start_times[frame] = \
+                                                 datetime_module.datetime.now()
+            duration = datetime_module.datetime.now() - start_time
+            timestamp = pycompat.timedelta_format(duration)
+        else:
+            timestamp = pycompat.time_isoformat(
+                datetime_module.datetime.now().time(),
+                timespec='microseconds'
+            )
+        #                                                                     #
+        ### Finished making timestamp. ########################################
+    
+        line_no = frame.f_lineno
+>       source_path, source = get_path_and_source_from_frame(frame)
+        ^^^^^^^^^^^^^^^^^^^
+E       ValueError: too many values to unpack (expected 2)
+
+../PySnooper/pysnooper/tracer.py:480: ValueError
+_____________________________ test_multiple_files ______________________________
+
+    def test_multiple_files():
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+>           result = foo.foo_function()
+                     ^^^^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_multiple_files/test_multiple_files.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:330: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/tests/test_multiple_files/multiple_files/foo.py:8: in foo_function
+    @pysnooper.snoop(depth=2, color=False)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x106e370e0>
+frame = <frame at 0x106f36380, file '/Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/test_multiple_files/multiple_files/foo.py', line 8, code foo_function>
+event = 'call', arg = None
+
+    def trace(self, frame, event, arg):
+    
+        ### Checking whether we should trace this line: #######################
+        #                                                                     #
+        # We should trace this line either if it's in the decorated function,
+        # or the user asked to go a few levels deeper and we're within that
+        # number of levels deeper.
+    
+        if not (frame.f_code in self.target_codes or frame in self.target_frames):
+            if self.depth == 1:
+                # We did the most common and quickest check above, because the
+                # trace function runs so incredibly often, therefore it's
+                # crucial to hyper-optimize it for the common case.
+                return None
+            elif self._is_internal_frame(frame):
+                return None
+            else:
+                _frame_candidate = frame
+                for i in range(1, self.depth):
+                    _frame_candidate = _frame_candidate.f_back
+                    if _frame_candidate is None:
+                        return None
+                    elif _frame_candidate.f_code in self.target_codes or _frame_candidate in self.target_frames:
+                        break
+                else:
+                    return None
+    
+        #                                                                     #
+        ### Finished checking whether we should trace this line. ##############
+    
+        if event == 'call':
+            thread_global.depth += 1
+        indent = ' ' * 4 * thread_global.depth
+    
+        _FOREGROUND_BLUE = self._FOREGROUND_BLUE
+        _FOREGROUND_CYAN = self._FOREGROUND_CYAN
+        _FOREGROUND_GREEN = self._FOREGROUND_GREEN
+        _FOREGROUND_MAGENTA = self._FOREGROUND_MAGENTA
+        _FOREGROUND_RED = self._FOREGROUND_RED
+        _FOREGROUND_RESET = self._FOREGROUND_RESET
+        _FOREGROUND_YELLOW = self._FOREGROUND_YELLOW
+        _STYLE_BRIGHT = self._STYLE_BRIGHT
+        _STYLE_DIM = self._STYLE_DIM
+        _STYLE_NORMAL = self._STYLE_NORMAL
+        _STYLE_RESET_ALL = self._STYLE_RESET_ALL
+    
+        ### Making timestamp: #################################################
+        #                                                                     #
+        if self.normalize:
+            timestamp = ' ' * 15
+        elif self.relative_time:
+            try:
+                start_time = self.start_times[frame]
+            except KeyError:
+                start_time = self.start_times[frame] = \
+                                                 datetime_module.datetime.now()
+            duration = datetime_module.datetime.now() - start_time
+            timestamp = pycompat.timedelta_format(duration)
+        else:
+            timestamp = pycompat.time_isoformat(
+                datetime_module.datetime.now().time(),
+                timespec='microseconds'
+            )
+        #                                                                     #
+        ### Finished making timestamp. ########################################
+    
+        line_no = frame.f_lineno
+>       source_path, source = get_path_and_source_from_frame(frame)
+        ^^^^^^^^^^^^^^^^^^^
+E       ValueError: too many values to unpack (expected 2)
+
+../PySnooper/pysnooper/tracer.py:480: ValueError
+________________________________ test_string_io ________________________________
+
+    def test_string_io():
+        string_io = io.StringIO()
+    
+        @pysnooper.snoop(string_io, color=False)
+        def my_function(foo):
+            x = 7
+            y = 8
+            return y + x
+    
+>       result = my_function('baba')
+                 ^^^^^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:35: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:330: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/tests/test_pysnooper.py:29: in my_function
+    @pysnooper.snoop(string_io, color=False)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x106ebed50>
+frame = <frame at 0x106f362c0, file '/Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/test_pysnooper.py', line 29, code my_function>
+event = 'call', arg = None
+
+    def trace(self, frame, event, arg):
+    
+        ### Checking whether we should trace this line: #######################
+        #                                                                     #
+        # We should trace this line either if it's in the decorated function,
+        # or the user asked to go a few levels deeper and we're within that
+        # number of levels deeper.
+    
+        if not (frame.f_code in self.target_codes or frame in self.target_frames):
+            if self.depth == 1:
+                # We did the most common and quickest check above, because the
+                # trace function runs so incredibly often, therefore it's
+                # crucial to hyper-optimize it for the common case.
+                return None
+            elif self._is_internal_frame(frame):
+                return None
+            else:
+                _frame_candidate = frame
+                for i in range(1, self.depth):
+                    _frame_candidate = _frame_candidate.f_back
+                    if _frame_candidate is None:
+                        return None
+                    elif _frame_candidate.f_code in self.target_codes or _frame_candidate in self.target_frames:
+                        break
+                else:
+                    return None
+    
+        #                                                                     #
+        ### Finished checking whether we should trace this line. ##############
+    
+        if event == 'call':
+            thread_global.depth += 1
+        indent = ' ' * 4 * thread_global.depth
+    
+        _FOREGROUND_BLUE = self._FOREGROUND_BLUE
+        _FOREGROUND_CYAN = self._FOREGROUND_CYAN
+        _FOREGROUND_GREEN = self._FOREGROUND_GREEN
+        _FOREGROUND_MAGENTA = self._FOREGROUND_MAGENTA
+        _FOREGROUND_RED = self._FOREGROUND_RED
+        _FOREGROUND_RESET = self._FOREGROUND_RESET
+        _FOREGROUND_YELLOW = self._FOREGROUND_YELLOW
+        _STYLE_BRIGHT = self._STYLE_BRIGHT
+        _STYLE_DIM = self._STYLE_DIM
+        _STYLE_NORMAL = self._STYLE_NORMAL
+        _STYLE_RESET_ALL = self._STYLE_RESET_ALL
+    
+        ### Making timestamp: #################################################
+        #                                                                     #
+        if self.normalize:
+            timestamp = ' ' * 15
+        elif self.relative_time:
+            try:
+                start_time = self.start_times[frame]
+            except KeyError:
+                start_time = self.start_times[frame] = \
+                                                 datetime_module.datetime.now()
+            duration = datetime_module.datetime.now() - start_time
+            timestamp = pycompat.timedelta_format(duration)
+        else:
+            timestamp = pycompat.time_isoformat(
+                datetime_module.datetime.now().time(),
+                timespec='microseconds'
+            )
+        #                                                                     #
+        ### Finished making timestamp. ########################################
+    
+        line_no = frame.f_lineno
+>       source_path, source = get_path_and_source_from_frame(frame)
+        ^^^^^^^^^^^^^^^^^^^
+E       ValueError: too many values to unpack (expected 2)
+
+../PySnooper/pysnooper/tracer.py:480: ValueError
+___________________________ test_unavailable_source ____________________________
+
+    def test_unavailable_source():
+        with mini_toolbox.create_temp_folder(prefix='pysnooper') as folder, \
+                                        mini_toolbox.TempSysPathAdder(str(folder)):
+            module_name = 'iaerojajsijf'
+            python_file_path = folder / ('%s.py' % (module_name,))
+            content = textwrap.dedent(u'''
+                import pysnooper
+                @pysnooper.snoop(color=False)
+                def f(x):
+                    return x
+            ''')
+            with python_file_path.open('w') as python_file:
+                python_file.write(content)
+            module = __import__(module_name)
+            python_file_path.unlink()
+            with mini_toolbox.OutputCapturer(stdout=False,
+                                             stderr=True) as output_capturer:
+>               result = getattr(module, 'f')(7)
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:882: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:330: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+/var/folders/sl/yzy0v54s79q0hkrg6fzrf93h0000gn/T/pysnooper0i1ik46b/iaerojajsijf.py:3: in f
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x106ebefd0>
+frame = <frame at 0x10708ceb0, file '/var/folders/sl/yzy0v54s79q0hkrg6fzrf93h0000gn/T/pysnooper0i1ik46b/iaerojajsijf.py', line 3, code f>
+event = 'call', arg = None
+
+    def trace(self, frame, event, arg):
+    
+        ### Checking whether we should trace this line: #######################
+        #                                                                     #
+        # We should trace this line either if it's in the decorated function,
+        # or the user asked to go a few levels deeper and we're within that
+        # number of levels deeper.
+    
+        if not (frame.f_code in self.target_codes or frame in self.target_frames):
+            if self.depth == 1:
+                # We did the most common and quickest check above, because the
+                # trace function runs so incredibly often, therefore it's
+                # crucial to hyper-optimize it for the common case.
+                return None
+            elif self._is_internal_frame(frame):
+                return None
+            else:
+                _frame_candidate = frame
+                for i in range(1, self.depth):
+                    _frame_candidate = _frame_candidate.f_back
+                    if _frame_candidate is None:
+                        return None
+                    elif _frame_candidate.f_code in self.target_codes or _frame_candidate in self.target_frames:
+                        break
+                else:
+                    return None
+    
+        #                                                                     #
+        ### Finished checking whether we should trace this line. ##############
+    
+        if event == 'call':
+            thread_global.depth += 1
+        indent = ' ' * 4 * thread_global.depth
+    
+        _FOREGROUND_BLUE = self._FOREGROUND_BLUE
+        _FOREGROUND_CYAN = self._FOREGROUND_CYAN
+        _FOREGROUND_GREEN = self._FOREGROUND_GREEN
+        _FOREGROUND_MAGENTA = self._FOREGROUND_MAGENTA
+        _FOREGROUND_RED = self._FOREGROUND_RED
+        _FOREGROUND_RESET = self._FOREGROUND_RESET
+        _FOREGROUND_YELLOW = self._FOREGROUND_YELLOW
+        _STYLE_BRIGHT = self._STYLE_BRIGHT
+        _STYLE_DIM = self._STYLE_DIM
+        _STYLE_NORMAL = self._STYLE_NORMAL
+        _STYLE_RESET_ALL = self._STYLE_RESET_ALL
+    
+        ### Making timestamp: #################################################
+        #                                                                     #
+        if self.normalize:
+            timestamp = ' ' * 15
+        elif self.relative_time:
+            try:
+                start_time = self.start_times[frame]
+            except KeyError:
+                start_time = self.start_times[frame] = \
+                                                 datetime_module.datetime.now()
+            duration = datetime_module.datetime.now() - start_time
+            timestamp = pycompat.timedelta_format(duration)
+        else:
+            timestamp = pycompat.time_isoformat(
+                datetime_module.datetime.now().time(),
+                timespec='microseconds'
+            )
+        #                                                                     #
+        ### Finished making timestamp. ########################################
+    
+        line_no = frame.f_lineno
+>       source_path, source = get_path_and_source_from_frame(frame)
+        ^^^^^^^^^^^^^^^^^^^
+E       ValueError: too many values to unpack (expected 2)
+
+../PySnooper/pysnooper/tracer.py:480: ValueError
+_______________________________ test_indentation _______________________________
+
+    def test_indentation():
+        from .samples import indentation, recursion
+>       assert_sample_output(indentation)
+
+../PySnooper/tests/test_pysnooper.py:1335: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/tests/mini_toolbox/contextlib.py:97: in __exit__
+    self.gen.throw(type, value, traceback)
+../PySnooper/tests/mini_toolbox/__init__.py:15: in BlankContextManager
+    yield
+../PySnooper/tests/utils.py:405: in assert_sample_output
+    module.main()
+../PySnooper/pysnooper/tracer.py:330: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/tests/samples/indentation.py:4: in main
+    @pysnooper.snoop(depth=2, color=False)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x106ebf750>
+frame = <frame at 0x10708f110, file '/Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/samples/indentation.py', line 4, code main>
+event = 'call', arg = None
+
+    def trace(self, frame, event, arg):
+    
+        ### Checking whether we should trace this line: #######################
+        #                                                                     #
+        # We should trace this line either if it's in the decorated function,
+        # or the user asked to go a few levels deeper and we're within that
+        # number of levels deeper.
+    
+        if not (frame.f_code in self.target_codes or frame in self.target_frames):
+            if self.depth == 1:
+                # We did the most common and quickest check above, because the
+                # trace function runs so incredibly often, therefore it's
+                # crucial to hyper-optimize it for the common case.
+                return None
+            elif self._is_internal_frame(frame):
+                return None
+            else:
+                _frame_candidate = frame
+                for i in range(1, self.depth):
+                    _frame_candidate = _frame_candidate.f_back
+                    if _frame_candidate is None:
+                        return None
+                    elif _frame_candidate.f_code in self.target_codes or _frame_candidate in self.target_frames:
+                        break
+                else:
+                    return None
+    
+        #                                                                     #
+        ### Finished checking whether we should trace this line. ##############
+    
+        if event == 'call':
+            thread_global.depth += 1
+        indent = ' ' * 4 * thread_global.depth
+    
+        _FOREGROUND_BLUE = self._FOREGROUND_BLUE
+        _FOREGROUND_CYAN = self._FOREGROUND_CYAN
+        _FOREGROUND_GREEN = self._FOREGROUND_GREEN
+        _FOREGROUND_MAGENTA = self._FOREGROUND_MAGENTA
+        _FOREGROUND_RED = self._FOREGROUND_RED
+        _FOREGROUND_RESET = self._FOREGROUND_RESET
+        _FOREGROUND_YELLOW = self._FOREGROUND_YELLOW
+        _STYLE_BRIGHT = self._STYLE_BRIGHT
+        _STYLE_DIM = self._STYLE_DIM
+        _STYLE_NORMAL = self._STYLE_NORMAL
+        _STYLE_RESET_ALL = self._STYLE_RESET_ALL
+    
+        ### Making timestamp: #################################################
+        #                                                                     #
+        if self.normalize:
+            timestamp = ' ' * 15
+        elif self.relative_time:
+            try:
+                start_time = self.start_times[frame]
+            except KeyError:
+                start_time = self.start_times[frame] = \
+                                                 datetime_module.datetime.now()
+            duration = datetime_module.datetime.now() - start_time
+            timestamp = pycompat.timedelta_format(duration)
+        else:
+            timestamp = pycompat.time_isoformat(
+                datetime_module.datetime.now().time(),
+                timespec='microseconds'
+            )
+        #                                                                     #
+        ### Finished making timestamp. ########################################
+    
+        line_no = frame.f_lineno
+>       source_path, source = get_path_and_source_from_frame(frame)
+        ^^^^^^^^^^^^^^^^^^^
+E       ValueError: too many values to unpack (expected 2)
+
+../PySnooper/pysnooper/tracer.py:480: ValueError
+______________________________ test_valid_zipfile ______________________________
+
+    def test_valid_zipfile():
+        with mini_toolbox.create_temp_folder(prefix='pysnooper') as folder, \
+                                        mini_toolbox.TempSysPathAdder(str(folder)):
+            module_name = 'my_valid_zip_module'
+            zip_name = 'valid.zip'
+            zip_base_path = mini_toolbox.pathlib.Path('ansible/modules')
+            python_file_path = folder / zip_name / zip_base_path / ('%s.py' % (module_name))
+            os.makedirs(str(folder / zip_name / zip_base_path))
+            try:
+                sys.path.insert(0, str(folder / zip_name / zip_base_path))
+                content = textwrap.dedent(u'''
+                    import pysnooper
+                    @pysnooper.snoop(color=False)
+                    def f(x):
+                        return x
+                ''')
+    
+                python_file_path.write_text(content)
+    
+                module = __import__(module_name)
+    
+                with zipfile.ZipFile(str(folder / 'foo_bar.zip'), 'w') as myZipFile:
+                    myZipFile.write(str(folder / zip_name / zip_base_path / ('%s.py' % (module_name))), \
+                                    '%s/%s.py' % (zip_base_path, module_name,), \
+                                    zipfile.ZIP_DEFLATED)
+    
+                python_file_path.unlink()
+                folder.joinpath(zip_name).rename(folder.joinpath('%s.delete' % (zip_name)))
+                folder.joinpath('foo_bar.zip').rename(folder.joinpath(zip_name))
+    
+                with mini_toolbox.OutputCapturer(stdout=False,
+                                                 stderr=True) as output_capturer:
+>                   result = getattr(module, 'f')(7)
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:2011: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:330: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+/var/folders/sl/yzy0v54s79q0hkrg6fzrf93h0000gn/T/pysnooperegisjkfg/valid.zip/ansible/modules/my_valid_zip_module.py:3: in f
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x107058cd0>
+frame = <frame at 0x10702ea30, file '/var/folders/sl/yzy0v54s79q0hkrg6fzrf93h0000gn/T/pysnooperegisjkfg/valid.zip/ansible/modules/my_valid_zip_module.py', line 3, code f>
+event = 'call', arg = None
+
+    def trace(self, frame, event, arg):
+    
+        ### Checking whether we should trace this line: #######################
+        #                                                                     #
+        # We should trace this line either if it's in the decorated function,
+        # or the user asked to go a few levels deeper and we're within that
+        # number of levels deeper.
+    
+        if not (frame.f_code in self.target_codes or frame in self.target_frames):
+            if self.depth == 1:
+                # We did the most common and quickest check above, because the
+                # trace function runs so incredibly often, therefore it's
+                # crucial to hyper-optimize it for the common case.
+                return None
+            elif self._is_internal_frame(frame):
+                return None
+            else:
+                _frame_candidate = frame
+                for i in range(1, self.depth):
+                    _frame_candidate = _frame_candidate.f_back
+                    if _frame_candidate is None:
+                        return None
+                    elif _frame_candidate.f_code in self.target_codes or _frame_candidate in self.target_frames:
+                        break
+                else:
+                    return None
+    
+        #                                                                     #
+        ### Finished checking whether we should trace this line. ##############
+    
+        if event == 'call':
+            thread_global.depth += 1
+        indent = ' ' * 4 * thread_global.depth
+    
+        _FOREGROUND_BLUE = self._FOREGROUND_BLUE
+        _FOREGROUND_CYAN = self._FOREGROUND_CYAN
+        _FOREGROUND_GREEN = self._FOREGROUND_GREEN
+        _FOREGROUND_MAGENTA = self._FOREGROUND_MAGENTA
+        _FOREGROUND_RED = self._FOREGROUND_RED
+        _FOREGROUND_RESET = self._FOREGROUND_RESET
+        _FOREGROUND_YELLOW = self._FOREGROUND_YELLOW
+        _STYLE_BRIGHT = self._STYLE_BRIGHT
+        _STYLE_DIM = self._STYLE_DIM
+        _STYLE_NORMAL = self._STYLE_NORMAL
+        _STYLE_RESET_ALL = self._STYLE_RESET_ALL
+    
+        ### Making timestamp: #################################################
+        #                                                                     #
+        if self.normalize:
+            timestamp = ' ' * 15
+        elif self.relative_time:
+            try:
+                start_time = self.start_times[frame]
+            except KeyError:
+                start_time = self.start_times[frame] = \
+                                                 datetime_module.datetime.now()
+            duration = datetime_module.datetime.now() - start_time
+            timestamp = pycompat.timedelta_format(duration)
+        else:
+            timestamp = pycompat.time_isoformat(
+                datetime_module.datetime.now().time(),
+                timespec='microseconds'
+            )
+        #                                                                     #
+        ### Finished making timestamp. ########################################
+    
+        line_no = frame.f_lineno
+>       source_path, source = get_path_and_source_from_frame(frame)
+        ^^^^^^^^^^^^^^^^^^^
+E       ValueError: too many values to unpack (expected 2)
+
+../PySnooper/pysnooper/tracer.py:480: ValueError
+_____________________________ test_invalid_zipfile _____________________________
+
+    def test_invalid_zipfile():
+        with mini_toolbox.create_temp_folder(prefix='pysnooper') as folder, \
+                                        mini_toolbox.TempSysPathAdder(str(folder)):
+            module_name = 'my_invalid_zip_module'
+            zip_name = 'invalid.zip'
+            zip_base_path = mini_toolbox.pathlib.Path('invalid/modules/path')
+            python_file_path = folder / zip_name / zip_base_path / ('%s.py' % (module_name))
+            os.makedirs(str(folder / zip_name / zip_base_path))
+            try:
+                sys.path.insert(0, str(folder / zip_name / zip_base_path))
+                content = textwrap.dedent(u'''
+                    import pysnooper
+                    @pysnooper.snoop(color=False)
+                    def f(x):
+                        return x
+                ''')
+                python_file_path.write_text(content)
+    
+                module = __import__(module_name)
+    
+                with zipfile.ZipFile(str(folder / 'foo_bar.zip'), 'w') as myZipFile:
+                    myZipFile.write(str(folder / zip_name / zip_base_path / ('%s.py' % (module_name))), \
+                                    str(zip_base_path / ('%s.py' % (module_name,))), \
+                                    zipfile.ZIP_DEFLATED)
+    
+                python_file_path.unlink()
+                folder.joinpath(zip_name).rename(folder.joinpath('%s.delete' % (zip_name)))
+                folder.joinpath('foo_bar.zip').rename(folder.joinpath(zip_name))
+    
+                with mini_toolbox.OutputCapturer(stdout=False,
+                                             stderr=True) as output_capturer:
+>                   result = getattr(module, 'f')(7)
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:2062: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:330: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+/var/folders/sl/yzy0v54s79q0hkrg6fzrf93h0000gn/T/pysnooper9njxdaxv/invalid.zip/invalid/modules/path/my_invalid_zip_module.py:3: in f
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x106ebf110>
+frame = <frame at 0x106f7bd70, file '/var/folders/sl/yzy0v54s79q0hkrg6fzrf93h0000gn/T/pysnooper9njxdaxv/invalid.zip/invalid/modules/path/my_invalid_zip_module.py', line 3, code f>
+event = 'call', arg = None
+
+    def trace(self, frame, event, arg):
+    
+        ### Checking whether we should trace this line: #######################
+        #                                                                     #
+        # We should trace this line either if it's in the decorated function,
+        # or the user asked to go a few levels deeper and we're within that
+        # number of levels deeper.
+    
+        if not (frame.f_code in self.target_codes or frame in self.target_frames):
+            if self.depth == 1:
+                # We did the most common and quickest check above, because the
+                # trace function runs so incredibly often, therefore it's
+                # crucial to hyper-optimize it for the common case.
+                return None
+            elif self._is_internal_frame(frame):
+                return None
+            else:
+                _frame_candidate = frame
+                for i in range(1, self.depth):
+                    _frame_candidate = _frame_candidate.f_back
+                    if _frame_candidate is None:
+                        return None
+                    elif _frame_candidate.f_code in self.target_codes or _frame_candidate in self.target_frames:
+                        break
+                else:
+                    return None
+    
+        #                                                                     #
+        ### Finished checking whether we should trace this line. ##############
+    
+        if event == 'call':
+            thread_global.depth += 1
+        indent = ' ' * 4 * thread_global.depth
+    
+        _FOREGROUND_BLUE = self._FOREGROUND_BLUE
+        _FOREGROUND_CYAN = self._FOREGROUND_CYAN
+        _FOREGROUND_GREEN = self._FOREGROUND_GREEN
+        _FOREGROUND_MAGENTA = self._FOREGROUND_MAGENTA
+        _FOREGROUND_RED = self._FOREGROUND_RED
+        _FOREGROUND_RESET = self._FOREGROUND_RESET
+        _FOREGROUND_YELLOW = self._FOREGROUND_YELLOW
+        _STYLE_BRIGHT = self._STYLE_BRIGHT
+        _STYLE_DIM = self._STYLE_DIM
+        _STYLE_NORMAL = self._STYLE_NORMAL
+        _STYLE_RESET_ALL = self._STYLE_RESET_ALL
+    
+        ### Making timestamp: #################################################
+        #                                                                     #
+        if self.normalize:
+            timestamp = ' ' * 15
+        elif self.relative_time:
+            try:
+                start_time = self.start_times[frame]
+            except KeyError:
+                start_time = self.start_times[frame] = \
+                                                 datetime_module.datetime.now()
+            duration = datetime_module.datetime.now() - start_time
+            timestamp = pycompat.timedelta_format(duration)
+        else:
+            timestamp = pycompat.time_isoformat(
+                datetime_module.datetime.now().time(),
+                timespec='microseconds'
+            )
+        #                                                                     #
+        ### Finished making timestamp. ########################################
+    
+        line_no = frame.f_lineno
+>       source_path, source = get_path_and_source_from_frame(frame)
+        ^^^^^^^^^^^^^^^^^^^
+E       ValueError: too many values to unpack (expected 2)
+
+../PySnooper/pysnooper/tracer.py:480: ValueError
+__________________________ test_valid_damaged_zipfile __________________________
+
+    def test_valid_damaged_zipfile():
+        with mini_toolbox.create_temp_folder(prefix='pysnooper') as folder, \
+                                        mini_toolbox.TempSysPathAdder(str(folder)):
+            module_name = 'my_damaged_module'
+            zip_name = 'damaged.zip'
+            zip_base_path = mini_toolbox.pathlib.Path('ansible/modules')
+            python_file_path = folder / zip_name / zip_base_path / ('%s.py' % (module_name))
+            os.makedirs(str(folder / zip_name / zip_base_path))
+            try:
+                sys.path.insert(0, str(folder / zip_name / zip_base_path))
+                content = textwrap.dedent(u'''
+                    import pysnooper
+                    @pysnooper.snoop(color=False)
+                    def f(x):
+                        return x
+                ''')
+                python_file_path.write_text(content)
+    
+                module = __import__(module_name)
+    
+                python_file_path.unlink()
+                folder.joinpath(zip_name).rename(folder.joinpath('%s.delete' % (zip_name)))
+    
+                folder.joinpath(zip_name).write_text(u'I am not a zip file')
+    
+                with mini_toolbox.OutputCapturer(stdout=False,
+                                             stderr=True) as output_capturer:
+>                   result = getattr(module, 'f')(7)
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:2109: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:330: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+/var/folders/sl/yzy0v54s79q0hkrg6fzrf93h0000gn/T/pysnooper9w8ifvrw/damaged.zip/ansible/modules/my_damaged_module.py:3: in f
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pysnooper.tracer.Tracer object at 0x106ebe210>
+frame = <frame at 0x10702ecf0, file '/var/folders/sl/yzy0v54s79q0hkrg6fzrf93h0000gn/T/pysnooper9w8ifvrw/damaged.zip/ansible/modules/my_damaged_module.py', line 3, code f>
+event = 'call', arg = None
+
+    def trace(self, frame, event, arg):
+    
+        ### Checking whether we should trace this line: #######################
+        #                                                                     #
+        # We should trace this line either if it's in the decorated function,
+        # or the user asked to go a few levels deeper and we're within that
+        # number of levels deeper.
+    
+        if not (frame.f_code in self.target_codes or frame in self.target_frames):
+            if self.depth == 1:
+                # We did the most common and quickest check above, because the
+                # trace function runs so incredibly often, therefore it's
+                # crucial to hyper-optimize it for the common case.
+                return None
+            elif self._is_internal_frame(frame):
+                return None
+            else:
+                _frame_candidate = frame
+                for i in range(1, self.depth):
+                    _frame_candidate = _frame_candidate.f_back
+                    if _frame_candidate is None:
+                        return None
+                    elif _frame_candidate.f_code in self.target_codes or _frame_candidate in self.target_frames:
+                        break
+                else:
+                    return None
+    
+        #                                                                     #
+        ### Finished checking whether we should trace this line. ##############
+    
+        if event == 'call':
+            thread_global.depth += 1
+        indent = ' ' * 4 * thread_global.depth
+    
+        _FOREGROUND_BLUE = self._FOREGROUND_BLUE
+        _FOREGROUND_CYAN = self._FOREGROUND_CYAN
+        _FOREGROUND_GREEN = self._FOREGROUND_GREEN
+        _FOREGROUND_MAGENTA = self._FOREGROUND_MAGENTA
+        _FOREGROUND_RED = self._FOREGROUND_RED
+        _FOREGROUND_RESET = self._FOREGROUND_RESET
+        _FOREGROUND_YELLOW = self._FOREGROUND_YELLOW
+        _STYLE_BRIGHT = self._STYLE_BRIGHT
+        _STYLE_DIM = self._STYLE_DIM
+        _STYLE_NORMAL = self._STYLE_NORMAL
+        _STYLE_RESET_ALL = self._STYLE_RESET_ALL
+    
+        ### Making timestamp: #################################################
+        #                                                                     #
+        if self.normalize:
+            timestamp = ' ' * 15
+        elif self.relative_time:
+            try:
+                start_time = self.start_times[frame]
+            except KeyError:
+                start_time = self.start_times[frame] = \
+                                                 datetime_module.datetime.now()
+            duration = datetime_module.datetime.now() - start_time
+            timestamp = pycompat.timedelta_format(duration)
+        else:
+            timestamp = pycompat.time_isoformat(
+                datetime_module.datetime.now().time(),
+                timespec='microseconds'
+            )
+        #                                                                     #
+        ### Finished making timestamp. ########################################
+    
+        line_no = frame.f_lineno
+>       source_path, source = get_path_and_source_from_frame(frame)
+        ^^^^^^^^^^^^^^^^^^^
+E       ValueError: too many values to unpack (expected 2)
+
+../PySnooper/pysnooper/tracer.py:480: ValueError
+=============================== warnings summary ===============================
+tests/test_chinese.py: 1 warning
+tests/test_multiple_files/test_multiple_files.py: 1 warning
+tests/test_pysnooper.py: 9 warnings
+  /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/mini_toolbox/contextlib.py:97: DeprecationWarning: the (type, exc, tb) signature of throw() is deprecated, use the single-arg signature instead.
+    self.gen.throw(type, value, traceback)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../PySnooper/tests/test_chinese.py::test_chinese - ValueError: too man...
+FAILED ../PySnooper/tests/test_ended_by_exception.py::test_unstarted_generator_close_is_not_an_exception
+FAILED ../PySnooper/tests/test_multiple_files/test_multiple_files.py::test_multiple_files
+FAILED ../PySnooper/tests/test_pysnooper.py::test_string_io - ValueError: too...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_unavailable_source - ValueE...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_indentation - ValueError: t...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_valid_zipfile - ValueError:...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_invalid_zipfile - ValueErro...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_valid_damaged_zipfile - Val...
+9 failed, 76 passed, 11 warnings in 1.16s

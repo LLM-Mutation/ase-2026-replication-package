@@ -1,0 +1,10 @@
+1. result initialized too early before source validated  
+2. self.exclude does not provide exclusion list, causing all keys processed  
+3. key processed too early before exclusion check  
+4. value provided by _get_value does not provide due to exception  
+5. utils.get_shortish_repr does not provide representation for value, leading to None in result  
+6. self.unambiguous_source does not provide prefix, causing ambiguous key names  
+7. self._format_key does not provide formatted key, causing raw key names in result  
+8. append to result stopped too soon when exception occurs, missing key/value pair  
+9. return result applied for too long before loop completes  
+10. result appended out of order after loop instead of during iteration

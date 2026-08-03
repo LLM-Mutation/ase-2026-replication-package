@@ -1,0 +1,84 @@
+$ /Users/meganmaton/.cache/uv/archive-v0/Q1YWu4HrcUL7MC9AiUGGQ/bin/python3 -m pytest -q /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper
+# exit code: 1
+
+........................................................F............... [ 84%]
+.............                                                            [100%]
+=================================== FAILURES ===================================
+_______________________________ test_indentation _______________________________
+
+    def test_indentation():
+        from .samples import indentation, recursion
+>       assert_sample_output(indentation)
+
+../PySnooper/tests/test_pysnooper.py:1335: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+module = <module 'tests.samples.indentation' from '/Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/samples/indentation.py'>
+
+    def assert_sample_output(module):
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+            module.main()
+    
+        placeholder_time = '00:00:00.000000'
+        time_pattern = '[0-9:.]{15}'
+    
+        def normalise(out):
+            out = re.sub(time_pattern, placeholder_time, out).strip()
+            out = re.sub(
+                r'^( *)Source path:\.\.\. .*$',
+                r'\1Source path:... Whatever',
+                out,
+                flags=re.MULTILINE
+            )
+            return out
+    
+    
+        output = output_capturer.string_io.getvalue()
+    
+        try:
+>           assert (
+                    normalise(output) ==
+                    normalise(module.expected_output)
+            )
+E           AssertionError: assert 'Source path:...:00:00.000000' == 'Source path:...:00:00.000000'
+E             
+E             Skipping 98 identical leading characters in diff, use -v to show
+E                    f2()
+E             -     00:00:00.000000 call         9 def f2():
+E             ? ----
+E             + 00:00:00.000000 call         9 def f2():
+E             -     00:00:00.000000 line        10     f3()...
+E             
+E             ...Full output truncated (41 lines hidden), use '-vv' to show
+
+../PySnooper/tests/utils.py:424: AssertionError
+----------------------------- Captured stdout call -----------------------------
+
+
+Actual Output:
+
+Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/samples/indentation.py
+12:33:03.865138 call         5 def main():
+12:33:03.865205 line         6     f2()
+12:33:03.865215 call         9 def f2():
+12:33:03.865223 line        10     f3()
+Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/samples/indentation.py
+12:33:03.865238 call        18 def f4():
+12:33:03.865248 line        19     f5()
+12:33:03.865255 call        22 def f5():
+12:33:03.865262 line        23     pass
+12:33:03.865268 return      23     pass
+Return value:.. None
+12:33:03.865280 return      19     f5()
+Return value:.. None
+Elapsed time: 00:00:00.000061
+12:33:03.865308 return      10     f3()
+Return value:.. None
+12:33:03.865319 return       6     f2()
+Return value:.. None
+Elapsed time: 00:00:00.000293
+
+=========================== short test summary info ============================
+FAILED ../PySnooper/tests/test_pysnooper.py::test_indentation - AssertionErro...
+1 failed, 84 passed in 1.05s

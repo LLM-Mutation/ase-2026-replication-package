@@ -1,0 +1,10 @@
+1. cls set provides too early when check_mapping is delayed before set_keys.
+2. main_value check does not provide out of order when set_keys executes before check_mapping.
+3. check_mapping check does not provide too late when call_method runs before set_keys.
+4. set_keys set stopped too soon when check_mapping incorrectly returns No.
+5. cls set provides out of order when set_indices is invoked before check_sequence.
+6. set_indices set does not provide too early when check_sequence is delayed.
+7. set_attrs set does not provide stopped too soon when check_sequence returns No but set_attrs not executed.
+8. call_method call applied for too long when set_attrs incorrectly loops over attributes.
+9. main_value check does not provide stopped too soon when check_sequence is aborted before evaluating Sequence.
+10. cls set provides too early when main_value is not a Sequence but set_attrs still runs.

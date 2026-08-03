@@ -1,0 +1,388 @@
+$ /Users/meganmaton/.cache/uv/archive-v0/Q1YWu4HrcUL7MC9AiUGGQ/bin/python3 -m pytest -q /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper
+# exit code: 1
+
+..........................................F.............F............... [ 84%]
+........FFF..                                                            [100%]
+=================================== FAILURES ===================================
+___________________________ test_unavailable_source ____________________________
+
+self = <_frozen_importlib_external.SourceFileLoader object at 0x108cabfb0>
+fullname = 'iaerojajsijf'
+
+>   ???
+
+<frozen importlib._bootstrap_external>:1079: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <_frozen_importlib_external.SourceFileLoader object at 0x108cabfb0>
+path = '/var/folders/sl/yzy0v54s79q0hkrg6fzrf93h0000gn/T/pysnoopertxrtyto0/iaerojajsijf.py'
+
+>   ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/var/folders/sl/yzy0v54s79q0hkrg6fzrf93h0000gn/T/pysnoopertxrtyto0/iaerojajsijf.py'
+
+<frozen importlib._bootstrap_external>:1217: FileNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+    def test_unavailable_source():
+        with mini_toolbox.create_temp_folder(prefix='pysnooper') as folder, \
+                                        mini_toolbox.TempSysPathAdder(str(folder)):
+            module_name = 'iaerojajsijf'
+            python_file_path = folder / ('%s.py' % (module_name,))
+            content = textwrap.dedent(u'''
+                import pysnooper
+                @pysnooper.snoop(color=False)
+                def f(x):
+                    return x
+            ''')
+            with python_file_path.open('w') as python_file:
+                python_file.write(content)
+            module = __import__(module_name)
+            python_file_path.unlink()
+            with mini_toolbox.OutputCapturer(stdout=False,
+                                             stderr=True) as output_capturer:
+>               result = getattr(module, 'f')(7)
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:882: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:329: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+/var/folders/sl/yzy0v54s79q0hkrg6fzrf93h0000gn/T/pysnoopertxrtyto0/iaerojajsijf.py:3: in f
+    ???
+../PySnooper/pysnooper/tracer.py:479: in trace
+    source_path, source = get_path_and_source_from_frame(frame)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/tracer.py:88: in get_path_and_source_from_frame
+    source = loader.get_source(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <_frozen_importlib_external.SourceFileLoader object at 0x108cabfb0>
+fullname = 'iaerojajsijf'
+
+>   ???
+E   ImportError: source not available through get_data()
+
+<frozen importlib._bootstrap_external>:1081: ImportError
+_______________________________ test_indentation _______________________________
+
+    def test_indentation():
+        from .samples import indentation, recursion
+>       assert_sample_output(indentation)
+
+../PySnooper/tests/test_pysnooper.py:1335: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+module = <module 'tests.samples.indentation' from '/Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/samples/indentation.py'>
+
+    def assert_sample_output(module):
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+            module.main()
+    
+        placeholder_time = '00:00:00.000000'
+        time_pattern = '[0-9:.]{15}'
+    
+        def normalise(out):
+            out = re.sub(time_pattern, placeholder_time, out).strip()
+            out = re.sub(
+                r'^( *)Source path:\.\.\. .*$',
+                r'\1Source path:... Whatever',
+                out,
+                flags=re.MULTILINE
+            )
+            return out
+    
+    
+        output = output_capturer.string_io.getvalue()
+    
+        try:
+>           assert (
+                    normalise(output) ==
+                    normalise(module.expected_output)
+            )
+E           AssertionError: assert 'Source path:...:00:00.000000' == 'Source path:...:00:00.000000'
+E             
+E               Source path:... Whatever
+E             - 00:00:00.000000 call         5 def main():
+E             +     00:00:00.000000 call         5 def main():
+E             ? ++++
+E             - 00:00:00.000000 line         6     f2()
+E             +     00:00:00.000000 line         6     f2()...
+E             
+E             ...Full output truncated (45 lines hidden), use '-vv' to show
+
+../PySnooper/tests/utils.py:424: AssertionError
+----------------------------- Captured stdout call -----------------------------
+
+
+Actual Output:
+
+    Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/samples/indentation.py
+    12:06:59.930574 call         5 def main():
+    12:06:59.930628 line         6     f2()
+        12:06:59.930637 call         9 def f2():
+        12:06:59.930645 line        10     f3()
+            Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/samples/indentation.py
+            12:06:59.930658 call        18 def f4():
+            12:06:59.930667 line        19     f5()
+                12:06:59.930673 call        22 def f5():
+                12:06:59.930679 line        23     pass
+                12:06:59.930685 return      23     pass
+                Return value:.. None
+            12:06:59.930695 return      19     f5()
+            Return value:.. None
+            Elapsed time: 00:00:00.000052
+        12:06:59.930718 return      10     f3()
+        Return value:.. None
+    12:06:59.930727 return       6     f2()
+    Return value:.. None
+    Elapsed time: 00:00:00.000256
+
+______________________________ test_valid_zipfile ______________________________
+
+self = <_frozen_importlib_external.SourceFileLoader object at 0x1092e7470>
+fullname = 'my_valid_zip_module'
+
+>   ???
+
+<frozen importlib._bootstrap_external>:1079: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <_frozen_importlib_external.SourceFileLoader object at 0x1092e7470>
+path = '/var/folders/sl/yzy0v54s79q0hkrg6fzrf93h0000gn/T/pysnooper485f8fz4/valid.zip/ansible/modules/my_valid_zip_module.py'
+
+>   ???
+E   NotADirectoryError: [Errno 20] Not a directory: '/var/folders/sl/yzy0v54s79q0hkrg6fzrf93h0000gn/T/pysnooper485f8fz4/valid.zip/ansible/modules/my_valid_zip_module.py'
+
+<frozen importlib._bootstrap_external>:1217: NotADirectoryError
+
+The above exception was the direct cause of the following exception:
+
+    def test_valid_zipfile():
+        with mini_toolbox.create_temp_folder(prefix='pysnooper') as folder, \
+                                        mini_toolbox.TempSysPathAdder(str(folder)):
+            module_name = 'my_valid_zip_module'
+            zip_name = 'valid.zip'
+            zip_base_path = mini_toolbox.pathlib.Path('ansible/modules')
+            python_file_path = folder / zip_name / zip_base_path / ('%s.py' % (module_name))
+            os.makedirs(str(folder / zip_name / zip_base_path))
+            try:
+                sys.path.insert(0, str(folder / zip_name / zip_base_path))
+                content = textwrap.dedent(u'''
+                    import pysnooper
+                    @pysnooper.snoop(color=False)
+                    def f(x):
+                        return x
+                ''')
+    
+                python_file_path.write_text(content)
+    
+                module = __import__(module_name)
+    
+                with zipfile.ZipFile(str(folder / 'foo_bar.zip'), 'w') as myZipFile:
+                    myZipFile.write(str(folder / zip_name / zip_base_path / ('%s.py' % (module_name))), \
+                                    '%s/%s.py' % (zip_base_path, module_name,), \
+                                    zipfile.ZIP_DEFLATED)
+    
+                python_file_path.unlink()
+                folder.joinpath(zip_name).rename(folder.joinpath('%s.delete' % (zip_name)))
+                folder.joinpath('foo_bar.zip').rename(folder.joinpath(zip_name))
+    
+                with mini_toolbox.OutputCapturer(stdout=False,
+                                                 stderr=True) as output_capturer:
+>                   result = getattr(module, 'f')(7)
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:2011: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:329: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+/var/folders/sl/yzy0v54s79q0hkrg6fzrf93h0000gn/T/pysnooper485f8fz4/valid.zip/ansible/modules/my_valid_zip_module.py:3: in f
+    ???
+../PySnooper/pysnooper/tracer.py:479: in trace
+    source_path, source = get_path_and_source_from_frame(frame)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/tracer.py:88: in get_path_and_source_from_frame
+    source = loader.get_source(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <_frozen_importlib_external.SourceFileLoader object at 0x1092e7470>
+fullname = 'my_valid_zip_module'
+
+>   ???
+E   ImportError: source not available through get_data()
+
+<frozen importlib._bootstrap_external>:1081: ImportError
+_____________________________ test_invalid_zipfile _____________________________
+
+self = <_frozen_importlib_external.SourceFileLoader object at 0x1092e7590>
+fullname = 'my_invalid_zip_module'
+
+>   ???
+
+<frozen importlib._bootstrap_external>:1079: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <_frozen_importlib_external.SourceFileLoader object at 0x1092e7590>
+path = '/var/folders/sl/yzy0v54s79q0hkrg6fzrf93h0000gn/T/pysnooperxl8toztf/invalid.zip/invalid/modules/path/my_invalid_zip_module.py'
+
+>   ???
+E   NotADirectoryError: [Errno 20] Not a directory: '/var/folders/sl/yzy0v54s79q0hkrg6fzrf93h0000gn/T/pysnooperxl8toztf/invalid.zip/invalid/modules/path/my_invalid_zip_module.py'
+
+<frozen importlib._bootstrap_external>:1217: NotADirectoryError
+
+The above exception was the direct cause of the following exception:
+
+    def test_invalid_zipfile():
+        with mini_toolbox.create_temp_folder(prefix='pysnooper') as folder, \
+                                        mini_toolbox.TempSysPathAdder(str(folder)):
+            module_name = 'my_invalid_zip_module'
+            zip_name = 'invalid.zip'
+            zip_base_path = mini_toolbox.pathlib.Path('invalid/modules/path')
+            python_file_path = folder / zip_name / zip_base_path / ('%s.py' % (module_name))
+            os.makedirs(str(folder / zip_name / zip_base_path))
+            try:
+                sys.path.insert(0, str(folder / zip_name / zip_base_path))
+                content = textwrap.dedent(u'''
+                    import pysnooper
+                    @pysnooper.snoop(color=False)
+                    def f(x):
+                        return x
+                ''')
+                python_file_path.write_text(content)
+    
+                module = __import__(module_name)
+    
+                with zipfile.ZipFile(str(folder / 'foo_bar.zip'), 'w') as myZipFile:
+                    myZipFile.write(str(folder / zip_name / zip_base_path / ('%s.py' % (module_name))), \
+                                    str(zip_base_path / ('%s.py' % (module_name,))), \
+                                    zipfile.ZIP_DEFLATED)
+    
+                python_file_path.unlink()
+                folder.joinpath(zip_name).rename(folder.joinpath('%s.delete' % (zip_name)))
+                folder.joinpath('foo_bar.zip').rename(folder.joinpath(zip_name))
+    
+                with mini_toolbox.OutputCapturer(stdout=False,
+                                             stderr=True) as output_capturer:
+>                   result = getattr(module, 'f')(7)
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:2062: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:329: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+/var/folders/sl/yzy0v54s79q0hkrg6fzrf93h0000gn/T/pysnooperxl8toztf/invalid.zip/invalid/modules/path/my_invalid_zip_module.py:3: in f
+    ???
+../PySnooper/pysnooper/tracer.py:479: in trace
+    source_path, source = get_path_and_source_from_frame(frame)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/tracer.py:88: in get_path_and_source_from_frame
+    source = loader.get_source(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <_frozen_importlib_external.SourceFileLoader object at 0x1092e7590>
+fullname = 'my_invalid_zip_module'
+
+>   ???
+E   ImportError: source not available through get_data()
+
+<frozen importlib._bootstrap_external>:1081: ImportError
+__________________________ test_valid_damaged_zipfile __________________________
+
+self = <_frozen_importlib_external.SourceFileLoader object at 0x1092e7c50>
+fullname = 'my_damaged_module'
+
+>   ???
+
+<frozen importlib._bootstrap_external>:1079: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <_frozen_importlib_external.SourceFileLoader object at 0x1092e7c50>
+path = '/var/folders/sl/yzy0v54s79q0hkrg6fzrf93h0000gn/T/pysnoopervvxfe7jy/damaged.zip/ansible/modules/my_damaged_module.py'
+
+>   ???
+E   NotADirectoryError: [Errno 20] Not a directory: '/var/folders/sl/yzy0v54s79q0hkrg6fzrf93h0000gn/T/pysnoopervvxfe7jy/damaged.zip/ansible/modules/my_damaged_module.py'
+
+<frozen importlib._bootstrap_external>:1217: NotADirectoryError
+
+The above exception was the direct cause of the following exception:
+
+    def test_valid_damaged_zipfile():
+        with mini_toolbox.create_temp_folder(prefix='pysnooper') as folder, \
+                                        mini_toolbox.TempSysPathAdder(str(folder)):
+            module_name = 'my_damaged_module'
+            zip_name = 'damaged.zip'
+            zip_base_path = mini_toolbox.pathlib.Path('ansible/modules')
+            python_file_path = folder / zip_name / zip_base_path / ('%s.py' % (module_name))
+            os.makedirs(str(folder / zip_name / zip_base_path))
+            try:
+                sys.path.insert(0, str(folder / zip_name / zip_base_path))
+                content = textwrap.dedent(u'''
+                    import pysnooper
+                    @pysnooper.snoop(color=False)
+                    def f(x):
+                        return x
+                ''')
+                python_file_path.write_text(content)
+    
+                module = __import__(module_name)
+    
+                python_file_path.unlink()
+                folder.joinpath(zip_name).rename(folder.joinpath('%s.delete' % (zip_name)))
+    
+                folder.joinpath(zip_name).write_text(u'I am not a zip file')
+    
+                with mini_toolbox.OutputCapturer(stdout=False,
+                                             stderr=True) as output_capturer:
+>                   result = getattr(module, 'f')(7)
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+
+../PySnooper/tests/test_pysnooper.py:2109: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:329: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+/var/folders/sl/yzy0v54s79q0hkrg6fzrf93h0000gn/T/pysnoopervvxfe7jy/damaged.zip/ansible/modules/my_damaged_module.py:3: in f
+    ???
+../PySnooper/pysnooper/tracer.py:479: in trace
+    source_path, source = get_path_and_source_from_frame(frame)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/tracer.py:88: in get_path_and_source_from_frame
+    source = loader.get_source(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <_frozen_importlib_external.SourceFileLoader object at 0x1092e7c50>
+fullname = 'my_damaged_module'
+
+>   ???
+E   ImportError: source not available through get_data()
+
+<frozen importlib._bootstrap_external>:1081: ImportError
+=============================== warnings summary ===============================
+tests/test_pysnooper.py::test_unavailable_source
+tests/test_pysnooper.py::test_unavailable_source
+tests/test_pysnooper.py::test_valid_zipfile
+tests/test_pysnooper.py::test_valid_zipfile
+tests/test_pysnooper.py::test_invalid_zipfile
+tests/test_pysnooper.py::test_invalid_zipfile
+tests/test_pysnooper.py::test_valid_damaged_zipfile
+tests/test_pysnooper.py::test_valid_damaged_zipfile
+  /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/mini_toolbox/contextlib.py:97: DeprecationWarning: the (type, exc, tb) signature of throw() is deprecated, use the single-arg signature instead.
+    self.gen.throw(type, value, traceback)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../PySnooper/tests/test_pysnooper.py::test_unavailable_source - Import...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_indentation - AssertionErro...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_valid_zipfile - ImportError...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_invalid_zipfile - ImportErr...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_valid_damaged_zipfile - Imp...
+5 failed, 80 passed, 8 warnings in 1.09s

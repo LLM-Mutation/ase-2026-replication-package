@@ -1,0 +1,15 @@
+```dot
+digraph timedelta_parse {
+    rankdir=LR;
+    node [shape=box, style=rounded];
+
+    start   [label="Start parsing time string"];
+    replace [label="Replace '.' with ':'"];
+    split   [label="Split string on ':'"];
+    map_int [label="Map each part to int"];
+    assign  [label="Assign to hours, minutes, seconds, microseconds"];
+    return  [label="Return datetime.timedelta(...)"];
+
+    start -> replace -> split -> map_int -> assign -> return;
+}
+```

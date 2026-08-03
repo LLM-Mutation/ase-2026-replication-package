@@ -1,0 +1,10 @@
+1. is_group calculation provides incorrect boolean when BaseExceptionGroup is missing in the environment.  
+2. is_group calculation does not provide value when NameError occurs because calculation was performed too early.  
+3. if_check branching too early when is_group has not yet been correctly assigned due to missing BaseExceptionGroup.  
+4. sub_types construction applied for too long causing unnecessary delay when exc_value contains many sub-exceptions.  
+5. message assignment too late when exc_value.args is empty leading to missing error context.  
+6. return_true_node formatting too early before sub_types has been fully constructed.  
+7. return_false_node formatting does not provide full traceback when only format_exception_only is used.  
+8. sub_types construction out of order when type(e).__name__ is invoked before validating that e is an exception instance.  
+9. is_group calculation stopped too soon when except block overrides value after if_check has already branched.  
+10. return_false_node return applied for too long when traceback.format_exception_only processes large stack traces.

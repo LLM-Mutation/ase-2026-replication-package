@@ -1,0 +1,288 @@
+$ /Users/meganmaton/.cache/uv/archive-v0/Q1YWu4HrcUL7MC9AiUGGQ/bin/python3 -m pytest -q /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper
+# exit code: 1
+
+..........F.............................................F............... [ 84%]
+........F....                                                            [100%]
+=================================== FAILURES ===================================
+________________________________ test_string_io ________________________________
+
+    def test_string_io():
+        string_io = io.StringIO()
+    
+        @pysnooper.snoop(string_io, color=False)
+        def my_function(foo):
+            x = 7
+            y = 8
+            return y + x
+    
+        result = my_function('baba')
+        assert result == 15
+        output = string_io.getvalue()
+>       assert_output(
+            output,
+            (
+                SourcePathEntry(),
+                VariableEntry('foo', value_regex="u?'baba'"),
+                CallEntry('def my_function(foo):'),
+                LineEntry('x = 7'),
+                VariableEntry('x', '7'),
+                LineEntry('y = 8'),
+                VariableEntry('y', '8'),
+                LineEntry('return y + x'),
+                ReturnEntry('return y + x'),
+                ReturnValueEntry('15'),
+                ElapsedTimeEntry(),
+            )
+        )
+
+../PySnooper/tests/test_pysnooper.py:38: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+output = 'Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/test_pysnooper.py\nS...return y + x\n12:07:28.383725 return      33         return y + x\nReturn value:.. 15\nElapsed time: 00:00:00.000441\n'
+expected_entries = (SourcePathEntry(prefix=''), VariableEntry(name='foo', prefix='', value_regex=re.compile("u?'baba'")), CallEntry(sourc...y(source='x = 7', prefix=''), VariableEntry(name='x', value='7', prefix=''), LineEntry(source='y = 8', prefix=''), ...)
+prefix = None, normalize = False
+
+    def assert_output(output, expected_entries, prefix=None, normalize=False):
+        lines = tuple(filter(None, output.split('\n')))
+        if expected_entries and not lines:
+            raise OutputFailure("Output is empty")
+    
+        if prefix is not None:
+            for line in lines:
+                if not line.startswith(prefix):
+                    raise OutputFailure(line)
+    
+        if normalize:
+            verify_normalize(lines, prefix)
+    
+        # Filter only entries compatible with the current Python
+        filtered_expected_entries = []
+        for expected_entry in expected_entries:
+            if isinstance(expected_entry, _BaseEntry):
+                if expected_entry.is_compatible_with_current_python_version():
+                    filtered_expected_entries.append(expected_entry)
+            else:
+                filtered_expected_entries.append(expected_entry)
+    
+        expected_entries_count = len(filtered_expected_entries)
+        any_mismatch = False
+        result = ''
+        template = u'\n{line!s:%s}   {expected_entry}  {arrow}' % max(map(len, lines))
+        for expected_entry, line in zip_longest(filtered_expected_entries, lines, fillvalue=""):
+            mismatch = not (expected_entry and expected_entry.check(line))
+            any_mismatch |= mismatch
+            arrow = '<===' * mismatch
+            result += template.format(**locals())
+    
+        if len(lines) != expected_entries_count:
+            result += '\nOutput has {} lines, while we expect {} lines.'.format(
+                    len(lines), len(expected_entries))
+    
+        if any_mismatch:
+>           raise OutputFailure(result)
+E           tests.utils.OutputFailure: 
+E           Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/test_pysnooper.py   SourcePathEntry(prefix='')  
+E           Starting var:.. foo = 'baba'                                                                                         VariableEntry(name='foo', prefix='', value_regex=re.compile("u?'baba'"))  
+E           12:07:28.383381 call        29 SOURCE IS UNAVAILABLE                                                                 CallEntry(source='def my_function(foo):', prefix='')  <===
+E           12:07:28.383695 line        31         x = 7                                                                         LineEntry(source='x = 7', prefix='')  
+E           New var:....... x = 7                                                                                                VariableEntry(name='x', value='7', prefix='')  
+E           12:07:28.383703 line        32         y = 8                                                                         LineEntry(source='y = 8', prefix='')  
+E           New var:....... y = 8                                                                                                VariableEntry(name='y', value='8', prefix='')  
+E           12:07:28.383714 line        33         return y + x                                                                  LineEntry(source='return y + x', prefix='')  
+E           12:07:28.383725 return      33         return y + x                                                                  ReturnEntry(source='return y + x', prefix='')  
+E           Return value:.. 15                                                                                                   ReturnValueEntry(value='15', prefix='')  
+E           Elapsed time: 00:00:00.000441                                                                                        ElapsedTimeEntry(tolerance=0.2, prefix='')
+
+../PySnooper/tests/utils.py:399: OutputFailure
+_______________________________ test_indentation _______________________________
+
+    def test_indentation():
+        from .samples import indentation, recursion
+>       assert_sample_output(indentation)
+
+../PySnooper/tests/test_pysnooper.py:1335: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+module = <module 'tests.samples.indentation' from '/Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/samples/indentation.py'>
+
+    def assert_sample_output(module):
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+            module.main()
+    
+        placeholder_time = '00:00:00.000000'
+        time_pattern = '[0-9:.]{15}'
+    
+        def normalise(out):
+            out = re.sub(time_pattern, placeholder_time, out).strip()
+            out = re.sub(
+                r'^( *)Source path:\.\.\. .*$',
+                r'\1Source path:... Whatever',
+                out,
+                flags=re.MULTILINE
+            )
+            return out
+    
+    
+        output = output_capturer.string_io.getvalue()
+    
+        try:
+>           assert (
+                    normalise(output) ==
+                    normalise(module.expected_output)
+            )
+E           AssertionError: assert 'Source path:...:00:00.000000' == 'Source path:...:00:00.000000'
+E             
+E             Skipping 44 identical leading characters in diff, use -v to show
+E             - l         5 def main():
+E             + l         4 SOURCE IS UNAVAILABLE
+E               00:00:00.000000 line         6     f2()
+E                   00:00:00.000000 call         9 def f2():
+E                   00:00:00.000000 line        10     f3()...
+E             
+E             ...Full output truncated (15 lines hidden), use '-vv' to show
+
+../PySnooper/tests/utils.py:424: AssertionError
+----------------------------- Captured stdout call -----------------------------
+
+
+Actual Output:
+
+Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/samples/indentation.py
+12:07:29.357467 call         4 SOURCE IS UNAVAILABLE
+12:07:29.357529 line         6     f2()
+    12:07:29.357539 call         9 def f2():
+    12:07:29.357547 line        10     f3()
+        Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/samples/indentation.py
+        12:07:29.357562 call        18 def f4():
+        12:07:29.357574 line        19     f5()
+            12:07:29.357581 call        22 def f5():
+            12:07:29.357588 line        23     pass
+            12:07:29.357595 return      23     pass
+            Return value:.. None
+        12:07:29.357606 return      19     f5()
+        Return value:.. None
+        Elapsed time: 00:00:00.000062
+    12:07:29.357633 return      10     f3()
+    Return value:.. None
+12:07:29.357644 return       6     f2()
+Return value:.. None
+Elapsed time: 00:00:00.000286
+
+______________________________ test_valid_zipfile ______________________________
+
+    def test_valid_zipfile():
+        with mini_toolbox.create_temp_folder(prefix='pysnooper') as folder, \
+                                        mini_toolbox.TempSysPathAdder(str(folder)):
+            module_name = 'my_valid_zip_module'
+            zip_name = 'valid.zip'
+            zip_base_path = mini_toolbox.pathlib.Path('ansible/modules')
+            python_file_path = folder / zip_name / zip_base_path / ('%s.py' % (module_name))
+            os.makedirs(str(folder / zip_name / zip_base_path))
+            try:
+                sys.path.insert(0, str(folder / zip_name / zip_base_path))
+                content = textwrap.dedent(u'''
+                    import pysnooper
+                    @pysnooper.snoop(color=False)
+                    def f(x):
+                        return x
+                ''')
+    
+                python_file_path.write_text(content)
+    
+                module = __import__(module_name)
+    
+                with zipfile.ZipFile(str(folder / 'foo_bar.zip'), 'w') as myZipFile:
+                    myZipFile.write(str(folder / zip_name / zip_base_path / ('%s.py' % (module_name))), \
+                                    '%s/%s.py' % (zip_base_path, module_name,), \
+                                    zipfile.ZIP_DEFLATED)
+    
+                python_file_path.unlink()
+                folder.joinpath(zip_name).rename(folder.joinpath('%s.delete' % (zip_name)))
+                folder.joinpath('foo_bar.zip').rename(folder.joinpath(zip_name))
+    
+                with mini_toolbox.OutputCapturer(stdout=False,
+                                                 stderr=True) as output_capturer:
+                    result = getattr(module, 'f')(7)
+                assert result == 7
+                output = output_capturer.output
+    
+>               assert_output(
+                    output,
+                    (
+                        SourcePathEntry(),
+                        VariableEntry(stage='starting'),
+                        CallEntry('def f(x):'),
+                        LineEntry('return x'),
+                        ReturnEntry('return x'),
+                        ReturnValueEntry('7'),
+                        ElapsedTimeEntry(),
+                    )
+                )
+
+../PySnooper/tests/test_pysnooper.py:2015: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+output = '    Source path:... /var/folders/sl/yzy0v54s79q0hkrg6fzrf93h0000gn/T/pysnoopergwbxsyuu/valid.zip/ansible/modules/my_v... return x\n    12:07:29.395158 return       5     return x\n    Return value:.. 7\n    Elapsed time: 00:00:00.000448\n'
+expected_entries = (SourcePathEntry(prefix=''), VariableEntry(stage='starting', prefix=''), CallEntry(source='def f(x):', prefix=''), Lin...(source='return x', prefix=''), ReturnEntry(source='return x', prefix=''), ReturnValueEntry(value='7', prefix=''), ...)
+prefix = None, normalize = False
+
+    def assert_output(output, expected_entries, prefix=None, normalize=False):
+        lines = tuple(filter(None, output.split('\n')))
+        if expected_entries and not lines:
+            raise OutputFailure("Output is empty")
+    
+        if prefix is not None:
+            for line in lines:
+                if not line.startswith(prefix):
+                    raise OutputFailure(line)
+    
+        if normalize:
+            verify_normalize(lines, prefix)
+    
+        # Filter only entries compatible with the current Python
+        filtered_expected_entries = []
+        for expected_entry in expected_entries:
+            if isinstance(expected_entry, _BaseEntry):
+                if expected_entry.is_compatible_with_current_python_version():
+                    filtered_expected_entries.append(expected_entry)
+            else:
+                filtered_expected_entries.append(expected_entry)
+    
+        expected_entries_count = len(filtered_expected_entries)
+        any_mismatch = False
+        result = ''
+        template = u'\n{line!s:%s}   {expected_entry}  {arrow}' % max(map(len, lines))
+        for expected_entry, line in zip_longest(filtered_expected_entries, lines, fillvalue=""):
+            mismatch = not (expected_entry and expected_entry.check(line))
+            any_mismatch |= mismatch
+            arrow = '<===' * mismatch
+            result += template.format(**locals())
+    
+        if len(lines) != expected_entries_count:
+            result += '\nOutput has {} lines, while we expect {} lines.'.format(
+                    len(lines), len(expected_entries))
+    
+        if any_mismatch:
+>           raise OutputFailure(result)
+E           tests.utils.OutputFailure: 
+E               Source path:... /var/folders/sl/yzy0v54s79q0hkrg6fzrf93h0000gn/T/pysnoopergwbxsyuu/valid.zip/ansible/modules/my_valid_zip_module.py   SourcePathEntry(prefix='')  
+E               Starting var:.. x = 7                                                                                                                 VariableEntry(stage='starting', prefix='')  
+E               12:07:29.394812 call         3 SOURCE IS UNAVAILABLE                                                                                  CallEntry(source='def f(x):', prefix='')  <===
+E               12:07:29.395149 line         5     return x                                                                                           LineEntry(source='return x', prefix='')  
+E               12:07:29.395158 return       5     return x                                                                                           ReturnEntry(source='return x', prefix='')  
+E               Return value:.. 7                                                                                                                     ReturnValueEntry(value='7', prefix='')  
+E               Elapsed time: 00:00:00.000448                                                                                                         ElapsedTimeEntry(tolerance=0.2, prefix='')
+
+../PySnooper/tests/utils.py:399: OutputFailure
+=============================== warnings summary ===============================
+tests/test_pysnooper.py::test_valid_zipfile
+  /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/mini_toolbox/contextlib.py:97: DeprecationWarning: the (type, exc, tb) signature of throw() is deprecated, use the single-arg signature instead.
+    self.gen.throw(type, value, traceback)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../PySnooper/tests/test_pysnooper.py::test_string_io - tests.utils.Out...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_indentation - AssertionErro...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_valid_zipfile - tests.utils...
+3 failed, 82 passed, 1 warning in 1.08s

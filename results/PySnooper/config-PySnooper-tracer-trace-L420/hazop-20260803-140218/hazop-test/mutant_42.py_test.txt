@@ -1,0 +1,108 @@
+$ /Users/meganmaton/.cache/uv/archive-v0/Q1YWu4HrcUL7MC9AiUGGQ/bin/python3 -m pytest -q /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper
+# exit code: 2
+
+
+==================================== ERRORS ====================================
+____________________ ERROR collecting tests/test_chinese.py ____________________
+../PySnooper/tests/test_chinese.py:11: in <module>
+    from pysnooper.utils import truncate
+../PySnooper/pysnooper/__init__.py:20: in <module>
+    from .tracer import Tracer as snoop
+../PySnooper/pysnooper/tracer.py:191: in <module>
+    class Tracer:
+../PySnooper/pysnooper/tracer.py:424: in Tracer
+    if self.thread_info:
+       ^^^^
+E   NameError: name 'self' is not defined
+______________ ERROR collecting tests/test_ended_by_exception.py _______________
+../PySnooper/tests/test_ended_by_exception.py:12: in <module>
+    import pysnooper
+../PySnooper/pysnooper/__init__.py:20: in <module>
+    from .tracer import Tracer as snoop
+../PySnooper/pysnooper/tracer.py:191: in <module>
+    class Tracer:
+../PySnooper/pysnooper/tracer.py:424: in Tracer
+    if self.thread_info:
+       ^^^^
+E   NameError: name 'self' is not defined
+_________________ ERROR collecting tests/test_mini_toolbox.py __________________
+../PySnooper/tests/test_mini_toolbox.py:6: in <module>
+    from . import mini_toolbox
+../PySnooper/tests/mini_toolbox/__init__.py:8: in <module>
+    from . import pathlib
+../PySnooper/tests/mini_toolbox/pathlib.py:13: in <module>
+    from pysnooper import pycompat
+../PySnooper/pysnooper/__init__.py:20: in <module>
+    from .tracer import Tracer as snoop
+../PySnooper/pysnooper/tracer.py:191: in <module>
+    class Tracer:
+../PySnooper/pysnooper/tracer.py:424: in Tracer
+    if self.thread_info:
+       ^^^^
+E   NameError: name 'self' is not defined
+______ ERROR collecting tests/test_multiple_files/test_multiple_files.py _______
+../PySnooper/tests/test_multiple_files/test_multiple_files.py:14: in <module>
+    import pysnooper
+../PySnooper/pysnooper/__init__.py:20: in <module>
+    from .tracer import Tracer as snoop
+../PySnooper/pysnooper/tracer.py:191: in <module>
+    class Tracer:
+../PySnooper/pysnooper/tracer.py:424: in Tracer
+    if self.thread_info:
+       ^^^^
+E   NameError: name 'self' is not defined
+________________ ERROR collecting tests/test_not_implemented.py ________________
+../PySnooper/tests/test_not_implemented.py:15: in <module>
+    import pysnooper
+../PySnooper/pysnooper/__init__.py:20: in <module>
+    from .tracer import Tracer as snoop
+../PySnooper/pysnooper/tracer.py:191: in <module>
+    class Tracer:
+../PySnooper/pysnooper/tracer.py:424: in Tracer
+    if self.thread_info:
+       ^^^^
+E   NameError: name 'self' is not defined
+___________________ ERROR collecting tests/test_pysnooper.py ___________________
+../PySnooper/tests/test_pysnooper.py:16: in <module>
+    import pysnooper
+../PySnooper/pysnooper/__init__.py:20: in <module>
+    from .tracer import Tracer as snoop
+../PySnooper/pysnooper/tracer.py:191: in <module>
+    class Tracer:
+../PySnooper/pysnooper/tracer.py:424: in Tracer
+    if self.thread_info:
+       ^^^^
+E   NameError: name 'self' is not defined
+____________ ERROR collecting tests/test_utils/test_ensure_tuple.py ____________
+../PySnooper/tests/test_utils/test_ensure_tuple.py:4: in <module>
+    import pysnooper
+../PySnooper/pysnooper/__init__.py:20: in <module>
+    from .tracer import Tracer as snoop
+../PySnooper/pysnooper/tracer.py:191: in <module>
+    class Tracer:
+../PySnooper/pysnooper/tracer.py:424: in Tracer
+    if self.thread_info:
+       ^^^^
+E   NameError: name 'self' is not defined
+_______________ ERROR collecting tests/test_utils/test_regex.py ________________
+../PySnooper/tests/test_utils/test_regex.py:4: in <module>
+    import pysnooper
+../PySnooper/pysnooper/__init__.py:20: in <module>
+    from .tracer import Tracer as snoop
+../PySnooper/pysnooper/tracer.py:191: in <module>
+    class Tracer:
+../PySnooper/pysnooper/tracer.py:424: in Tracer
+    if self.thread_info:
+       ^^^^
+E   NameError: name 'self' is not defined
+=========================== short test summary info ============================
+ERROR ../PySnooper/tests/test_chinese.py - NameError: name 'self' is not defined
+ERROR ../PySnooper/tests/test_ended_by_exception.py - NameError: name 'self' ...
+ERROR ../PySnooper/tests/test_mini_toolbox.py - NameError: name 'self' is not...
+ERROR ../PySnooper/tests/test_multiple_files/test_multiple_files.py - NameErr...
+ERROR ../PySnooper/tests/test_not_implemented.py - NameError: name 'self' is ...
+ERROR ../PySnooper/tests/test_pysnooper.py - NameError: name 'self' is not de...
+ERROR ../PySnooper/tests/test_utils/test_ensure_tuple.py - NameError: name 's...
+ERROR ../PySnooper/tests/test_utils/test_regex.py - NameError: name 'self' is...
+!!!!!!!!!!!!!!!!!!! Interrupted: 8 errors during collection !!!!!!!!!!!!!!!!!!!!
+8 errors in 0.14s

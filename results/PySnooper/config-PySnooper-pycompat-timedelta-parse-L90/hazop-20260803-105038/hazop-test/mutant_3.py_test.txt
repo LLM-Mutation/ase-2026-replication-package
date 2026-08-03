@@ -1,0 +1,250 @@
+$ /Users/meganmaton/.cache/uv/archive-v0/Q1YWu4HrcUL7MC9AiUGGQ/bin/python3 -m pytest -q /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper
+# exit code: 1
+
+...........F............................................................ [ 84%]
+.............                                                            [100%]
+=================================== FAILURES ===================================
+______________________________ test_relative_time ______________________________
+
+    def test_relative_time():
+        snoop = pysnooper.snoop(relative_time=True, color=False)
+    
+        def foo(x):
+            if x == 0:
+                bar1(x)
+                qux()
+                return
+    
+            with snoop:
+                # There should be line entries for these three lines,
+                # no line entries for anything else in this function,
+                # but calls to all bar functions should be traced
+                foo(x - 1)
+                bar2(x)
+                qux()
+            int(4)
+            bar3(9)
+            return x
+    
+        @snoop
+        def bar1(_x):
+            qux()
+    
+        @snoop
+        def bar2(_x):
+            qux()
+    
+        @snoop
+        def bar3(_x):
+            qux()
+    
+        def qux():
+            time.sleep(0.1)
+            return 9  # not traced, mustn't show up
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+            result = foo(2)
+        assert result == 2
+        output = output_capturer.string_io.getvalue()
+>       assert_output(
+            output,
+            (
+                # In first with
+                SourcePathEntry(),
+                VariableEntry('x', '2'),
+                VariableEntry('bar1'),
+                VariableEntry('bar2'),
+                VariableEntry('bar3'),
+                VariableEntry('foo'),
+                VariableEntry('qux'),
+                VariableEntry('snoop'),
+                LineEntry('foo(x - 1)'),
+    
+                # In with in recursive call
+                VariableEntry('x', '1'),
+                VariableEntry('bar1'),
+                VariableEntry('bar2'),
+                VariableEntry('bar3'),
+                VariableEntry('foo'),
+                VariableEntry('qux'),
+                VariableEntry('snoop'),
+                LineEntry('foo(x - 1)'),
+    
+                # Call to bar1 from if block outside with
+                VariableEntry('_x', '0'),
+                VariableEntry('qux'),
+                CallEntry('def bar1(_x):'),
+                LineEntry('qux()'),
+                ReturnEntry('qux()'),
+                ReturnValueEntry('None'),
+                ElapsedTimeEntry(0.1),
+    
+                # In with in recursive call
+                LineEntry('bar2(x)'),
+    
+                # Call to bar2 from within with
+                VariableEntry('_x', '1'),
+                VariableEntry('qux'),
+                CallEntry('def bar2(_x):'),
+                LineEntry('qux()'),
+                ReturnEntry('qux()'),
+                ReturnValueEntry('None'),
+                ElapsedTimeEntry(0.1),
+    
+                # In with in recursive call
+                LineEntry('qux()'),
+                LineEntry(source_regex="with snoop:", min_python_version=(3, 10)),
+                ElapsedTimeEntry(0.4),
+    
+                # Call to bar3 from after with
+                VariableEntry('_x', '9'),
+                VariableEntry('qux'),
+                CallEntry('def bar3(_x):'),
+                LineEntry('qux()'),
+                ReturnEntry('qux()'),
+                ReturnValueEntry('None'),
+                ElapsedTimeEntry(0.1),
+    
+                # -- Similar to previous few sections,
+                # -- but from first call to foo
+    
+                # In with in first call
+                LineEntry('bar2(x)'),
+    
+                # Call to bar2 from within with
+                VariableEntry('_x', '2'),
+                VariableEntry('qux'),
+                CallEntry('def bar2(_x):'),
+                LineEntry('qux()'),
+                ReturnEntry('qux()'),
+                ReturnValueEntry('None'),
+                ElapsedTimeEntry(0.1),
+    
+                # In with in first call
+                LineEntry('qux()'),
+                LineEntry(source_regex="with snoop:", min_python_version=(3, 10)),
+                ElapsedTimeEntry(0.7),
+    
+                # Call to bar3 from after with
+                VariableEntry('_x', '9'),
+                VariableEntry('qux'),
+                CallEntry('def bar3(_x):'),
+                LineEntry('qux()'),
+                ReturnEntry('qux()'),
+                ReturnValueEntry('None'),
+                ElapsedTimeEntry(0.1),
+            ),
+        )
+
+../PySnooper/tests/test_pysnooper.py:97: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+output = 'Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/test_pysnooper.py\nN... 86         qux()\n00:00:00.105259 return      86         qux()\nReturn value:.. None\nElapsed time: 00:00:00.105824\n'
+expected_entries = (SourcePathEntry(prefix=''), VariableEntry(name='x', value='2', prefix=''), VariableEntry(name='bar1', prefix=''), VariableEntry(name='bar2', prefix=''), VariableEntry(name='bar3', prefix=''), VariableEntry(name='foo', prefix=''), ...)
+prefix = None, normalize = False
+
+    def assert_output(output, expected_entries, prefix=None, normalize=False):
+        lines = tuple(filter(None, output.split('\n')))
+        if expected_entries and not lines:
+            raise OutputFailure("Output is empty")
+    
+        if prefix is not None:
+            for line in lines:
+                if not line.startswith(prefix):
+                    raise OutputFailure(line)
+    
+        if normalize:
+            verify_normalize(lines, prefix)
+    
+        # Filter only entries compatible with the current Python
+        filtered_expected_entries = []
+        for expected_entry in expected_entries:
+            if isinstance(expected_entry, _BaseEntry):
+                if expected_entry.is_compatible_with_current_python_version():
+                    filtered_expected_entries.append(expected_entry)
+            else:
+                filtered_expected_entries.append(expected_entry)
+    
+        expected_entries_count = len(filtered_expected_entries)
+        any_mismatch = False
+        result = ''
+        template = u'\n{line!s:%s}   {expected_entry}  {arrow}' % max(map(len, lines))
+        for expected_entry, line in zip_longest(filtered_expected_entries, lines, fillvalue=""):
+            mismatch = not (expected_entry and expected_entry.check(line))
+            any_mismatch |= mismatch
+            arrow = '<===' * mismatch
+            result += template.format(**locals())
+    
+        if len(lines) != expected_entries_count:
+            result += '\nOutput has {} lines, while we expect {} lines.'.format(
+                    len(lines), len(expected_entries))
+    
+        if any_mismatch:
+>           raise OutputFailure(result)
+E           tests.utils.OutputFailure: 
+E           Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/test_pysnooper.py   SourcePathEntry(prefix='')  
+E           New var:....... x = 2                                                                                                VariableEntry(name='x', value='2', prefix='')  
+E           New var:....... bar1 = <function test_relative_time.<locals>.bar1 at 0x10a99de40>                                    VariableEntry(name='bar1', prefix='')  
+E           New var:....... bar2 = <function test_relative_time.<locals>.bar2 at 0x10a99e200>                                    VariableEntry(name='bar2', prefix='')  
+E           New var:....... bar3 = <function test_relative_time.<locals>.bar3 at 0x10a99e340>                                    VariableEntry(name='bar3', prefix='')  
+E           New var:....... foo = <function test_relative_time.<locals>.foo at 0x10a99e020>                                      VariableEntry(name='foo', prefix='')  
+E           New var:....... qux = <function test_relative_time.<locals>.qux at 0x10a99dda0>                                      VariableEntry(name='qux', prefix='')  
+E           New var:....... snoop = <pysnooper.tracer.Tracer object at 0x10a7bfc50>                                              VariableEntry(name='snoop', prefix='')  
+E           00:00:00.000076 line        69             foo(x - 1)                                                                LineEntry(source='foo(x - 1)', prefix='')  
+E           New var:....... x = 1                                                                                                VariableEntry(name='x', value='1', prefix='')  
+E           New var:....... bar1 = <function test_relative_time.<locals>.bar1 at 0x10a99de40>                                    VariableEntry(name='bar1', prefix='')  
+E           New var:....... bar2 = <function test_relative_time.<locals>.bar2 at 0x10a99e200>                                    VariableEntry(name='bar2', prefix='')  
+E           New var:....... bar3 = <function test_relative_time.<locals>.bar3 at 0x10a99e340>                                    VariableEntry(name='bar3', prefix='')  
+E           New var:....... foo = <function test_relative_time.<locals>.foo at 0x10a99e020>                                      VariableEntry(name='foo', prefix='')  
+E           New var:....... qux = <function test_relative_time.<locals>.qux at 0x10a99dda0>                                      VariableEntry(name='qux', prefix='')  
+E           New var:....... snoop = <pysnooper.tracer.Tracer object at 0x10a7bfc50>                                              VariableEntry(name='snoop', prefix='')  
+E           00:00:00.000003 line        69             foo(x - 1)                                                                LineEntry(source='foo(x - 1)', prefix='')  
+E           Starting var:.. _x = 0                                                                                               VariableEntry(name='_x', value='0', prefix='')  
+E           Starting var:.. qux = <function test_relative_time.<locals>.qux at 0x10a99dda0>                                      VariableEntry(name='qux', prefix='')  
+E           00:00:00.000001 call        77     def bar1(_x):                                                                     CallEntry(source='def bar1(_x):', prefix='')  
+E           00:00:00.000023 line        78         qux()                                                                         LineEntry(source='qux()', prefix='')  
+E           00:00:00.105071 return      78         qux()                                                                         ReturnEntry(source='qux()', prefix='')  
+E           Return value:.. None                                                                                                 ReturnValueEntry(value='None', prefix='')  
+E           Elapsed time: 00:00:00.105149                                                                                        ElapsedTimeEntry(elapsed_time_value=0.1, tolerance=0.2, prefix='')  
+E           00:00:00.210311 line        70             bar2(x)                                                                   LineEntry(source='bar2(x)', prefix='')  
+E           Starting var:.. _x = 1                                                                                               VariableEntry(name='_x', value='1', prefix='')  
+E           Starting var:.. qux = <function test_relative_time.<locals>.qux at 0x10a99dda0>                                      VariableEntry(name='qux', prefix='')  
+E           00:00:00.000006 call        81     def bar2(_x):                                                                     CallEntry(source='def bar2(_x):', prefix='')  
+E           00:00:00.000139 line        82         qux()                                                                         LineEntry(source='qux()', prefix='')  
+E           00:00:00.103312 return      82         qux()                                                                         ReturnEntry(source='qux()', prefix='')  
+E           Return value:.. None                                                                                                 ReturnValueEntry(value='None', prefix='')  
+E           Elapsed time: 00:00:00.103757                                                                                        ElapsedTimeEntry(elapsed_time_value=0.1, tolerance=0.2, prefix='')  
+E           00:00:00.314478 line        71             qux()                                                                     LineEntry(source='qux()', prefix='')  
+E           00:00:00.419746 line        65         with snoop:                                                                   LineEntry(source_regex=re.compile('with snoop:'), prefix='', min_python_version=(3, 10))  
+E           Elapsed time: 00:00:00.420131                                                                                        ElapsedTimeEntry(elapsed_time_value=0.4, tolerance=0.2, prefix='')  <===
+E           Starting var:.. _x = 9                                                                                               VariableEntry(name='_x', value='9', prefix='')  
+E           Starting var:.. qux = <function test_relative_time.<locals>.qux at 0x10a99dda0>                                      VariableEntry(name='qux', prefix='')  
+E           00:00:00.000007 call        85     def bar3(_x):                                                                     CallEntry(source='def bar3(_x):', prefix='')  
+E           00:00:00.000147 line        86         qux()                                                                         LineEntry(source='qux()', prefix='')  
+E           00:00:00.105331 return      86         qux()                                                                         ReturnEntry(source='qux()', prefix='')  
+E           Return value:.. None                                                                                                 ReturnValueEntry(value='None', prefix='')  
+E           Elapsed time: 00:00:00.105761                                                                                        ElapsedTimeEntry(elapsed_time_value=0.1, tolerance=0.2, prefix='')  
+E           00:00:00.526199 line        70             bar2(x)                                                                   LineEntry(source='bar2(x)', prefix='')  
+E           Starting var:.. _x = 2                                                                                               VariableEntry(name='_x', value='2', prefix='')  
+E           Starting var:.. qux = <function test_relative_time.<locals>.qux at 0x10a99dda0>                                      VariableEntry(name='qux', prefix='')  
+E           00:00:00.000005 call        81     def bar2(_x):                                                                     CallEntry(source='def bar2(_x):', prefix='')  
+E           00:00:00.000136 line        82         qux()                                                                         LineEntry(source='qux()', prefix='')  
+E           00:00:00.103379 return      82         qux()                                                                         ReturnEntry(source='qux()', prefix='')  
+E           Return value:.. None                                                                                                 ReturnValueEntry(value='None', prefix='')  
+E           Elapsed time: 00:00:00.103625                                                                                        ElapsedTimeEntry(elapsed_time_value=0.1, tolerance=0.2, prefix='')  
+E           00:00:00.630012 line        71             qux()                                                                     LineEntry(source='qux()', prefix='')  
+E           00:00:00.733165 line        65         with snoop:                                                                   LineEntry(source_regex=re.compile('with snoop:'), prefix='', min_python_version=(3, 10))  
+E           Elapsed time: 00:00:00.733597                                                                                        ElapsedTimeEntry(elapsed_time_value=0.7, tolerance=0.2, prefix='')  <===
+E           Starting var:.. _x = 9                                                                                               VariableEntry(name='_x', value='9', prefix='')  
+E           Starting var:.. qux = <function test_relative_time.<locals>.qux at 0x10a99dda0>                                      VariableEntry(name='qux', prefix='')  
+E           00:00:00.000004 call        85     def bar3(_x):                                                                     CallEntry(source='def bar3(_x):', prefix='')  
+E           00:00:00.000134 line        86         qux()                                                                         LineEntry(source='qux()', prefix='')  
+E           00:00:00.105259 return      86         qux()                                                                         ReturnEntry(source='qux()', prefix='')  
+E           Return value:.. None                                                                                                 ReturnValueEntry(value='None', prefix='')  
+E           Elapsed time: 00:00:00.105824                                                                                        ElapsedTimeEntry(elapsed_time_value=0.1, tolerance=0.2, prefix='')
+
+../PySnooper/tests/utils.py:399: OutputFailure
+=========================== short test summary info ============================
+FAILED ../PySnooper/tests/test_pysnooper.py::test_relative_time - tests.utils...
+1 failed, 84 passed in 1.06s

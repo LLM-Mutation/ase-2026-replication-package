@@ -1,0 +1,10 @@
+1. target_codes added out of order when adding function.__code__ at start.  
+2. simple_wrapper defined does not provide error handling for wrapped function.  
+3. generator_wrapper returned too early before loop begins.  
+4. method invoked too late after yield, causing data loss.  
+5. gen.send ran stopped too soon when generator finishes early.  
+6. gen.throw propagates applied for too long when propagating exception.  
+7. generator_wrapper defined does not provide context manager entry before first iteration.  
+8. simple_wrapper returned too early before fully constructed.  
+9. target_codes added too late after wrapper defined, missing decorators.  
+10. method invoked out of order before incoming ready.

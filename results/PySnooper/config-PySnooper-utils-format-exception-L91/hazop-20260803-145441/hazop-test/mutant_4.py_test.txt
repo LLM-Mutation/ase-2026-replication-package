@@ -1,0 +1,85 @@
+$ /Users/meganmaton/.cache/uv/archive-v0/Q1YWu4HrcUL7MC9AiUGGQ/bin/python3 -m pytest -q /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper
+# exit code: 1
+
+........................................................................ [ 84%]
+.....FF......                                                            [100%]
+=================================== FAILURES ===================================
+_____________________________ test_exception_group _____________________________
+
+    @pytest.mark.skipif(sys.version_info < (3, 11),
+                        reason='ExceptionGroup requires Python 3.11+')
+    def test_exception_group():
+        string_io = io.StringIO()
+        @pysnooper.snoop(string_io, color=False)
+        def f():
+            raise ExceptionGroup('task errors', [ValueError('bad'), TypeError('wrong'), RuntimeError('fail')])
+    
+        with pytest.raises(ExceptionGroup):
+>           f()
+
+../PySnooper/tests/test_pysnooper.py:1920: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:337: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/tracer.py:582: in trace
+    exception = utils.format_exception(*arg[:2])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/utils.py:100: in format_exception
+    return ''.join(traceback.format_exception(type(first), first)).strip()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/traceback.py:153: in format_exception
+    value, tb = _parse_value_tb(exc, value, tb)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+exc = <class 'ValueError'>, value = ValueError('bad'), tb = <implicit>
+
+    def _parse_value_tb(exc, value, tb):
+        if (value is _sentinel) != (tb is _sentinel):
+>           raise ValueError("Both or neither of value and tb must be given")
+E           ValueError: Both or neither of value and tb must be given
+
+/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/traceback.py:102: ValueError
+_________________________ test_nested_exception_group __________________________
+
+    @pytest.mark.skipif(sys.version_info < (3, 11),
+                        reason='ExceptionGroup requires Python 3.11+')
+    def test_nested_exception_group():
+        string_io = io.StringIO()
+        @pysnooper.snoop(string_io, color=False)
+        def f():
+            raise ExceptionGroup('outer', [ExceptionGroup('inner', [ValueError('deep')]), TypeError('shallow')])
+    
+        with pytest.raises(ExceptionGroup):
+>           f()
+
+../PySnooper/tests/test_pysnooper.py:1950: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../PySnooper/pysnooper/tracer.py:337: in simple_wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/tracer.py:582: in trace
+    exception = utils.format_exception(*arg[:2])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../PySnooper/pysnooper/utils.py:100: in format_exception
+    return ''.join(traceback.format_exception(type(first), first)).strip()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/traceback.py:153: in format_exception
+    value, tb = _parse_value_tb(exc, value, tb)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+exc = <class 'ExceptionGroup'>
+value = ExceptionGroup('inner', [ValueError('deep')]), tb = <implicit>
+
+    def _parse_value_tb(exc, value, tb):
+        if (value is _sentinel) != (tb is _sentinel):
+>           raise ValueError("Both or neither of value and tb must be given")
+E           ValueError: Both or neither of value and tb must be given
+
+/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/traceback.py:102: ValueError
+=========================== short test summary info ============================
+FAILED ../PySnooper/tests/test_pysnooper.py::test_exception_group - ValueErro...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_nested_exception_group - Va...
+2 failed, 83 passed in 1.07s

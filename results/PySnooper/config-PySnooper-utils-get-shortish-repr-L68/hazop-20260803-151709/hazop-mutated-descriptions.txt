@@ -1,0 +1,12 @@
+1,Define a function that generates a short representation of an item,MORE,Define a function that generates a longer representation of an item
+2,Retrieve a suitable representation function for the item,NO,Retrieve no representation function for the item
+3,Attempt to compute the representation,PART OF,Attempt to compute only part of the representation
+4,Store the representation result,NO,Do not store the representation result
+5,If an error occurs during representation,REVERSE,If an error does not occur during representation
+6,Use a placeholder indicating failure,REVERSE,Use a placeholder indicating success
+7,Remove carriage return and newline characters from the representation,REVERSE,Keep carriage return and newline characters in the representation
+8,If normalization is requested,REVERSE,If normalization is not requested
+9,Apply normalization to the representation,AS WELL AS,Apply normalization to the representation
+10,If a maximum length is specified,REVERSE,If a maximum length is not specified
+11,Truncate the representation to the maximum length,MORE,Truncate the representation to a longer length
+12,Return the final representation,NO,Return no representation

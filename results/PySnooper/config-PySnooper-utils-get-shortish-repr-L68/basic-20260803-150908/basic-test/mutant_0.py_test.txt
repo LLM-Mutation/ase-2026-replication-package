@@ -1,0 +1,364 @@
+$ /Users/meganmaton/.cache/uv/archive-v0/Q1YWu4HrcUL7MC9AiUGGQ/bin/python3 -m pytest -q /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper
+# exit code: 1
+
+........................FFFF............................................ [ 84%]
+.............                                                            [100%]
+=================================== FAILURES ===================================
+___________________________ test_long_variable[True] ___________________________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_long_variable(normalize):
+        @pysnooper.snoop(normalize=normalize, color=False)
+        def my_function():
+            foo = list(range(1000))
+            return foo
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+            result = my_function()
+        assert result == list(range(1000))
+        output = output_capturer.string_io.getvalue()
+        regex = r'^(?=.{100}$)\[0, 1, 2, .*\.\.\..*, 997, 998, 999\]$'
+>       assert_output(
+            output,
+            (
+                SourcePathEntry(),
+                CallEntry('def my_function():'),
+                LineEntry('foo = list(range(1000))'),
+                VariableEntry('foo', value_regex=regex),
+                LineEntry(),
+                ReturnEntry(),
+                ReturnValueEntry(value_regex=regex),
+                ElapsedTimeEntry(),
+            ),
+            normalize=normalize,
+        )
+
+../PySnooper/tests/test_pysnooper.py:553: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+output = 'Source path:... test_pysnooper.py\n                call       543     def my_function():\n                line       ..., 5, 6, 7, 8, 9, 10, 11, 12, 13, 1...90, 991, 992, 993, 994, 995, 996, 997, 998, 999]\nElapsed time: 00:00:00.000526\n'
+expected_entries = (SourcePathEntry(prefix=''), CallEntry(source='def my_function():', prefix=''), LineEntry(source='foo = list(range(100...ompile('^(?=.{100}$)\\[0, 1, 2, .*\\.\\.\\..*, 997, 998, 999\\]$')), LineEntry(prefix=''), ReturnEntry(prefix=''), ...)
+prefix = None, normalize = True
+
+    def assert_output(output, expected_entries, prefix=None, normalize=False):
+        lines = tuple(filter(None, output.split('\n')))
+        if expected_entries and not lines:
+            raise OutputFailure("Output is empty")
+    
+        if prefix is not None:
+            for line in lines:
+                if not line.startswith(prefix):
+                    raise OutputFailure(line)
+    
+        if normalize:
+            verify_normalize(lines, prefix)
+    
+        # Filter only entries compatible with the current Python
+        filtered_expected_entries = []
+        for expected_entry in expected_entries:
+            if isinstance(expected_entry, _BaseEntry):
+                if expected_entry.is_compatible_with_current_python_version():
+                    filtered_expected_entries.append(expected_entry)
+            else:
+                filtered_expected_entries.append(expected_entry)
+    
+        expected_entries_count = len(filtered_expected_entries)
+        any_mismatch = False
+        result = ''
+        template = u'\n{line!s:%s}   {expected_entry}  {arrow}' % max(map(len, lines))
+        for expected_entry, line in zip_longest(filtered_expected_entries, lines, fillvalue=""):
+            mismatch = not (expected_entry and expected_entry.check(line))
+            any_mismatch |= mismatch
+            arrow = '<===' * mismatch
+            result += template.format(**locals())
+    
+        if len(lines) != expected_entries_count:
+            result += '\nOutput has {} lines, while we expect {} lines.'.format(
+                    len(lines), len(expected_entries))
+    
+        if any_mismatch:
+>           raise OutputFailure(result)
+E           tests.utils.OutputFailure: 
+E           Source path:... test_pysnooper.py                                                                                           SourcePathEntry(prefix='')  
+E                           call       543     def my_function():                                                                       CallEntry(source='def my_function():', prefix='')  
+E                           line       544         foo = list(range(1000))                                                              LineEntry(source='foo = list(range(1000))', prefix='')  
+E           New var:....... foo = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 1...90, 991, 992, 993, 994, 995, 996, 997, 998, 999]   VariableEntry(name='foo', prefix='', value_regex=re.compile('^(?=.{100}$)\\[0, 1, 2, .*\\.\\.\\..*, 997, 998, 999\\]$'))  <===
+E                           line       545         return foo                                                                           LineEntry(prefix='')  
+E                           return     545         return foo                                                                           ReturnEntry(prefix='')  
+E           Return value:.. [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 1...90, 991, 992, 993, 994, 995, 996, 997, 998, 999]         ReturnValueEntry(value_regex=re.compile('^(?=.{100}$)\\[0, 1, 2, .*\\.\\.\\..*, 997, 998, 999\\]$'), prefix='')  <===
+E           Elapsed time: 00:00:00.000526                                                                                               ElapsedTimeEntry(tolerance=0.2, prefix='')
+
+../PySnooper/tests/utils.py:399: OutputFailure
+__________________________ test_long_variable[False] ___________________________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_long_variable(normalize):
+        @pysnooper.snoop(normalize=normalize, color=False)
+        def my_function():
+            foo = list(range(1000))
+            return foo
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+            result = my_function()
+        assert result == list(range(1000))
+        output = output_capturer.string_io.getvalue()
+        regex = r'^(?=.{100}$)\[0, 1, 2, .*\.\.\..*, 997, 998, 999\]$'
+>       assert_output(
+            output,
+            (
+                SourcePathEntry(),
+                CallEntry('def my_function():'),
+                LineEntry('foo = list(range(1000))'),
+                VariableEntry('foo', value_regex=regex),
+                LineEntry(),
+                ReturnEntry(),
+                ReturnValueEntry(value_regex=regex),
+                ElapsedTimeEntry(),
+            ),
+            normalize=normalize,
+        )
+
+../PySnooper/tests/test_pysnooper.py:553: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+output = 'Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/test_pysnooper.py\n1..., 5, 6, 7, 8, 9, 10, 11, 12, 13, 1...90, 991, 992, 993, 994, 995, 996, 997, 998, 999]\nElapsed time: 00:00:00.000298\n'
+expected_entries = (SourcePathEntry(prefix=''), CallEntry(source='def my_function():', prefix=''), LineEntry(source='foo = list(range(100...ompile('^(?=.{100}$)\\[0, 1, 2, .*\\.\\.\\..*, 997, 998, 999\\]$')), LineEntry(prefix=''), ReturnEntry(prefix=''), ...)
+prefix = None, normalize = False
+
+    def assert_output(output, expected_entries, prefix=None, normalize=False):
+        lines = tuple(filter(None, output.split('\n')))
+        if expected_entries and not lines:
+            raise OutputFailure("Output is empty")
+    
+        if prefix is not None:
+            for line in lines:
+                if not line.startswith(prefix):
+                    raise OutputFailure(line)
+    
+        if normalize:
+            verify_normalize(lines, prefix)
+    
+        # Filter only entries compatible with the current Python
+        filtered_expected_entries = []
+        for expected_entry in expected_entries:
+            if isinstance(expected_entry, _BaseEntry):
+                if expected_entry.is_compatible_with_current_python_version():
+                    filtered_expected_entries.append(expected_entry)
+            else:
+                filtered_expected_entries.append(expected_entry)
+    
+        expected_entries_count = len(filtered_expected_entries)
+        any_mismatch = False
+        result = ''
+        template = u'\n{line!s:%s}   {expected_entry}  {arrow}' % max(map(len, lines))
+        for expected_entry, line in zip_longest(filtered_expected_entries, lines, fillvalue=""):
+            mismatch = not (expected_entry and expected_entry.check(line))
+            any_mismatch |= mismatch
+            arrow = '<===' * mismatch
+            result += template.format(**locals())
+    
+        if len(lines) != expected_entries_count:
+            result += '\nOutput has {} lines, while we expect {} lines.'.format(
+                    len(lines), len(expected_entries))
+    
+        if any_mismatch:
+>           raise OutputFailure(result)
+E           tests.utils.OutputFailure: 
+E           Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/test_pysnooper.py          SourcePathEntry(prefix='')  
+E           15:08:55.959167 call       543     def my_function():                                                                       CallEntry(source='def my_function():', prefix='')  
+E           15:08:55.959190 line       544         foo = list(range(1000))                                                              LineEntry(source='foo = list(range(1000))', prefix='')  
+E           New var:....... foo = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 1...90, 991, 992, 993, 994, 995, 996, 997, 998, 999]   VariableEntry(name='foo', prefix='', value_regex=re.compile('^(?=.{100}$)\\[0, 1, 2, .*\\.\\.\\..*, 997, 998, 999\\]$'))  <===
+E           15:08:55.959205 line       545         return foo                                                                           LineEntry(prefix='')  
+E           15:08:55.959270 return     545         return foo                                                                           ReturnEntry(prefix='')  
+E           Return value:.. [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 1...90, 991, 992, 993, 994, 995, 996, 997, 998, 999]         ReturnValueEntry(value_regex=re.compile('^(?=.{100}$)\\[0, 1, 2, .*\\.\\.\\..*, 997, 998, 999\\]$'), prefix='')  <===
+E           Elapsed time: 00:00:00.000298                                                                                               ElapsedTimeEntry(tolerance=0.2, prefix='')
+
+../PySnooper/tests/utils.py:399: OutputFailure
+___________ test_long_variable_with_custom_max_variable_length[True] ___________
+
+normalize = True
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_long_variable_with_custom_max_variable_length(normalize):
+        @pysnooper.snoop(max_variable_length=200, normalize=normalize, color=False)
+        def my_function():
+            foo = list(range(1000))
+            return foo
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+            result = my_function()
+        assert result == list(range(1000))
+        output = output_capturer.string_io.getvalue()
+        regex = r'^(?=.{200}$)\[0, 1, 2, .*\.\.\..*, 997, 998, 999\]$'
+>       assert_output(
+            output,
+            (
+                SourcePathEntry(),
+                CallEntry('def my_function():'),
+                LineEntry('foo = list(range(1000))'),
+                VariableEntry('foo', value_regex=regex),
+                LineEntry(),
+                ReturnEntry(),
+                ReturnValueEntry(value_regex=regex),
+                ElapsedTimeEntry(),
+            ),
+            normalize=normalize,
+        )
+
+../PySnooper/tests/test_pysnooper.py:582: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+output = 'Source path:... test_pysnooper.py\n                call       572     def my_function():\n                line       ... 983, 984, 985, 986, 987, 988, 989, 990, 991, 992, 993, 994, 995, 996, 997, 998, 999]\nElapsed time: 00:00:00.000270\n'
+expected_entries = (SourcePathEntry(prefix=''), CallEntry(source='def my_function():', prefix=''), LineEntry(source='foo = list(range(100...ompile('^(?=.{200}$)\\[0, 1, 2, .*\\.\\.\\..*, 997, 998, 999\\]$')), LineEntry(prefix=''), ReturnEntry(prefix=''), ...)
+prefix = None, normalize = True
+
+    def assert_output(output, expected_entries, prefix=None, normalize=False):
+        lines = tuple(filter(None, output.split('\n')))
+        if expected_entries and not lines:
+            raise OutputFailure("Output is empty")
+    
+        if prefix is not None:
+            for line in lines:
+                if not line.startswith(prefix):
+                    raise OutputFailure(line)
+    
+        if normalize:
+            verify_normalize(lines, prefix)
+    
+        # Filter only entries compatible with the current Python
+        filtered_expected_entries = []
+        for expected_entry in expected_entries:
+            if isinstance(expected_entry, _BaseEntry):
+                if expected_entry.is_compatible_with_current_python_version():
+                    filtered_expected_entries.append(expected_entry)
+            else:
+                filtered_expected_entries.append(expected_entry)
+    
+        expected_entries_count = len(filtered_expected_entries)
+        any_mismatch = False
+        result = ''
+        template = u'\n{line!s:%s}   {expected_entry}  {arrow}' % max(map(len, lines))
+        for expected_entry, line in zip_longest(filtered_expected_entries, lines, fillvalue=""):
+            mismatch = not (expected_entry and expected_entry.check(line))
+            any_mismatch |= mismatch
+            arrow = '<===' * mismatch
+            result += template.format(**locals())
+    
+        if len(lines) != expected_entries_count:
+            result += '\nOutput has {} lines, while we expect {} lines.'.format(
+                    len(lines), len(expected_entries))
+    
+        if any_mismatch:
+>           raise OutputFailure(result)
+E           tests.utils.OutputFailure: 
+E           Source path:... test_pysnooper.py                                                                                                                                                                                               SourcePathEntry(prefix='')  
+E                           call       572     def my_function():                                                                                                                                                                           CallEntry(source='def my_function():', prefix='')  
+E                           line       573         foo = list(range(1000))                                                                                                                                                                  LineEntry(source='foo = list(range(1000))', prefix='')  
+E           New var:....... foo = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,...80, 981, 982, 983, 984, 985, 986, 987, 988, 989, 990, 991, 992, 993, 994, 995, 996, 997, 998, 999]   VariableEntry(name='foo', prefix='', value_regex=re.compile('^(?=.{200}$)\\[0, 1, 2, .*\\.\\.\\..*, 997, 998, 999\\]$'))  <===
+E                           line       574         return foo                                                                                                                                                                               LineEntry(prefix='')  
+E                           return     574         return foo                                                                                                                                                                               ReturnEntry(prefix='')  
+E           Return value:.. [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,...80, 981, 982, 983, 984, 985, 986, 987, 988, 989, 990, 991, 992, 993, 994, 995, 996, 997, 998, 999]         ReturnValueEntry(value_regex=re.compile('^(?=.{200}$)\\[0, 1, 2, .*\\.\\.\\..*, 997, 998, 999\\]$'), prefix='')  <===
+E           Elapsed time: 00:00:00.000270                                                                                                                                                                                                   ElapsedTimeEntry(tolerance=0.2, prefix='')
+
+../PySnooper/tests/utils.py:399: OutputFailure
+__________ test_long_variable_with_custom_max_variable_length[False] ___________
+
+normalize = False
+
+    @pytest.mark.parametrize("normalize", (True, False))
+    def test_long_variable_with_custom_max_variable_length(normalize):
+        @pysnooper.snoop(max_variable_length=200, normalize=normalize, color=False)
+        def my_function():
+            foo = list(range(1000))
+            return foo
+    
+        with mini_toolbox.OutputCapturer(stdout=False,
+                                         stderr=True) as output_capturer:
+            result = my_function()
+        assert result == list(range(1000))
+        output = output_capturer.string_io.getvalue()
+        regex = r'^(?=.{200}$)\[0, 1, 2, .*\.\.\..*, 997, 998, 999\]$'
+>       assert_output(
+            output,
+            (
+                SourcePathEntry(),
+                CallEntry('def my_function():'),
+                LineEntry('foo = list(range(1000))'),
+                VariableEntry('foo', value_regex=regex),
+                LineEntry(),
+                ReturnEntry(),
+                ReturnValueEntry(value_regex=regex),
+                ElapsedTimeEntry(),
+            ),
+            normalize=normalize,
+        )
+
+../PySnooper/tests/test_pysnooper.py:582: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+output = 'Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/test_pysnooper.py\n1... 983, 984, 985, 986, 987, 988, 989, 990, 991, 992, 993, 994, 995, 996, 997, 998, 999]\nElapsed time: 00:00:00.000252\n'
+expected_entries = (SourcePathEntry(prefix=''), CallEntry(source='def my_function():', prefix=''), LineEntry(source='foo = list(range(100...ompile('^(?=.{200}$)\\[0, 1, 2, .*\\.\\.\\..*, 997, 998, 999\\]$')), LineEntry(prefix=''), ReturnEntry(prefix=''), ...)
+prefix = None, normalize = False
+
+    def assert_output(output, expected_entries, prefix=None, normalize=False):
+        lines = tuple(filter(None, output.split('\n')))
+        if expected_entries and not lines:
+            raise OutputFailure("Output is empty")
+    
+        if prefix is not None:
+            for line in lines:
+                if not line.startswith(prefix):
+                    raise OutputFailure(line)
+    
+        if normalize:
+            verify_normalize(lines, prefix)
+    
+        # Filter only entries compatible with the current Python
+        filtered_expected_entries = []
+        for expected_entry in expected_entries:
+            if isinstance(expected_entry, _BaseEntry):
+                if expected_entry.is_compatible_with_current_python_version():
+                    filtered_expected_entries.append(expected_entry)
+            else:
+                filtered_expected_entries.append(expected_entry)
+    
+        expected_entries_count = len(filtered_expected_entries)
+        any_mismatch = False
+        result = ''
+        template = u'\n{line!s:%s}   {expected_entry}  {arrow}' % max(map(len, lines))
+        for expected_entry, line in zip_longest(filtered_expected_entries, lines, fillvalue=""):
+            mismatch = not (expected_entry and expected_entry.check(line))
+            any_mismatch |= mismatch
+            arrow = '<===' * mismatch
+            result += template.format(**locals())
+    
+        if len(lines) != expected_entries_count:
+            result += '\nOutput has {} lines, while we expect {} lines.'.format(
+                    len(lines), len(expected_entries))
+    
+        if any_mismatch:
+>           raise OutputFailure(result)
+E           tests.utils.OutputFailure: 
+E           Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/test_pysnooper.py                                                                                                              SourcePathEntry(prefix='')  
+E           15:08:55.990910 call       572     def my_function():                                                                                                                                                                           CallEntry(source='def my_function():', prefix='')  
+E           15:08:55.990928 line       573         foo = list(range(1000))                                                                                                                                                                  LineEntry(source='foo = list(range(1000))', prefix='')  
+E           New var:....... foo = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,...80, 981, 982, 983, 984, 985, 986, 987, 988, 989, 990, 991, 992, 993, 994, 995, 996, 997, 998, 999]   VariableEntry(name='foo', prefix='', value_regex=re.compile('^(?=.{200}$)\\[0, 1, 2, .*\\.\\.\\..*, 997, 998, 999\\]$'))  <===
+E           15:08:55.990940 line       574         return foo                                                                                                                                                                               LineEntry(prefix='')  
+E           15:08:55.990992 return     574         return foo                                                                                                                                                                               ReturnEntry(prefix='')  
+E           Return value:.. [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,...80, 981, 982, 983, 984, 985, 986, 987, 988, 989, 990, 991, 992, 993, 994, 995, 996, 997, 998, 999]         ReturnValueEntry(value_regex=re.compile('^(?=.{200}$)\\[0, 1, 2, .*\\.\\.\\..*, 997, 998, 999\\]$'), prefix='')  <===
+E           Elapsed time: 00:00:00.000252                                                                                                                                                                                                   ElapsedTimeEntry(tolerance=0.2, prefix='')
+
+../PySnooper/tests/utils.py:399: OutputFailure
+=========================== short test summary info ============================
+FAILED ../PySnooper/tests/test_pysnooper.py::test_long_variable[True] - tests...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_long_variable[False] - test...
+FAILED ../PySnooper/tests/test_pysnooper.py::test_long_variable_with_custom_max_variable_length[True]
+FAILED ../PySnooper/tests/test_pysnooper.py::test_long_variable_with_custom_max_variable_length[False]
+4 failed, 81 passed in 1.10s

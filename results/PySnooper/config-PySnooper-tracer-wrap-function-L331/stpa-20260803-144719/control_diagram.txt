@@ -1,0 +1,64 @@
+```dot
+digraph _wrap_function_control {
+    rankdir=LR;
+    node [shape=box, style=filled, fillcolor=white];
+
+    // Main flow
+    n0 [label="Start\n_wrap_function called"];
+    n1 [label="Add function.__code__ to target_codes"];
+    n2 [label="Define simple_wrapper"];
+    n3 [label="Define generator_wrapper"];
+    n4 [label="Is coroutine function?", shape=diamond, style=filled, fillcolor=lightblue];
+    n5 [label="Raise NotImplementedError\nfor coroutine"];
+    n6 [label="Is async generator function?", shape=diamond, style=filled, fillcolor=lightblue];
+    n7 [label="Raise NotImplementedError\nfor async generator"];
+    n8 [label="Is generator function?", shape=diamond, style=filled, fillcolor=lightblue];
+    n9 [label="Return generator_wrapper"];
+    n10 [label="Return simple_wrapper"];
+
+    // Edges
+    n0 -> n1 -> n2 -> n3 -> n4;
+    n4 -> n5 [label="yes"];
+    n4 -> n6 [label="no"];
+    n6 -> n7 [label="yes"];
+    n6 -> n8 [label="no"];
+    n8 -> n9 [label="yes"];
+    n8 -> n10 [label="no"];
+
+    // generator_wrapper flow (subgraph)
+    subgraph cluster_gen_wrapper {
+        label="generator_wrapper";
+        style=rounded;
+        node [shape=box, style=filled, fillcolor=lightgray];
+
+        ng_start [label="Enter generator_wrapper\nwith *args, **kwargs"];
+        ng_loop_start [label="while True:"];
+        ng_with [label="with self:"];
+        ng_outer_try [label="try:"];
+        ng_method_call [label="outgoing = method(incoming)"];
+        ng_outer_except [label="except StopIteration:"];
+        ng_outer_return [label="return (exit generator_wrapper)"];
+        ng_inner_try [label="try:"];
+        ng_inner_call [label="method, incoming = gen.send, (yield outgoing)"];
+        ng_inner_except [label="except Exception as e:"];
+        ng_inner_throw [label="method, incoming = gen.throw, e"];
+        // Loop back
+        ng_loop_back [label="", style=invis];
+
+        // Connect
+        ng_start -> ng_loop_start;
+        ng_loop_start -> ng_with;
+        ng_with -> ng_outer_try;
+        ng_outer_try -> ng_method_call;
+        ng_method_call -> ng_inner_try;
+        ng_inner_try -> ng_inner_call;
+        ng_inner_call -> ng_loop_back;
+        ng_loop_back -> ng_loop_start;
+        ng_outer_try -> ng_outer_except;
+        ng_outer_except -> ng_outer_return;
+        ng_inner_try -> ng_inner_except;
+        ng_inner_except -> ng_inner_throw;
+        ng_inner_throw -> ng_loop_back;
+    }
+}
+```

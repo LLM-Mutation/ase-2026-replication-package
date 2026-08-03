@@ -1,0 +1,5 @@
+1. Determine if the exception value represents a group of exceptions handling missing group class gracefully,  
+2. If it is a group gather the names of all contained exception types,  
+3. Extract the main message from the group if available,  
+4. Build a formatted string showing the group type message count of sub-exceptions and their names,  
+5. If it is not a group return a plain traceback string for the single exception,

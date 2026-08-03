@@ -1,0 +1,103 @@
+$ /Users/meganmaton/.cache/uv/archive-v0/Q1YWu4HrcUL7MC9AiUGGQ/bin/python3 -m pytest -q /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper
+# exit code: 1
+
+F....................................................................... [ 84%]
+.............                                                            [100%]
+=================================== FAILURES ===================================
+_________________________________ test_chinese _________________________________
+
+    def test_chinese():
+        with mini_toolbox.create_temp_folder(prefix='pysnooper') as folder:
+            path = folder / 'foo.log'
+            @pysnooper.snoop(path, color=False)
+            def foo():
+                a = 1
+                x = '失败'
+                return 7
+    
+            foo()
+            with path.open(encoding='utf-8') as file:
+                output = file.read()
+>           assert_output(
+                output,
+                (
+                    SourcePathEntry(),
+                    CallEntry(),
+                    LineEntry(),
+                    VariableEntry('a'),
+                    LineEntry(u"x = '失败'"),
+                    VariableEntry(u'x', (u"'失败'" if pycompat.PY3 else None)),
+                    LineEntry(),
+                    ReturnEntry(),
+                    ReturnValueEntry('7'),
+                    ElapsedTimeEntry(),
+                ),
+            )
+
+../PySnooper/tests/test_chinese.py:38: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+output = 'Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/test_chinese.py\n12:...     return 7\n12:05:58.157109 return      33             return 7\nReturn value:.. 7\nElapsed time: 00:00:00.000719\n'
+expected_entries = (SourcePathEntry(prefix=''), CallEntry(prefix=''), LineEntry(prefix=''), VariableEntry(name='a', prefix=''), LineEntry(source="x = '失败'", prefix=''), VariableEntry(name='x', value="'失败'", prefix=''), ...)
+prefix = None, normalize = False
+
+    def assert_output(output, expected_entries, prefix=None, normalize=False):
+        lines = tuple(filter(None, output.split('\n')))
+        if expected_entries and not lines:
+            raise OutputFailure("Output is empty")
+    
+        if prefix is not None:
+            for line in lines:
+                if not line.startswith(prefix):
+                    raise OutputFailure(line)
+    
+        if normalize:
+            verify_normalize(lines, prefix)
+    
+        # Filter only entries compatible with the current Python
+        filtered_expected_entries = []
+        for expected_entry in expected_entries:
+            if isinstance(expected_entry, _BaseEntry):
+                if expected_entry.is_compatible_with_current_python_version():
+                    filtered_expected_entries.append(expected_entry)
+            else:
+                filtered_expected_entries.append(expected_entry)
+    
+        expected_entries_count = len(filtered_expected_entries)
+        any_mismatch = False
+        result = ''
+        template = u'\n{line!s:%s}   {expected_entry}  {arrow}' % max(map(len, lines))
+        for expected_entry, line in zip_longest(filtered_expected_entries, lines, fillvalue=""):
+            mismatch = not (expected_entry and expected_entry.check(line))
+            any_mismatch |= mismatch
+            arrow = '<===' * mismatch
+            result += template.format(**locals())
+    
+        if len(lines) != expected_entries_count:
+            result += '\nOutput has {} lines, while we expect {} lines.'.format(
+                    len(lines), len(expected_entries))
+    
+        if any_mismatch:
+>           raise OutputFailure(result)
+E           tests.utils.OutputFailure: 
+E           Source path:... /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/test_chinese.py   SourcePathEntry(prefix='')  
+E           12:05:58.156640 call        30         def foo():                                                                  CallEntry(prefix='')  
+E           12:05:58.156870 line        31             a = 1                                                                   LineEntry(prefix='')  
+E           New var:....... a = 1                                                                                              VariableEntry(name='a', prefix='')  
+E           12:05:58.156924 line        32             x = 'å¤±è´¥'                                                            LineEntry(source="x = '失败'", prefix='')  <===
+E           New var:....... x = '失败'                                                                                           VariableEntry(name='x', value="'失败'", prefix='')  
+E           12:05:58.157017 line        33             return 7                                                                LineEntry(prefix='')  
+E           12:05:58.157109 return      33             return 7                                                                ReturnEntry(prefix='')  
+E           Return value:.. 7                                                                                                  ReturnValueEntry(value='7', prefix='')  
+E           Elapsed time: 00:00:00.000719                                                                                      ElapsedTimeEntry(tolerance=0.2, prefix='')
+
+../PySnooper/tests/utils.py:399: OutputFailure
+=============================== warnings summary ===============================
+tests/test_chinese.py::test_chinese
+  /Users/meganmaton/Repos/LLM-mutants/ase-2026-replication-package/PySnooper/tests/mini_toolbox/contextlib.py:97: DeprecationWarning: the (type, exc, tb) signature of throw() is deprecated, use the single-arg signature instead.
+    self.gen.throw(type, value, traceback)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../PySnooper/tests/test_chinese.py::test_chinese - tests.utils.OutputF...
+1 failed, 84 passed, 1 warning in 1.02s
